@@ -1,0 +1,125 @@
+
+
+
+
+
+page-register {
+    
+    $animationTime: 5000ms;
+
+    ion-content {
+
+        &.vertical-align-content > * {
+            display: flex!important;
+            align-content: center!important;
+            align-items: center!important;
+            text-align: center;
+        }
+
+        #background-image {
+            filter: blur(8px);
+            background-image: url('../assets/imgs/login.jpg');
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            text-align: center;
+            min-height: 100vh;
+            min-width: 100vw;
+            position: fixed;
+            z-index: -2;
+        }
+
+        #overlay-gradiant {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: linear-gradient(to top, color($colors, colorHunt5) 50%, color($colors, colorHunt6) 120%);
+            opacity: 0.68;
+        }
+
+        .hiddenOpacity {
+            animation: showOpacity $animationTime ease reverse backwards;
+        }
+
+        .showOpacity {
+            animation: showOpacity $animationTime ease forwards;
+        }
+
+        ion-list {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            width: 70vw !important;
+
+            ion-item {
+                width: 100% !important;
+                padding-left: 0 !important;                
+                background: transparent !important;
+                pointer-events: auto !important;
+    
+                ion-label, ion-input {
+                    color: white !important;
+                }
+
+                &#errorsEmail {
+                    text-align: center;
+                    
+                    .item-inner {
+                        padding: 0;
+                        border-bottom: none;
+
+                        .input-wrapper .ion-label {
+                            margin-right: 0 !important;
+                        }
+                    }
+
+                    p {
+                        color: white !important;
+                    }
+                }
+            }
+
+            button {
+                width: 70vw;
+                margin-left: auto;
+                margin-right: auto;
+ 
+                &#connexion, &#facebook-connect {
+                    margin-top: 4vh;
+                    padding-top: 1vh;
+                    padding-bottom: 1vh;
+                }
+
+                &#connexion {
+                    background: linear-gradient(to left, color($colors, colorHunt5), color($colors, colorHunt6)) !important;
+                    filter: alpha(0.4);                  
+                }
+ 
+                &#login {
+                    background: none;
+                    box-shadow: none;
+                    position: absolute;
+                    bottom: 2vh;
+                    width: 100vw;
+                    left: 0;
+                    text-transform: none !important;
+                }
+
+                &.connexionOK {
+                    filter: alpha(1) !important;
+                }
+             }
+        }
+    }
+
+    @keyframes showOpacity {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}

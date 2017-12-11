@@ -1,0 +1,30 @@
+
+
+<ion-content padding>
+  <div id="overlay-gradiant"></div>
+
+  <ion-list>
+    <img id="logo" src="assets/imgs/logo.svg">
+    <img id="titre" src="assets/imgs/Re-Events.svg">
+  </ion-list>
+
+  <ion-list>
+    <ion-item>
+      <ion-label floating>Adresse e-mail</ion-label>
+      <ion-input  type="email" required [(ngModel)]="user.email" (input)="emailInput(user)" ></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="(email)">
+      <ion-label floating>Mot de passe</ion-label>
+      <ion-input type="password" required [(ngModel)]="user.password" (input)="passwordInput(user)"></ion-input>
+    </ion-item>
+
+    <button ion-button round id="connexion" (click)="login()">Se connecter</button>
+  
+    <button *ngIf="!(email)" ion-button round id="facebook-connect" color="facebook" (click)='facebookConnect()'>Facebook Connect</button>
+  
+    <button ion-button (click)="register()" id="inscription">Pas encore des nôtres ?</button>
+  </ion-list>
+
+
+</ion-content>

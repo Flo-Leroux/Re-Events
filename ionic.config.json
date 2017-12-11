@@ -1,0 +1,8 @@
+{
+  "name": "re-events",
+  "app_id": "76f2dea7",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}

@@ -1,0 +1,49 @@
+
+
+<ion-content class="vertical-align-content" padding>
+  <div id="background-image"></div>    
+  <div id="overlay-gradiant"></div>
+
+  <ion-list>
+    <div *ngIf="(step1)">
+      <ion-item>
+        <ion-label floating>Adresse e-mail</ion-label>
+        <ion-input  type="email" required [(ngModel)]="user.email" (input)="emailInput(user)"></ion-input>
+      </ion-item>
+      <ion-item  id="errorsEmail" *ngIf="(errors.email)">
+        <p (click)="errorsEmail()" *ngIf="(errors.email)">Mot de passe oublié ?</p>
+      </ion-item>
+      <ion-item *ngIf="(email)" [ngClass]="{'showOpacity': (email)}">
+        <ion-label floating>Mot de passe</ion-label>
+        <ion-input  type="password" required minlenght="8" required [(ngModel)]="user.password"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="(email)" [ngClass]="{'showOpacity': (email)}">
+        <ion-label floating>Confirmation mot de passe</ion-label>
+        <ion-input  type="password" required minlenght="8" required [(ngModel)]="confirmation" (focusout)="passwordConfirm(user)"></ion-input>
+      </ion-item>
+    </div>
+
+    <div *ngIf="!(step1)" [ngClass]="{'showOpacity': !(step1)}">
+      <ion-item>
+        <ion-label floating>Nom</ion-label>
+        <ion-input type="text" required [(ngModel)]="user.nom" (input)="step2Inputs(user)"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Prénom</ion-label>
+        <ion-input type="text" required [(ngModel)]="user.prenom" (input)="step2Inputs(user)"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Date d'anniversaire</ion-label>
+        <ion-input type="date" required [(ngModel)]="user.birthday" (input)="step2Inputs(user)"></ion-input>
+      </ion-item>
+    </div>
+
+    <button [ngClass]="{'connexionOK': (step2)}" (click)="register()" ion-button round id="connexion">S'inscrire</button>
+  
+    <button *ngIf="!(email)" ion-button (click)="facebookRegister()" round id="facebook-connect" color="facebook">S'inscrire avec Facebook</button>
+  
+    <button ion-button id="login" (click)="login()">Déjà des nôtres ?</button>
+  </ion-list>
+
+
+</ion-content>
