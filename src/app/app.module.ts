@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { HttpModule } from '@angular/http';
+
 
 // --- Add Plugins -- //
 /* Ionic's Plugins */
@@ -32,6 +34,7 @@ import { FacebookProvider } from '../providers/facebook/facebook';
 
 // --- Add Configs --- //
 import { FIREBASE_CONFIG } from './app.firebase.config';
+import { AnimationProvider } from '../providers/animation/animation';
 
 @NgModule({
   declarations: [
@@ -43,6 +46,8 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
+    
     IonicModule.forRoot(ReEvents, {
       scrollAssist: true,
       autoFocusAssist: true 
@@ -70,7 +75,8 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     RegexProvider,
     PermissionsProvider,
     FirebaseProvider,
-    FacebookProvider
+    FacebookProvider,
+    AnimationProvider
   ]
 })
 export class AppModule {}

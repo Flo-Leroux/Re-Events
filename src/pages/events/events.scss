@@ -1,11 +1,170 @@
 
-
-
-
+/* .scroll-content {
+    overflow: hidden;
+} */
 
 page-events {
-    
+
+    * {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
     ion-content {
 
+        div#rectBackground {
+            width: 100vw;
+            height: 30vh;
+            background: linear-gradient(to bottom, color($colors, colorHunt1) 0%,color($colors, colorHunt2) 100%);
+            margin: 0;
+            transform: skewY(8deg);
+            position: fixed !important;
+            top: -10vh;
+            left: 0;
+        }
+
+        ion-list {
+            position: absolute;
+            top: 30vh;
+            left: 0;
+            width: 100vw;
+            max-width: 100vw;
+
+
+            ion-item-divider {
+                background-color: transparent !important;
+                text-align: center;
+                font-size: 130% !important;
+                color: color($colors, colorHunt2) !important;
+                font-weight: bolder;
+                // padding: 5vh 0 !important;
+
+                &:first-of-type {
+                    // background-color: rebeccapurple !important;
+                }
+
+                ion-label {
+                    margin: 3vh !important;
+                }
+            }
+
+            ion-item {
+                box-sizing: content-box;                    
+
+                ion-label {
+                    box-sizing: content-box;
+                }
+
+                div.imageDiv {
+                    box-sizing: content-box;
+                    width: 90vw;
+                    height: 30vh;
+                    overflow: hidden;
+                    border-radius: 3vw;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    background-color: lightgray;
+
+                    img { 
+                        box-sizing: content-box;         
+                    }
+                }
+
+                ion-scroll {
+                    width: 100vw !important;
+                    min-height: 20vh;
+                    transform: translateY(-30%);
+                    
+                    .cardsCollection {
+                        width: 300vw;
+                        display: flex;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        left: 0;
+                        bottom: 0;
+                        box-sizing: border-box;
+                        padding: 0 20% !important;
+
+                        ion-card {
+                            flex: 1;
+                            width: 100vw;
+                            max-width: 75vw;
+                            padding: 1% 1% !important;
+                            margin: auto !important;
+                            border-radius: 2vw !important;
+                            white-space: normal !important;
+                            border: 1px solid grey;
+                            box-sizing: border-box;
+    
+                            .title {
+                                display: inline-block;
+                                width: 84%;
+                                max-width: 80%;
+                                font-weight: bold;
+                                color: black;
+                            }
+        
+                            .action {
+                                vertical-align: top;                        
+                                display: inline-flex;
+                                flex-direction: column;
+                                list-style: none;
+                                width: 15%;
+                                padding: 4%;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                
+                                .like,
+                                .bookmark {
+                                    flex: 1;
+        
+                                    img {
+                                        margin-left: auto !important;
+                                        margin-right: auto !important;
+                                        max-width: 75%;
+
+                                        &:first-of-type {
+                                            filter: invert(0.5);
+                                        }
+
+                                        &:last-of-type {
+                                            display: none;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                .action_effect {
+                    vertical-align: top;                        
+                    display: inline-flex;
+                    flex-direction: column;
+                    list-style: none;
+                    width: 50%;
+                    padding: 4%;
+                    margin: auto !important;
+                    padding: 0 !important;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    pointer-events: none;
+
+                    .like,
+                    .bookmark {
+                        flex: 1;
+                        display: none;
+
+                        img {
+                            max-width: 100%;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

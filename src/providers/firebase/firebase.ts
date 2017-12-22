@@ -54,9 +54,8 @@ export class FirebaseProvider {
   }
 
   upload_Profil_Picture(userId: string, image: any): void {
-      // Upload Image to Firebase storage
-      firebase.storage().ref(`users/${userId}/profile.jpg`)
-                        .putString(image, 'data_url');
+    firebase.storage().ref(`users/${userId}/profile.jpg`)
+                      .putString(image, 'data_url');
   }
 
   lostPassword(user: User) {
@@ -76,10 +75,7 @@ export class FirebaseProvider {
     return new Promise((resolve, reject) => {
       firebase.auth().fetchProvidersForEmail(email)
       .then(res => {
-        console.log(res);
-        console.log("Email Exist | Firebase Provider");
         if(res[0]) {
-          console.log(res);
           reject();
         }
         else {
@@ -87,7 +83,6 @@ export class FirebaseProvider {
         }
       })
       .catch(err => {
-        console.log(err);
       })
     })
   }
@@ -111,11 +106,9 @@ export class FirebaseProvider {
     return new Promise((resolve, reject) => {
       firebase.auth().signInWithEmailAndPassword(user.email, user.password)
       .then(res => {
-        console.log(res);
         resolve();
       })
       .catch(err => {
-        console.log(err);
         reject();
       });
     });
