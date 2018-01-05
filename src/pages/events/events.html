@@ -1,9 +1,68 @@
 
-<ion-header>
+<!-- <ion-header>
 <h1>TEST EVENTS PAGE</h1>
-</ion-header>
+</ion-header> -->
 
-<ion-content padding>
-    TEST
+<ion-content>
+    <ion-list no-lines>
+        <ion-item-group *ngFor="let groupEvents of datas">
+            <ion-item-divider sticky no-lines>{{ groupEvents.day }}</ion-item-divider>
+            <ion-item id='{{ event.id }}' *ngFor="let event of groupEvents.tableEvent" (dblclick)='likeEvent($event)' (press)='bookmarkEvent($event)'>
+                <div class='imageDiv'>
+                    <!-- <img src="https://scontent-cdg2-1.xx.fbcdn.net/v/t1.0-9/25395736_1493127934135871_4755177590793565076_n.jpg?oh=d952a23cc75c7119faba93c6fd15e5a7&oe=5AD2B4FB" alt=""> -->
+                    <img src="{{ event.img }}" alt="">
+                </div>
+    
+                <ion-scroll scrollX='true' class='test'>
+                    <div class="cardsCollection">
+                        <ion-card class="card1">
+                            <p class="title">
+                                {{ event.start_time }}
+                            </p>
+                            <div class="action">
+                                <img src="" alt="">
+                            </div>
+                        </ion-card>
+    
+                        <ion-card class='card2'>
+                            <p class="title">
+                                {{ event.name }}
+                            </p>
+                            <ul class="action">
+                                <li class="like" (click)='likeEvent($event)'>
+                                    <img src="assets/icons/favorite_border.svg" alt="">
+                                    <img src="assets/icons/favorite_black.svg" alt="">
+                                </li>
+                                <li class="bookmark" (click)='bookmarkEvent($event)'>
+                                    <img src="assets/icons/bookmark_border.svg" alt="">
+                                    <img src="assets/icons/bookmark_black.svg" alt="">
+                                </li>
+                            </ul>
+                        </ion-card>
+                        
+                        <ion-card class="card3">
+                            <p class="title">
+                                {{ event.id }}
+                            </p>
+                            <div>
+                                <img src="" alt="">
+                            </div>
+                        </ion-card>
+                    </div>
+                </ion-scroll>
+    
+                <ul class="action_effect">
+                    <li class="like">
+                        <img src="assets/icons/favorite_black.svg" alt="">
+                    </li>
+                    <li class="bookmark">
+                        <img src="assets/icons/bookmark_black.svg" alt="">
+                    </li>
+                </ul>
+            </ion-item>
+        </ion-item-group>
+    </ion-list>
+
+    <div id="rectBackground"></div>    
 
 </ion-content>

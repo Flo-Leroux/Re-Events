@@ -83,11 +83,7 @@ export class LoginPage {
   }
 
   login() {
-    console.log(this.email);
-    console.log(this.password);
-
     if(this.password==true && this.email==true) {
-      console.log('ok');
       
       this.firebase.emailLogin(this.user)
       .then(() => {
@@ -99,11 +95,11 @@ export class LoginPage {
         this.navCtrl.setRoot(EventsPage);
       })
       .catch(() => {
-        let options: NativeTransitionOptions = {
+        let options2: NativeTransitionOptions = {
           duration: 500,
           slowdownfactor: -1
         }
-        this.nativePageTransitions.fade(options);
+        this.nativePageTransitions.fade(options2);
         this.navCtrl.push(RegisterPage, {'userEmail': this.user.email, 'userPassword': this.user.password});
       });     
     }
