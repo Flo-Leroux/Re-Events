@@ -11,12 +11,12 @@ export class AnimationProvider {
       let id = setInterval(frame, 5);
 
       function frame() {
-        if (pos == 100) {
+        if (pos == 50) {
           clearInterval(id);
           resolve();
         } else {
           pos++; 
-          elt.style.opacity = pos/100; 
+          elt.style.opacity = pos/50; 
         }
       }
     });
@@ -24,7 +24,7 @@ export class AnimationProvider {
 
   fadeOut(elt): Promise<any> {
     return new Promise((resolve, reject) => {
-      let pos = 100;
+      let pos = 50;
       let id = setInterval(frame, 5);
 
       function frame() {
@@ -33,7 +33,7 @@ export class AnimationProvider {
           resolve();
         } else {
           pos--; 
-          elt.style.opacity = pos/100; 
+          elt.style.opacity = pos/50; 
         }
       }
     });

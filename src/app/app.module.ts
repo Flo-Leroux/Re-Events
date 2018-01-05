@@ -3,7 +3,6 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { HttpModule } from '@angular/http';
 
-
 // --- Add Plugins -- //
 /* Ionic's Plugins */
 import { SplashScreen } from '@ionic-native/splash-screen';

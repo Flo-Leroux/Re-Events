@@ -12,6 +12,7 @@ import { RegisterPage } from '../register/register';
 
 // --- Add Providers --- //
 import { AnimationProvider } from '../../providers/animation/animation';
+import { FacebookProvider } from '../../providers/facebook/facebook';
 
 @Component({
   selector: 'page-events',
@@ -37,11 +38,13 @@ export class EventsPage {
               private http: Http,
               private statusBar: StatusBar,
               private nativePageTransitions: NativePageTransitions,
-              private animation: AnimationProvider) {
-    this.loadJson()
+              private animation: AnimationProvider,
+              private facebook: FacebookProvider) {
+/*     this.loadJson()
     .then(res => {
       this.datas = res.json();
-      console.log(this.datas);
+      // console.log('Events Page Datas');
+      // console.log(this.datas);
       this.showDay = this.datas[0].day;
       this.eventsDay = this.datas[0].tableEvent; 
     })
@@ -52,9 +55,24 @@ export class EventsPage {
         this.redimensionnement();
         this.headerTransform();
       }, 500);
-    });
+    }); */
   }
 
+  ionViewWillEnter() {
+    console.log('Did Load')
+    this.facebook.findEventsByPlaces()
+    .then(events => {
+      this.datas = events;
+    })
+    .then(() => {
+      setTimeout(() => {
+        console.log('ok');
+        this.scrollPos();
+        this.redimensionnement();
+        this.headerTransform();
+      }, 500);
+    });
+  }
 
   headerTransform() {
     const content = document.getElementsByClassName('scroll-content').item(0);
@@ -136,7 +154,6 @@ export class EventsPage {
   }
 
   redimensionnement(){ 
-
     let card = document.getElementsByClassName('card2');
 
     for(let k in card) {
@@ -246,7 +263,7 @@ export class EventsPage {
               .then(() => {
                 setTimeout(() => {
                   effect.style.display = 'none';
-                }, 1500);
+                }, 500);
               });
           }
         }
@@ -302,7 +319,7 @@ export class EventsPage {
             .then(() => {
               setTimeout(() => {
                 effect.style.display = 'none';
-              }, 1500);
+              }, 500);
             });
         }
       }

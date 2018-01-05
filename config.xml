@@ -84,9 +84,9 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="com.telerik.plugins.nativepagetransitions" spec="^0.6.5" />
     <plugin name="cordova-plugin-camera" spec="^3.0.0" />
+    <engine name="android" spec="~6.3.0" />
     <plugin name="cordova-plugin-facebook4" spec="^1.9.1">
         <variable name="APP_ID" value="1306889219440575" />
         <variable name="APP_NAME" value="Re-Events" />
     </plugin>
-    <engine name="android" spec="~6.3.0" />
 </widget>
