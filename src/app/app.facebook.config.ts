@@ -5,4 +5,4 @@ export const FACEBOOK_CONFIG = [
     "user_events"
 ];
 
-export const FACEBOOK_TOKEN = "1306889219440575|3c6fc86b6f30221bae87e92657c015b6";
+export const FACEBOOK_TOKEN = "YOUR_APP_ID|YOUR_APP_SECRET";
