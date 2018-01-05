@@ -86,7 +86,7 @@
     <plugin name="com.telerik.plugins.nativepagetransitions" spec="^0.6.5" />
     <plugin name="cordova-plugin-camera" spec="^3.0.0" />
     <plugin name="cordova-plugin-facebook4" spec="^1.9.1">
-        <variable name="APP_ID" value="1306889219440575" />
-        <variable name="APP_NAME" value="Re-Events" />
+        <variable name="APP_ID" value="YOUR_APP_ID" />
+        <variable name="APP_NAME" value="YOUR_APP_NAME" />
     </plugin>
 </widget>
