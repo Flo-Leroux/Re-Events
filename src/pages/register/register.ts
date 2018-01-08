@@ -55,16 +55,13 @@ export class RegisterPage {
       this.user.password = navParams.get('userPassword');
       this.email = true;
     }
-    this.ionView();
-  }
-
-  ionView() {
+  
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
-    
+
     // set status bar to white
-    /* this.statusBar.backgroundColorByHexString('#B3000000'); */
-    this.statusBar.styleDefault();
+    this.statusBar.styleLightContent();
+    // this.statusBar.backgroundColorByHexString('#000000DD');
   }
 
   /**

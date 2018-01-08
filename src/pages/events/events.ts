@@ -13,6 +13,7 @@ import { RegisterPage } from '../register/register';
 // --- Add Providers --- //
 import { AnimationProvider } from '../../providers/animation/animation';
 import { FacebookProvider } from '../../providers/facebook/facebook';
+import { GeolocationProvider } from '../../providers/geolocation/geolocation';
 
 @Component({
   selector: 'page-events',
@@ -20,149 +21,69 @@ import { FacebookProvider } from '../../providers/facebook/facebook';
 })
 export class EventsPage {
 
+  // --- Variables --- //
+  isLoading: boolean = true;
+  isError: boolean = false;
+  isFinished: boolean = true;
+  
+  activeDate: string;
+
+  loadingMessage: string = 'Initialisation';
+  errorMessage: string = 'Rrrh ! On n\'arrive pas à te localiser. Active ton GPS et recharge la page ;)'
+
   @ViewChild(Content)
   content: Content;
 
   jsonPATH: string = 'assets/json/eventsOrganised.json';
   datas: JSON;
 
-  showDay: JSON;
-  eventsDay: Array<any>;
+  activeDatas: any = [];
 
   liked: Array<any> = [];
   bookmarked: Array<any> = [];
 
-  itemDividerTop: Array<any> = [];
+  nbEventsBeforeReload: number = 5;
 
   constructor(public navCtrl: NavController,
               private http: Http,
               private statusBar: StatusBar,
               private nativePageTransitions: NativePageTransitions,
               private animation: AnimationProvider,
-              private facebook: FacebookProvider) {
-/*     this.loadJson()
-    .then(res => {
-      this.datas = res.json();
-      // console.log('Events Page Datas');
-      // console.log(this.datas);
-      this.showDay = this.datas[0].day;
-      this.eventsDay = this.datas[0].tableEvent; 
-    })
-    .then(() => {
-      setTimeout(() => {
-        console.log('ok');
-        this.scrollPos();
-        this.redimensionnement();
-        this.headerTransform();
-      }, 500);
-    }); */
+              private facebook: FacebookProvider,
+              private geolocation: GeolocationProvider) {
+
+    // let status bar overlay webview
+    this.statusBar.overlaysWebView(true);
+
+    // set status bar to white
+    this.statusBar.styleLightContent();
+    // this.statusBar.backgroundColorByHexString('#000000DD');
+  }
+
+  // --- App Life State --- //
+
+  ionViewDidLoad() {
   }
 
   ionViewWillEnter() {
-    console.log('Did Load')
-    this.facebook.findEventsByPlaces()
-    .then(events => {
-      this.datas = events;
-    })
-    .then(() => {
-      setTimeout(() => {
-        console.log('ok');
-        this.scrollPos();
-        this.redimensionnement();
-        this.headerTransform();
-      }, 500);
-    });
+    console.log('Will Enter')
+    this.doRefreshGeolocation();
   }
 
-  headerTransform() {
-    const content = document.getElementsByClassName('scroll-content').item(0);
-    const header = document.getElementById('rectBackground');
-    const dividerDate = document.getElementsByTagName('ion-item-divider');   
-    
-    const vh15 = content.getBoundingClientRect().height*8/100;
+  // --- Design Transformations --- //
 
-    let item = [];
-
-    for(let i in dividerDate) {
-      let ii = dividerDate.item(parseInt(i)).firstChild.parentElement.offsetTop;
-      item.push(ii);
-    }
-
-    content.addEventListener('scroll', function(e){
-    
-      for(let j in dividerDate) {
-        let jj = parseInt(j);
-        if(jj>0) {
-          if((dividerDate.item(jj-1).firstChild.parentElement.offsetTop+vh15/3) > (item[jj]-vh15)) {
-            dividerDate.item(jj).setAttribute('style', 'color: white !important; text-align: left !important;');
-          }
-          else {
-            dividerDate.item(jj).removeAttribute('style');
-          }
-        }
-        else {
-          if(content.scrollTop > vh15*2) {
-            dividerDate.item(0).setAttribute('style', 'color: white !important; text-align: left !important;');
-          }
-          else {
-            dividerDate.item(0).removeAttribute('style');
-          }
-        }
-      }
-
-
-      if(content.scrollTop>20 && content.scrollTop<200) {
-        let top = content.scrollTop/10;
-        let skew = content.scrollTop/28;
-        if(top>10 && top<20) {
-          header.style.top = '-'+top+'vh';
-        }
-
-        skew = 8-skew;
-        if(skew<9 && skew>=0) {
-          header.style.transform = 'skewY('+skew+'deg)';
-        }
-      }
-      else if(content.scrollTop>=200) {
-        header.style.top = '-20vh';
-        header.style.transform = 'skewY(0deg)';
-      }
-      else {
-        header.style.top = '-10vh';
-        header.style.transform = 'skewY(8deg)';
-      }
-    });
-  }
-
-  scrollPos() {
+  private scrollHorizontalCards() {
     let scroll = document.querySelectorAll('ion-scroll.scroll-x .scroll-content');
-    let width = scroll.item(nb).scrollWidth;
+    let width = scroll[0].firstElementChild.parentElement.offsetWidth;
 
-    for(var i in scroll) {
-      var nb = parseInt(i);
-      scroll.item(nb).scrollLeft = width/3;
+    console.log(scroll.length);
 
-      scroll.item(nb).addEventListener('scroll', function() {
-        if(this.scrollLeft<(width/20 - 2.5)) {
-          this.scrollLeft = (width/20)-2; 
-        }
-        else if(this.scrollLeft>((width/3*2)-(width/20)+6)) {
-          this.scrollLeft = (width/3*2)-(width/20)+4;
-        }
-      });
+    for(let i=0; i<scroll.length; i++) {
+      scroll[i].scrollTo(width, 0);
     }
   }
 
   redimensionnement(){ 
-    let card = document.getElementsByClassName('card2');
-
-    for(let k in card) {
-      let height = card.item(parseInt(k)).scrollHeight;
-      card.item(parseInt(k)).parentElement.getElementsByClassName('card1').item(0).setAttribute('style', 'height:'+height+'px');
-      card.item(parseInt(k)).parentElement.getElementsByClassName('card2').item(0).setAttribute('style', 'height:'+height+'px');
-      card.item(parseInt(k)).parentElement.getElementsByClassName('card3').item(0).setAttribute('style', 'height:'+height+'px');
-    }
-
     var image = document.getElementsByTagName('img');
 
     for(var img in image) {
@@ -182,35 +103,173 @@ export class EventsPage {
     }
   } 
 
-  loadJson(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(this.jsonPATH)
-      .subscribe(res => {
-        resolve(res);
-      })
-    });
-  }
-
-  collectionHas(a, b) { //helper function (see below)
-    for(var i = 0, len = a.length; i < len; i ++) {
-        if(a[i] == b) return true;
+  in_array(string, array){
+    let result = false;
+    for(let i=0; i<array.length; i++){
+      if(array[i] == string){
+        result = true;
+      }
     }
-    return false;
+    return result;
   }
   
-  findParentBySelector(elm, selector): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if(elm.tagName.toLowerCase()==selector) {
-        resolve();
+  // --- User Events --- //
+
+  /**
+   * It is a function which have a relation with the scroll Event
+   * => same as 'addEventListener("scroll")'
+   */
+  private scrollEvent() {
+
+    // Local Variables
+    const myContent = document.getElementsByClassName('scroll-content').item(0);
+    const dividerDate = document.getElementsByTagName('ion-item-divider');   
+    const header = document.getElementById('rectBackground');
+    let item = [];
+
+    // Add Values in Item's Array
+    for(let i in dividerDate) {
+      let ii = dividerDate.item(parseInt(i)).firstChild.parentElement.offsetTop;
+      item.push(ii);
+    }
+
+    // Scroll Event Function
+    this.content.ionScroll.subscribe(event => {      
+      let scrollTop = myContent.scrollTop;
+      
+      // Date in header modification
+      let elt;
+      if(item[1]>scrollTop) {
+        elt = dividerDate.item(0).getElementsByTagName('ion-label').item(0).innerHTML;
+      }
+      else { 
+        for(let i=1; i<item.length; i++) {
+          if(item[i+1]>scrollTop && scrollTop>=item[i]) {
+            elt = dividerDate.item(i).getElementsByTagName('ion-label').item(0).innerHTML;
+          }
+        }
+      }
+      this.activeDate = elt;
+
+      // Transformation effect of header (Skew & Translate)
+      if(scrollTop>20 && scrollTop<200) {
+        let top = scrollTop/10;
+        let skew = scrollTop/28;
+        let transform;
+
+        if(top>10 && top<20) {
+          transform = 'translateY(-'+top+'vh)';          
+        }
+        else if(top<=10) {
+          transform = 'translateY(-10vh)';          
+        }
+        else {
+          transform = 'translateY(-20vh)';                    
+        }
+
+        skew = 8-skew;
+        if(skew<9 && skew>=0) {
+          transform = 'skewY('+skew+'deg) ' + transform;
+        }
+        else if(skew>=9) {
+          transform = 'skewY(8deg) ' + transform;          
+        }
+        else {
+          transform = 'skewY(0deg) ' + transform;          
+        }
+        header.style.transform = transform;      
+      }
+      else if(scrollTop>=200) {
+        header.style.transform = 'skewY(0deg) translateY(-20vh)';
       }
       else {
-        var all = document.querySelectorAll(selector);
-        var cur = elm.parentNode;
-        while(cur && !this.collectionHas(all, cur)) { //keep going up until you find a match
-            cur = cur.parentNode; //go up
-        }
-        resolve(cur); //will return null if not found
+        header.style.transform = 'skewY(8deg) translateY(-10vh)';
       }
+    })
+  }
+
+  getMoreEvents(e) {
+    console.log('Getting More Events');
+    let lgt = this.activeDatas.length;
+    console.log(lgt);
+
+    for(let i=0; i<this.nbEventsBeforeReload; i++) {
+      this.activeDatas.push(this.datas[lgt+i]);
+    }
+
+    setTimeout(() => {
+      this.scrollHorizontalCards();
+      this.scrollEvent();
+      this.redimensionnement();
+      e.complete();
+    }, 200);
+
+  }
+
+  doRefreshGeolocation(refresher?) {
+    console.log('Do Refresh');
+
+    if(refresher) {
+      this.loadingMessage = 'Nouvelle recherche !'
+    }
+
+    this.isLoading = true;
+    this.isError = false;
+    this.isFinished = false;
+
+    this.geolocation.getCurrentPosition()    
+    .then(coords => {
+      console.log('Geolocation Success');
+      console.log(coords[0] + ',' + coords[1]);
+      this.loadingMessage = 'Geolocalisation réussie ! Nous t\'avons trouvé ;)';
+      return this.facebook.findEventsByPlaces('',coords)
+    })
+    .catch(err => {
+      console.log('Geolocation Error');
+      console.log(err);
+      this.isLoading = false;
+      this.isError =true;
+    })
+    .then(events => {
+      if(!this.isError) {
+        setTimeout(() => {
+          if(events.length>1) {
+            this.loadingMessage = 'Yeah des événements sont disponibles ! Profites-en !';
+          }
+          else if(events.length==1) {
+            this.loadingMessage = 'Yeah un événement disponible près de toi ! N\'hésites pas à changer tes paramètres de recherche !';
+          }
+          else {
+            this.loadingMessage = 'Oups, pas d\'événement. Essayes d\'autres paramètres de recherche.';
+          }
+        }, 5000);
+
+        this.datas = events;
+        this.isFinished = true;    
+        
+        for(let i=0; i<this.nbEventsBeforeReload; i++) {
+          this.activeDatas.push(this.datas[i]);
+        }
+        
+        if(refresher) {
+          refresher.complete();
+        }
+      }
+    })
+    .then(() => {
+      if(!this.isError) {
+        this.isLoading = false;
+        setTimeout(() => {
+          console.log('Events ok');
+          this.scrollEvent();
+          this.scrollHorizontalCards();
+          this.redimensionnement();
+          document.getElementsByTagName('ion-item-divider').item(0).setAttribute('hidden','');
+          this.activeDate = document.getElementsByTagName('ion-item-divider').item(0).getElementsByTagName('ion-label').item(0).innerHTML;
+        }, 2500);
+      }
+    })
+    .then(() => {
     });
   }
 
@@ -326,14 +385,37 @@ export class EventsPage {
     });
   }
 
-  in_array(string, array){
-    let result = false;
-    for(let i=0; i<array.length; i++){
-      if(array[i] == string){
-        result = true;
-      }
-    }
-    return result;
+  // --- Others --- //
+
+  private loadJson(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.jsonPATH)
+      .subscribe(res => {
+        resolve(res);
+      })
+    });
   }
 
+  private collectionHas(a, b) { //helper function (see below)
+    for(var i = 0, len = a.length; i < len; i ++) {
+        if(a[i] == b) return true;
+    }
+    return false;
+  }
+  
+  private findParentBySelector(elm, selector): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if(elm.tagName.toLowerCase()==selector) {
+        resolve();
+      }
+      else {
+        var all = document.querySelectorAll(selector);
+        var cur = elm.parentNode;
+        while(cur && !this.collectionHas(all, cur)) { //keep going up until you find a match
+            cur = cur.parentNode; //go up
+        }
+        resolve(cur); //will return null if not found
+      }
+    });
+  }
 }

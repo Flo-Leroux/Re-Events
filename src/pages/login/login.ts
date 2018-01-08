@@ -34,20 +34,13 @@ export class LoginPage {
               private reg: RegexProvider,
               private firebase: FirebaseProvider,
               private facebook: FacebookProvider) {
-    this.ionView();
-  }
 
-  ionViewWillLeave() {
-
-  }
-
-  ionView() {
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
-    
+
     // set status bar to white
-    /* this.statusBar.backgroundColorByHexString('#B3000000');
-    this.statusBar.styleLightContent(); */
+    this.statusBar.styleLightContent();
+    // this.statusBar.backgroundColorByHexString('#000000DD');
   }
 
     /**

@@ -41,15 +41,13 @@ export class RegisterphotoPage {
               private firebaseProvid: FirebaseProvider,
               private camera: Camera) {
     this.user = navParams.get('userInfo');
-  }
 
-  ionViewWillEnter() {
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
-    
+
     // set status bar to white
-    // this.statusBar.backgroundColorByHexString('#B3000000');
-    this.statusBar.styleDefault();
+    this.statusBar.styleLightContent();
+    // this.statusBar.backgroundColorByHexString('#000000DD');
   }
 
   ionViewDidEnter() {    

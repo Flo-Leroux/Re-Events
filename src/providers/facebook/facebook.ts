@@ -44,7 +44,6 @@ export class FacebookProvider {
           }
         })
         .then(res => {
-          console.log(res);
           this.user.email = res.email;
           this.user.nom = res.last_name;
           this.user.prenom = res.first_name;
@@ -66,7 +65,7 @@ export class FacebookProvider {
           }
         })
         .then(() => {
-          console.log("logged");
+          console.log("Logged");
           resolve();
         });
       }
@@ -92,10 +91,21 @@ export class FacebookProvider {
   /**
    * It the method to find all Facebook Events around a GPS Center 
    */
-  public findEventsByPlaces(): Promise<any> {
+  public findEventsByPlaces(query?: string, center?: Array<number>, distance?: number, category?: string): Promise<any> {
     return new Promise((resolve) => {
+      if(query==null || query=='') {
+        query = "*";
+      }
+      if(center == null) {
+        // reject();
+        center = [48.692054, 6.184416999999939];
+      }
+      if(distance == null || distance == undefined) {
+        distance = 2500;
+      }
+
       // Add Comments here to...
-      this.prepareRequestPlaces()
+      this.prepareRequestPlaces(query, center, distance, category)
       .then(stmt => {
         return this.api(stmt);
       })
@@ -106,22 +116,16 @@ export class FacebookProvider {
         return this.allResultsEvents(all);
       })
       .then(events => {
-        console.log('All Events');
-        console.log(events);
         return this.deletePlacesWithoutEvents(events);      
       })
       // ... Here for testing with local datas
 
       // Remove Comments to...
-
-      /*
-      this.loadJson('assets/json/eventsBrut.json')
+     /*  this.loadJson('assets/json/eventsBrut.json')
       .then(res => {
-        console.log('Events With Empty Events');
         let datas = res.json();
         return this.deletePlacesWithoutEvents(datas);
-      })*/
-
+      }) */
       // ... Here for testing with local datas
 
       .then(res => {
@@ -134,6 +138,7 @@ export class FacebookProvider {
         return this.groupEvents(res);
       })
       .then(res => {
+        console.log(res);
         resolve(res);
       })
     })
@@ -150,17 +155,6 @@ export class FacebookProvider {
    */
   private prepareRequestPlaces(query?: string, center?: Array<number>, distance?: number, category?: string): Promise<string> {
     return new Promise ((resolve, reject) => {
-      if(query == null) {
-        query = "*";
-      }
-      if(center == null) {
-        // reject();
-        center = [48.692054, 6.184416999999939];
-      }
-      if(distance == null || distance == undefined) {
-        distance = 1000;
-      }
-
       let stm: string ;
       if(category=="ALL" || category==null){
         stm = 'search?q='+query+'&type=place&center='+center[0]+','+center[1]+'&distance='+distance+'&fields=id,name';
@@ -204,7 +198,6 @@ export class FacebookProvider {
     if (composer != "") {
       composer = composer.substring(0, composer.length-1);
       let stm = 'events?fields=id,name,description,start_time,cover,place&since='+datetime_UNIX2.substring(0, 10)+'&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
-      console.log('STMT 2 ' + stm);
       return stm;
     }
   }
@@ -262,8 +255,6 @@ export class FacebookProvider {
       }
       count += 50;
     }   
-    console.log('Events');  
-    console.log(events);  
     return events;
   }
 
@@ -310,10 +301,10 @@ export class FacebookProvider {
             etat: 'segmentIMG'
           }
 
-          event_info.day = event_info.time = array[i].start_time;
+          event_info.day = event_info.time = new Date(array[i].start_time.replace('T', ' '));
           event_info.id = array[i].id;
           event_info.name = array[i].name;
-          event_info.start_time = array[i].start_time;
+          event_info.start_time = new Date(array[i].start_time.replace('T', ' '));
 
           if(array[i].description){
             event_info.description = array[i].description;
@@ -374,11 +365,11 @@ export class FacebookProvider {
 
       for (let i=0; i<events.length; i++) {
         if (i == 0) {
-          eventDay = events[i].day.substring(0, 10);
+          eventDay = events[i].day.toDateString();
           groupTmp.day = eventDay;
           groupTmp.tableEvent.push(events[i]);
         }
-        else if (events[i].day.substring(0, 10) == eventDay) {
+        else if (events[i].day.toDateString() == eventDay) {
           groupTmp.tableEvent.push(events[i]);
         }
         else {
@@ -387,7 +378,7 @@ export class FacebookProvider {
             day: null,
             tableEvent: []
           };
-          eventDay = events[i].day.substring(0, 10);
+          eventDay = events[i].day.toDateString();
           groupTmp.day = eventDay;
           groupTmp.tableEvent.push(events[i]);
         }

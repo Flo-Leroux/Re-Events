@@ -11,6 +11,7 @@ import { NativePageTransitions } from '@ionic-native/native-page-transitions';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Camera } from '@ionic-native/camera';
 import { Facebook } from '@ionic-native/facebook';
+import { Geolocation } from '@ionic-native/geolocation';
 import * as firebase from 'firebase';
 
 /* Npm's Plugins */
@@ -30,10 +31,14 @@ import { RegexProvider } from '../providers/regex/regex';
 import { PermissionsProvider } from '../providers/permissions/permissions';
 import { FirebaseProvider } from '../providers/firebase/firebase';
 import { FacebookProvider } from '../providers/facebook/facebook';
+import { AnimationProvider } from '../providers/animation/animation';
+import { GeolocationProvider } from '../providers/geolocation/geolocation';
+
+// --- Add Pipes --- //
+import { PipesModule } from '../pipes/pipes.module';
 
 // --- Add Configs --- //
 import { FIREBASE_CONFIG } from './app.firebase.config';
-import { AnimationProvider } from '../providers/animation/animation';
 
 @NgModule({
   declarations: [
@@ -46,7 +51,7 @@ import { AnimationProvider } from '../providers/animation/animation';
   imports: [
     BrowserModule,
     HttpModule,
-    
+    PipesModule,
     IonicModule.forRoot(ReEvents, {
       scrollAssist: true,
       autoFocusAssist: true 
@@ -70,12 +75,14 @@ import { AnimationProvider } from '../providers/animation/animation';
     NativePageTransitions,
     Camera,
     Facebook,
+    Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     RegexProvider,
     PermissionsProvider,
     FirebaseProvider,
     FacebookProvider,
-    AnimationProvider
+    AnimationProvider,
+    GeolocationProvider
   ]
 })
 export class AppModule {}
