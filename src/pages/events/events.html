@@ -1,7 +1,12 @@
 
 <ion-header>
     <div id="rectBackground"></div>
-    <h1>{{activeDate}}</h1>
+
+    <h1>{{activeDate | date:"dd-MM-yyyy"}}</h1>
+    
+    <button ion-button icon-only menuToggle="right">
+        <ion-icon name='md-funnel'></ion-icon>
+    </button>
 </ion-header>
 
 <ion-content>
@@ -17,10 +22,10 @@
         <p>{{ errorMessage }}</p>
     </div>
 
-    <ion-list no-lines *ngIf='isFinished' [hidden]='isLoading'>
-        <ion-item-group *ngFor="let groupEvents of activeDatas">
-            <ion-item-divider sticky no-lines>{{ groupEvents.day | myDate:"ddMMMM":" ":" " }}</ion-item-divider>
-            <ion-item id='{{ event.id }}' *ngFor="let event of groupEvents.tableEvent" (dblclick)='likeEvent($event)' (press)='bookmarkEvent($event)'>
+    <ion-list id='myList' no-lines *ngIf='isFinished' style='opacity: 0 !important;'>
+        <ion-item-group *ngFor="let event of datas">
+            <ion-item-divider sticky no-lines>{{ event.day | date:"dd-MM-yy" }}</ion-item-divider>
+            <ion-item id='{{ event.id }}' (dblclick)='likeEvent($event)' (press)='bookmarkEvent($event)'>
                 <div class='imageDiv'>
                     <!-- <img src="https://scontent-cdg2-1.xx.fbcdn.net/v/t1.0-9/25395736_1493127934135871_4755177590793565076_n.jpg?oh=d952a23cc75c7119faba93c6fd15e5a7&oe=5AD2B4FB" alt=""> -->
                     <img src="{{ event.img }}" alt="">
@@ -76,9 +81,9 @@
         </ion-item-group>
     </ion-list>
 
-    <ion-infinite-scroll (ionInfinite)="getMoreEvents($event)">
+<!--     <ion-infinite-scroll (ionInfinite)="getMoreEvents($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+    </ion-infinite-scroll> -->
 
     <div id="refresher">
         <ion-icon name="arrow-down"></ion-icon>
@@ -87,3 +92,54 @@
     </div>
     
 </ion-content>
+
+<ion-menu [content]="mycontent" side="right" type="overlay">
+    <ion-content id="content-sideMenu">
+
+        <header id="rectBackgroundSide">
+            <h2>
+                Hey {{ user.nom }}, ici, <br> personnalise ta recherche <br> {{ cityName }}
+            </h2>
+        </header>
+
+        <form>
+            <ion-grid>
+                <ion-row>
+                    <ion-item no-lines id="keywordsInput">
+                        <ion-label floating color="colorHunt1">Mots clés</ion-label>
+                        <ion-input [(ngModel)]="keywordsInput" name="keywordsInput"> {{ keywordsInput }} </ion-input>
+                    </ion-item>
+                </ion-row>
+
+                <ion-row>
+                    <ion-item no-lines id="distanceInput">
+                        <ion-label color="colorHunt1">Distance {{ rangeNumber | mToKm }} km</ion-label>
+                        <ion-range min="250" max="5000" step="250" color="colorHunt3" name="rangeNumber" [(ngModel)]="rangeNumber">
+                        </ion-range>
+                    </ion-item>
+                </ion-row>
+
+                <ion-row>
+                    <ion-item no-lines id="buttonCalendar">
+                        <ion-col>
+                            <label>A partir du : </label>
+                        </ion-col>
+                        <ion-col>
+                            <button ion-button icon-end round (click)='datePickerFunc()'>
+                                {{ firstDatePicker | date:"dd/MM" }}
+                                <ion-icon name="md-calendar"></ion-icon>
+                            </button>
+                        </ion-col>
+                    </ion-item>
+                </ion-row>
+
+                <ion-row>
+                    <button ion-button id="buttonSearch" (click)='doRefreshGeolocation()'>Lancer la recherche</button>
+                </ion-row>
+            </ion-grid>
+        </form>
+        
+    </ion-content>
+</ion-menu>
+  
+<ion-nav #mycontent [root]="rootPage"></ion-nav>

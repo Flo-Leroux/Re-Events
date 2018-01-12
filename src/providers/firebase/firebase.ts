@@ -113,4 +113,15 @@ export class FirebaseProvider {
       });
     });
   }
+
+  getUserName(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let uid = firebase.auth().currentUser.uid;
+      let name;
+      firebase.database().ref(`users/${uid}/firstname`).on('value', (snap) => {
+        name = snap.val();
+        resolve(name);
+      })
+    });
+  }
 }

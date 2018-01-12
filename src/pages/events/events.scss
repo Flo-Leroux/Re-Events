@@ -5,10 +5,7 @@
 
 page-events {
 
-    * {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
+/*     */
     
     .has-refresher scroll-content {
         border: 0px;
@@ -17,6 +14,11 @@ page-events {
     ion-header {
         position: relative;
         // visibility: hidden;
+
+        * {
+            margin: 0 !important;
+            padding: 0 !important;
+        } 
 
         #rectBackground {
             width: 100vw;
@@ -32,9 +34,26 @@ page-events {
             color: white;
             position: absolute !important;
         }
+
+        button {
+            top: calc(6vw + 8px);
+            right: 6vw;
+            background-color: transparent !important;
+            color: white;
+            position: absolute !important;
+            box-shadow: none !important;
+
+            ion-icon {
+                font-size: 2.4em !important;
+            }
+        }
     }
 
-    ion-content {
+    ion-content:not(#content-sideMenu) {
+        * {
+            margin: 0 !important;
+            padding: 0 !important;
+        } 
 
         div#loading,
         div#error {
@@ -75,6 +94,11 @@ page-events {
 
                 &:first-of-type {
                     // background-color: rebeccapurple !important;
+                }
+
+                &.js-Header {
+                    color: red !important;
+                    z-index: 13 !important;
                 }
 
                 ion-label {
@@ -197,6 +221,114 @@ page-events {
 
                         img {
                             max-width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    ion-menu {
+
+        ion-content {
+
+            #rectBackgroundSide {
+                width: 100%;
+                min-height: calc(20vh + 16px);
+                background: linear-gradient(to bottom, color($colors, colorHunt1) 0%,color($colors, colorHunt2) 100%);
+                padding: 8vh 4vw !important;
+                transform: translateY(-5vh);
+
+                h2 {
+                    margin-top: 16px !important;
+                    color: white !important;
+                    font-size: 135%;
+                    line-height: 1.8;
+                    // word-break: break-all !important;
+
+                    span {
+                        color: rebeccapurple !important;
+                    }
+                }
+            }
+
+            form {
+
+                ion-grid {
+
+                    ion-row {
+                        padding-top: 5%;
+                        padding-bottom: 5%;
+                        
+                        ion-item {
+                            width: 65vw !important;
+                            margin: 0 auto !important;
+                            padding: 0 !important;
+        
+                            &#keywordsInput {
+                                border-bottom: 1px solid color($colors, colorHunt3);
+                            }
+        
+                            &#distanceInput {
+                
+                                ion-label {
+                                    width: 100% !important;
+                                    padding-left: 2.5%;
+                                }
+        
+                                ion-range {
+                                    padding: 0 !important;
+                                    width: 90% !important;
+                
+                                    .range-bar {
+                                        height: 2px !important;
+                                    }
+        
+                                    .range-knob {
+                                        background-color: color($colors, colorHunt1) !important;
+                                        width: 20px;
+                                        height: 20px;
+                                        top: 12px;
+                                        left: 12px;
+                                    }
+                                }
+                            }
+        
+                            &#buttonCalendar {
+                                height: 2.8em;                                
+        
+                                label {
+                                    vertical-align: middle;
+                                    height: 2.8em !important;
+                                    margin: 0.4rem 0.2rem;    
+                                    color: color($colors, colorHunt1);                    
+                                }
+        
+                                button {
+                                    vertical-align: middle;                            
+                                    padding: 0 5% !important;
+                                    background-color: transparent !important;
+                                    color: black;
+                                    box-shadow: none;
+                                    border: 1px solid color($colors, colorHunt3);
+                                    
+                                    ion-icon {
+                                        color: color($colors, colorHunt2);
+                                        font-size: 2.2em !important;
+                                    }
+                                }
+                            }
+                        }
+        
+                        button {
+                            margin: 0 auto !important;
+
+                            &#buttonSearch {
+                                width: 60vw !important;
+                                border-radius: 12px !important;  
+                                font-weight: bolder;
+                                background: linear-gradient(to bottom, color($colors, colorHunt1) 0%,color($colors, colorHunt3) 100%);                
+                            }
                         }
                     }
                 }

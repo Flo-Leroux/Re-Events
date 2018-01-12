@@ -91,8 +91,11 @@ export class FacebookProvider {
   /**
    * It the method to find all Facebook Events around a GPS Center 
    */
-  public findEventsByPlaces(query?: string, center?: Array<number>, distance?: number, category?: string): Promise<any> {
+  public findEventsByPlaces(query?: string, center?: Array<number>, distance?: number, since?: Date): Promise<any> {
     return new Promise((resolve) => {
+
+      let current_DateTime = new Date();
+
       if(query==null || query=='') {
         query = "*";
       }
@@ -101,19 +104,23 @@ export class FacebookProvider {
         center = [48.692054, 6.184416999999939];
       }
       if(distance == null || distance == undefined) {
-        distance = 2500;
+        distance = 500;
+      }
+      if(since == null || since < current_DateTime) {
+        since = current_DateTime;
       }
 
       // Add Comments here to...
-      this.prepareRequestPlaces(query, center, distance, category)
+      this.prepareRequestPlaces(query, center, distance)
       .then(stmt => {
+        console.log('Prepare quest ok');
         return this.api(stmt);
       })
       .then(datas => {
         return this.allResultsPlaces(datas);
       })
       .then(all => {
-        return this.allResultsEvents(all);
+        return this.allResultsEvents(all, since);
       })
       .then(events => {
         return this.deletePlacesWithoutEvents(events);      
@@ -121,7 +128,7 @@ export class FacebookProvider {
       // ... Here for testing with local datas
 
       // Remove Comments to...
-     /*  this.loadJson('assets/json/eventsBrut.json')
+/*       this.loadJson('assets/json/eventsBrut.json')
       .then(res => {
         let datas = res.json();
         return this.deletePlacesWithoutEvents(datas);
@@ -134,11 +141,11 @@ export class FacebookProvider {
       .then(res => {
         return this.organizeEvents(res);
       })
-      .then(res => {
+/*       .then(res => {
         return this.groupEvents(res);
-      })
+      }) */
       .then(res => {
-        console.log(res);
+        console.log(res[0]);
         resolve(res);
       })
     })
@@ -178,7 +185,7 @@ export class FacebookProvider {
    * @param {Array<any>} places Facebook ID of places
    * @param {number} count 
    */
-  private prepareRequestEventsByPlaces(places: Array<any>, count: number): string {
+  private prepareRequestEventsByPlaces(places: Array<any>, count: number, since: Date): string {
     let composer: string = ""; // Composer is the somme of ID Places
     for (let i=count; i<(count+50); i++) {
       if (places[i]) {
@@ -190,14 +197,12 @@ export class FacebookProvider {
     }
     
     // let datetime_UNIX = this.formatDate.transformeDateToUNIX(this.newDate);
-    let datetime_UNIX = Date.now();
-    let datetime_UNIX2 = datetime_UNIX.toString();
-
+    let datetime_UNIX = this.getUnixTime(since);
     console.log('Date ' + datetime_UNIX);
 
     if (composer != "") {
       composer = composer.substring(0, composer.length-1);
-      let stm = 'events?fields=id,name,description,start_time,cover,place&since='+datetime_UNIX2.substring(0, 10)+'&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
+      let stm = 'events?fields=id,name,description,start_time,cover,place&since='+datetime_UNIX+'&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
       return stm;
     }
   }
@@ -238,12 +243,12 @@ export class FacebookProvider {
    * To get all events associated to Facebook places
    * @param {Array<any>} places All places find by allResultsPlaces Method
    */
-  private async allResultsEvents(places: Array<any>): Promise<any> {
+  private async allResultsEvents(places: Array<any>, since: Date): Promise<any> {
     let events = [];
     let count = 0;
 
     while(count < places.length) {
-      let stm = this.prepareRequestEventsByPlaces(places, count);
+      let stm = this.prepareRequestEventsByPlaces(places, count, since);
       let datas = await this.fb.api(stm, []);
       for(let i=count; i<count+50; i++){
         if(places[i]){
@@ -431,5 +436,13 @@ export class FacebookProvider {
         resolve(res);
       })
     });
+  }
+
+  /**
+   * Get Unix Time from Date
+   * @param {Date} date 
+   */
+  private getUnixTime(date: Date) {
+    return date.getTime()/1000|0;
   }
 }

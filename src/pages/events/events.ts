@@ -1,11 +1,13 @@
 import { Component, Injectable, ViewChild } from '@angular/core';
 import { NavController, Content } from 'ionic-angular';
 import { Http } from '@angular/http';
+import { NavParams } from 'ionic-angular/navigation/nav-params';
 
 // --- Add Plugins --- //
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+import { DatePicker } from '@ionic-native/date-picker';
 
 // --- Add Pages --- //
 import { RegisterPage } from '../register/register';
@@ -14,6 +16,10 @@ import { RegisterPage } from '../register/register';
 import { AnimationProvider } from '../../providers/animation/animation';
 import { FacebookProvider } from '../../providers/facebook/facebook';
 import { GeolocationProvider } from '../../providers/geolocation/geolocation';
+import { FirebaseProvider } from '../../providers/firebase/firebase';
+
+// --- Add Models --- //
+import { User } from '../../models/User';
 
 @Component({
   selector: 'page-events',
@@ -21,12 +27,24 @@ import { GeolocationProvider } from '../../providers/geolocation/geolocation';
 })
 export class EventsPage {
 
+  user = {} as User;
+
+  // --- Links with front-end --- //
+  rangeNumber: number = 500;
+  firstDatePicker: Date = new Date();
+  keywordsInput: string = '';
+
+  cityName: string;
+
+
   // --- Variables --- //
   isLoading: boolean = true;
   isError: boolean = false;
   isFinished: boolean = true;
   
   activeDate: string;
+  lastActiveDate: string;
+  nbActiveDate: number;
 
   loadingMessage: string = 'Initialisation';
   errorMessage: string = 'Rrrh ! On n\'arrive pas à te localiser. Active ton GPS et recharge la page ;)'
@@ -47,10 +65,22 @@ export class EventsPage {
   constructor(public navCtrl: NavController,
               private http: Http,
               private statusBar: StatusBar,
+              private navParams: NavParams,
               private nativePageTransitions: NativePageTransitions,
+              private datePicker: DatePicker,
               private animation: AnimationProvider,
               private facebook: FacebookProvider,
-              private geolocation: GeolocationProvider) {
+              private geolocation: GeolocationProvider,
+              private firebase: FirebaseProvider) {
+
+    this.user = navParams.get('userInfo');
+
+    if(this.user.email) {
+      this.firebase.emailLogin(this.user)
+      .then(() => {
+        this.getUserName();
+      })
+    }
 
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
@@ -63,10 +93,12 @@ export class EventsPage {
   // --- App Life State --- //
 
   ionViewDidLoad() {
+
   }
 
   ionViewWillEnter() {
     console.log('Will Enter')
+    
     this.doRefreshGeolocation();
   }
 
@@ -75,8 +107,6 @@ export class EventsPage {
   private scrollHorizontalCards() {
     let scroll = document.querySelectorAll('ion-scroll.scroll-x .scroll-content');
     let width = scroll[0].firstElementChild.parentElement.offsetWidth;
-
-    console.log(scroll.length);
 
     for(let i=0; i<scroll.length; i++) {
       scroll[i].scrollTo(width, 0);
@@ -113,6 +143,41 @@ export class EventsPage {
     return result;
   }
   
+  private getCityName(coords?: Array<number>) {
+    this.http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='+coords[0]+','+coords[1]+'&key=AIzaSyBHGfBQR2Pfumh6kWADjvTXIppbUqtV6gk')
+    .subscribe(data => {
+      let tmp = data.json();
+
+      if(tmp.status == 'OK') {
+        let nbLocality: number = -1;
+  
+        for(let i=0; i<tmp.results[0].address_components.length; i++) {
+          let nb = tmp.results[0].address_components[i];
+  
+          for(let k=0; k<nb.types.length; k++) {
+            if(nb.types[k] == 'locality') {
+              nbLocality = i;
+              break;
+            }
+          }
+  
+          if(nbLocality!=-1) {
+            break;
+          }
+        }
+  
+        this.cityName = 'à '+tmp.results[0].address_components[nbLocality].long_name;
+      }
+    });
+  }
+
+  private getUserName() {
+    this.firebase.getUserName()
+    .then(res => {
+      this.user.nom = res;
+    })
+  }
+
   // --- User Events --- //
 
   /**
@@ -123,33 +188,47 @@ export class EventsPage {
 
     // Local Variables
     const myContent = document.getElementsByClassName('scroll-content').item(0);
-    const dividerDate = document.getElementsByTagName('ion-item-divider');   
+    const dividerDate = document.querySelectorAll('ion-item-group');
     const header = document.getElementById('rectBackground');
-    let item = [];
+    
+    let arrayDate= []; // Will hold the array of Node's
+    for(var i = 0, ll = dividerDate.length; i != ll; arrayDate.push(dividerDate[i++]));
 
-    // Add Values in Item's Array
-    for(let i in dividerDate) {
-      let ii = dividerDate.item(parseInt(i)).firstChild.parentElement.offsetTop;
-      item.push(ii);
-    }
+    arrayDate.forEach((element, i ) => {
+      let elt0;
+      if(i==0) {
+        elt0 = this.datas[0].day.toString().substring(0, 15);
+      }
+      else {
+        elt0 = this.datas[i-1].day.toString().substring(0, 15);
+      }  
+
+      let elt1 = this.datas[i].day.toString().substring(0, 15);
+
+      if(elt0==elt1) {
+        element.getElementsByTagName('ion-item-divider').item(0).style.display = 'none';
+      }
+    });
 
     // Scroll Event Function
-    this.content.ionScroll.subscribe(event => {      
-      let scrollTop = myContent.scrollTop;
-      
-      // Date in header modification
-      let elt;
-      if(item[1]>scrollTop) {
-        elt = dividerDate.item(0).getElementsByTagName('ion-label').item(0).innerHTML;
-      }
-      else { 
-        for(let i=1; i<item.length; i++) {
-          if(item[i+1]>scrollTop && scrollTop>=item[i]) {
-            elt = dividerDate.item(i).getElementsByTagName('ion-label').item(0).innerHTML;
-          }
+    this.content.ionScroll.subscribe(event => {     
+      let scrollTop = this.content.scrollTop;
+
+      arrayDate.forEach((element, i) => {
+        let top = element.offsetTop;
+        let bottom = top + element.offsetHeight;
+        
+        if(scrollTop>=top && scrollTop<=bottom && this.nbActiveDate!=i) {
+          element.classList.add('js-Header');
+        
+          this.activeDate = this.datas[i].day;
+          this.nbActiveDate = i;
+
         }
-      }
-      this.activeDate = elt;
+        else {
+          element.classList.remove('js-Header');
+        }
+      });
 
       // Transformation effect of header (Skew & Translate)
       if(scrollTop>20 && scrollTop<200) {
@@ -191,7 +270,6 @@ export class EventsPage {
   getMoreEvents(e) {
     console.log('Getting More Events');
     let lgt = this.activeDatas.length;
-    console.log(lgt);
 
     for(let i=0; i<this.nbEventsBeforeReload; i++) {
       this.activeDatas.push(this.datas[lgt+i]);
@@ -222,13 +300,18 @@ export class EventsPage {
       console.log('Geolocation Success');
       console.log(coords[0] + ',' + coords[1]);
       this.loadingMessage = 'Geolocalisation réussie ! Nous t\'avons trouvé ;)';
-      return this.facebook.findEventsByPlaces('',coords)
+      this.getCityName(coords);
+      return this.facebook.findEventsByPlaces(this.keywordsInput, coords, this.rangeNumber, this.firstDatePicker);
     })
     .catch(err => {
       console.log('Geolocation Error');
       console.log(err);
       this.isLoading = false;
       this.isError =true;
+
+      if(refresher) {
+        refresher.complete();
+      }
     })
     .then(events => {
       if(!this.isError) {
@@ -247,10 +330,6 @@ export class EventsPage {
         this.datas = events;
         this.isFinished = true;    
         
-        for(let i=0; i<this.nbEventsBeforeReload; i++) {
-          this.activeDatas.push(this.datas[i]);
-        }
-        
         if(refresher) {
           refresher.complete();
         }
@@ -258,15 +337,19 @@ export class EventsPage {
     })
     .then(() => {
       if(!this.isError) {
-        this.isLoading = false;
-        setTimeout(() => {
-          console.log('Events ok');
-          this.scrollEvent();
-          this.scrollHorizontalCards();
-          this.redimensionnement();
-          document.getElementsByTagName('ion-item-divider').item(0).setAttribute('hidden','');
-          this.activeDate = document.getElementsByTagName('ion-item-divider').item(0).getElementsByTagName('ion-label').item(0).innerHTML;
-        }, 2500);
+        if(this.datas[0]) {
+          setTimeout(() => {
+            console.log('Events ok');
+            this.activeDate = this.datas[0].day;
+            this.scrollEvent()
+            this.scrollHorizontalCards();
+            this.redimensionnement();
+            setTimeout(() => {
+              this.isLoading = false;  
+              document.getElementById('myList').setAttribute('style', '');
+            }, 250);
+          }, 250);
+        }
       }
     })
     .then(() => {
@@ -383,6 +466,25 @@ export class EventsPage {
         }
       }
     });
+  }
+
+  datePickerFunc() {
+    this.datePicker.show({
+      date: this.firstDatePicker,
+      minDate: new Date(),
+      allowOldDates: false,
+      mode: 'date',
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_DARK
+    })
+    .then(date => {
+      console.log(date);
+      if(date > new Date()) {
+        this.firstDatePicker = date;
+      }
+      else {
+        this.firstDatePicker = new Date();
+      }
+    })
   }
 
   // --- Others --- //

@@ -90,7 +90,7 @@ export class RegisterphotoPage {
         slowdownfactor: -1
       }; 
       this.navTrans.fade(options);
-      this.navCtrl.setRoot(EventsPage);
+      this.navCtrl.setRoot(EventsPage, {'userInfo': this.user});
     })
   }
 }

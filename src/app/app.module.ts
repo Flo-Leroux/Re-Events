@@ -12,6 +12,7 @@ import { Keyboard } from '@ionic-native/keyboard';
 import { Camera } from '@ionic-native/camera';
 import { Facebook } from '@ionic-native/facebook';
 import { Geolocation } from '@ionic-native/geolocation';
+import { DatePicker } from '@ionic-native/date-picker';
 import * as firebase from 'firebase';
 
 /* Npm's Plugins */
@@ -52,6 +53,7 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     BrowserModule,
     HttpModule,
     PipesModule,
+
     IonicModule.forRoot(ReEvents, {
       scrollAssist: true,
       autoFocusAssist: true 
@@ -76,6 +78,7 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     Camera,
     Facebook,
     Geolocation,
+    DatePicker,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     RegexProvider,
     PermissionsProvider,

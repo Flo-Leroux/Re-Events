@@ -34,7 +34,6 @@ export class LoginPage {
               private reg: RegexProvider,
               private firebase: FirebaseProvider,
               private facebook: FacebookProvider) {
-
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
 
@@ -85,7 +84,7 @@ export class LoginPage {
           slowdownfactor: -1
         }
         this.nativePageTransitions.fade(options);
-        this.navCtrl.setRoot(EventsPage);
+        this.navCtrl.setRoot(EventsPage, {'userInfo': this.user});
       })
       .catch(() => {
         let options2: NativeTransitionOptions = {
@@ -106,7 +105,7 @@ export class LoginPage {
         slowdownfactor: -1
       }
       this.nativePageTransitions.fade(options);
-      this.navCtrl.setRoot(EventsPage);
+      this.navCtrl.setRoot(EventsPage, {'userInfo': this.user});
     })
   }
 
