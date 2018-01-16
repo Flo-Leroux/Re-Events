@@ -37,8 +37,9 @@
                             <p class="title">
                                 {{ event.start_time | myDate:"ddMMMMyy hhmm":" ":" " }}
                             </p>
-                            <div class="action">
-                                <img src="" alt="">
+                            <div class="action" (click)='addCalendar($event)'>
+                                <!-- <img src="" alt=""> -->
+                                Cal
                             </div>
                         </ion-card>
     

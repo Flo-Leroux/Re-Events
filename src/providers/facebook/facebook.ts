@@ -111,7 +111,7 @@ export class FacebookProvider {
       }
 
       // Add Comments here to...
-      this.prepareRequestPlaces(query, center, distance)
+      /* this.prepareRequestPlaces(query, center, distance)
       .then(stmt => {
         console.log('Prepare quest ok');
         return this.api(stmt);
@@ -124,15 +124,15 @@ export class FacebookProvider {
       })
       .then(events => {
         return this.deletePlacesWithoutEvents(events);      
-      })
+      }) */
       // ... Here for testing with local datas
 
       // Remove Comments to...
-/*       this.loadJson('assets/json/eventsBrut.json')
+      this.loadJson('assets/json/eventsBrut.json')
       .then(res => {
         let datas = res.json();
         return this.deletePlacesWithoutEvents(datas);
-      }) */
+      })
       // ... Here for testing with local datas
 
       .then(res => {

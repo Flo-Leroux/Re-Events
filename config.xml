@@ -93,4 +93,5 @@
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To find some events around you" />
     </plugin>
     <plugin name="cordova-plugin-datepicker" spec="^0.9.3" />
+    <plugin name="cordova-plugin-calendar" spec="^5.0.0" />
 </widget>

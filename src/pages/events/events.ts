@@ -8,6 +8,7 @@ import { NavParams } from 'ionic-angular/navigation/nav-params';
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { DatePicker } from '@ionic-native/date-picker';
+import { Calendar } from '@ionic-native/calendar';
 
 // --- Add Pages --- //
 import { RegisterPage } from '../register/register';
@@ -68,6 +69,7 @@ export class EventsPage {
               private navParams: NavParams,
               private nativePageTransitions: NativePageTransitions,
               private datePicker: DatePicker,
+              private calendar: Calendar,
               private animation: AnimationProvider,
               private facebook: FacebookProvider,
               private geolocation: GeolocationProvider,
@@ -485,6 +487,34 @@ export class EventsPage {
         this.firstDatePicker = new Date();
       }
     })
+  }
+
+  addCalendar(e) {
+    console.log('Calendar');
+
+    this.findParentBySelector(e.target, 'ion-item')
+    .then(res => {
+      if(res != null) {
+        this.calendar.hasWritePermission()
+        .then(res => {
+          console.log(res);
+          if(res == true) {
+            let startDate = new Date();
+            let endDate = new Date();
+            endDate.setHours(startDate.getHours() + 2);
+
+            console.log(startDate);
+            console.log(endDate);
+
+            this.calendar.createEventInteractively('Event Test', 'Nancy, France', 'Notes', startDate, endDate);
+          }
+          else {
+            this.calendar.requestWritePermission();
+          }
+        })
+      }
+    })
+
   }
 
   // --- Others --- //
