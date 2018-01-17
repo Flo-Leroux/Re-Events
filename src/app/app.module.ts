@@ -27,6 +27,7 @@ import { LoginPage } from '../pages/login/login';
 import { RegisterPage } from '../pages/register/register';
 import { RegisterphotoPage } from '../pages/registerphoto/registerphoto';
 import { EventsPage } from '../pages/events/events';
+import { DescriptionPage } from '../pages/description/description';
 
 // --- Add Providers --- //
 import { RegexProvider } from '../providers/regex/regex';
@@ -48,7 +49,8 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     LoginPage,
     RegisterPage,
     RegisterphotoPage,
-    EventsPage
+    EventsPage,
+    DescriptionPage
   ],
   imports: [
     BrowserModule,
@@ -69,7 +71,8 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     LoginPage,
     RegisterPage,
     RegisterphotoPage,
-    EventsPage
+    EventsPage,
+    DescriptionPage
   ],
   providers: [
     StatusBar,

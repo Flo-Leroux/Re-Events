@@ -10,7 +10,7 @@ import { EventsPage } from '../pages/events/events';
   templateUrl: 'app.html'
 })
 export class ReEvents {
-  rootPage:any = LoginPage;
+  rootPage:any = EventsPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {

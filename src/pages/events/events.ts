@@ -12,6 +12,7 @@ import { Calendar } from '@ionic-native/calendar';
 
 // --- Add Pages --- //
 import { RegisterPage } from '../register/register';
+import { DescriptionPage } from '../description/description';
 
 // --- Add Providers --- //
 import { AnimationProvider } from '../../providers/animation/animation';
@@ -75,8 +76,11 @@ export class EventsPage {
               private geolocation: GeolocationProvider,
               private firebase: FirebaseProvider) {
 
-    this.user = navParams.get('userInfo');
+    //this.user = navParams.get('userInfo');
 
+    this.user.email = 'test@test.com';
+    this.user.password = 'test1234';
+    
     if(this.user.email) {
       this.firebase.emailLogin(this.user)
       .then(() => {
@@ -529,6 +533,29 @@ export class EventsPage {
 
   }
 
+  getDescription(e) {
+    this.findParentBySelector(e.target, 'ion-item')
+    .then(res => {
+      if(res != null) {
+        const id = res.firstChild.parentNode.getAttribute('id');
+        
+        this.findEventsById(id)
+        .then(res => {
+          let event = this.datas[res];
+          
+          let options: NativeTransitionOptions = {
+            direction: 'left',
+            duration: 500,
+            slowdownfactor: 3,
+          }
+          this.nativePageTransitions.slide(options);
+          console.log(event);
+
+          this.navCtrl.push(DescriptionPage, {'event': event});          
+        });        
+      }      
+    })    
+  }
   // --- Others --- //
 
   private loadJson(): Promise<any> {
