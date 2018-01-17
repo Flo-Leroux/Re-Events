@@ -202,7 +202,7 @@ export class FacebookProvider {
 
     if (composer != "") {
       composer = composer.substring(0, composer.length-1);
-      let stm = 'events?fields=id,name,description,start_time,cover,place&since='+datetime_UNIX+'&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
+      let stm = 'events?fields=id,name,description,start_time,end_time,cover,place&since='+datetime_UNIX+'&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
       return stm;
     }
   }
@@ -303,7 +303,7 @@ export class FacebookProvider {
             location: null,
             img: null,
             start_time: null,
-            etat: 'segmentIMG'
+            link_map: null
           }
 
           event_info.day = event_info.time = new Date(array[i].start_time.replace('T', ' '));
@@ -328,6 +328,7 @@ export class FacebookProvider {
             }
 
             event_info.location = street +', '+ city + ', '+ country;
+            event_info.link_map = encodeURI('https://www.google.com/maps/search/?api=1&query='+event_info.location);
           }
 
           if(array[i].cover) {

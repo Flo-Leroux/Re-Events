@@ -495,18 +495,30 @@ export class EventsPage {
     this.findParentBySelector(e.target, 'ion-item')
     .then(res => {
       if(res != null) {
+
+        const id = res.firstChild.parentNode.getAttribute('id');
+
         this.calendar.hasWritePermission()
         .then(res => {
           console.log(res);
           if(res == true) {
-            let startDate = new Date();
-            let endDate = new Date();
-            endDate.setHours(startDate.getHours() + 2);
 
-            console.log(startDate);
-            console.log(endDate);
+            this.findEventsById(id)
+            .then(res => {
+              let event = this.datas[res];
+              let startDate = event.start_time;
 
-            this.calendar.createEventInteractively('Event Test', 'Nancy, France', 'Notes', startDate, endDate);
+              let endDate: Date;
+              if(event.end_time) {
+                endDate = event.end_time;
+              }
+              else {
+                endDate = new Date();
+                endDate.setHours(startDate.getHours() + 2);
+              }
+              
+              this.calendar.createEventInteractively(event.name, event.location, event.description, startDate, endDate);
+            })
           }
           else {
             this.calendar.requestWritePermission();
@@ -549,5 +561,17 @@ export class EventsPage {
         resolve(cur); //will return null if not found
       }
     });
+  }
+
+  private findEventsById(id: string | number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      for(let i in this.datas) {
+        let tmpId = this.datas[i].id;
+        if(tmpId == id) {
+          resolve(i);
+        }
+      }
+      reject();
+    })
   }
 }

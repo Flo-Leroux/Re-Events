@@ -156,17 +156,25 @@ page-events {
                             white-space: normal !important;
                             border: 1px solid grey;
                             box-sizing: border-box;
+                            position: relative;                                                       
     
+                            .center {
+                                position: absolute;
+                                top: 50%;
+                                transform: translateY(-50%);
+                            }
+
                             .title {
                                 display: inline-block;
                                 width: 84%;
                                 max-width: 80%;
                                 font-weight: bold;
                                 color: black;
+                                margin: auto;
                             }
         
                             .action {
-                                vertical-align: top;                        
+                                // vertical-align: top;                        
                                 display: inline-flex;
                                 flex-direction: column;
                                 list-style: none;
@@ -192,6 +200,15 @@ page-events {
                                             display: none;
                                         }
                                     }
+                                }
+
+                                .icon-calendar,
+                                .icon-map {
+                                    flex: 1;
+                                    font-size: 40px;
+                                    // text-align: center;
+                                    // vertical-align: middle;
+                                    color: color($colors, colorHunt2);
                                 }
                             }
                         }
