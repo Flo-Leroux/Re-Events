@@ -40,6 +40,9 @@ import { GeolocationProvider } from '../providers/geolocation/geolocation';
 // --- Add Pipes --- //
 import { PipesModule } from '../pipes/pipes.module';
 
+// --- Add Directives --- //
+import { ParallaxHeaderDirective } from '../directives/parallax-header/parallax-header';
+
 // --- Add Configs --- //
 import { FIREBASE_CONFIG } from './app.firebase.config';
 
@@ -50,7 +53,9 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     RegisterPage,
     RegisterphotoPage,
     EventsPage,
-    DescriptionPage
+    DescriptionPage,
+
+    ParallaxHeaderDirective
   ],
   imports: [
     BrowserModule,

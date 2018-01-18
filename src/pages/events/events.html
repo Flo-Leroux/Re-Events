@@ -27,7 +27,6 @@
             <ion-item-divider sticky no-lines>{{ event.day | date:"dd-MM-yy" }}</ion-item-divider>
             <ion-item id='{{ event.id }}' (click)='getDescription($event)' (dblclick)='likeEvent($event)' (press)='bookmarkEvent($event)'>
                 <div class='imageDiv'>
-                    <!-- <img src="https://scontent-cdg2-1.xx.fbcdn.net/v/t1.0-9/25395736_1493127934135871_4755177590793565076_n.jpg?oh=d952a23cc75c7119faba93c6fd15e5a7&oe=5AD2B4FB" alt=""> -->
                     <img src="{{ event.img }}" alt="">
                 </div>
     

@@ -4,10 +4,56 @@
 
 page-description {
 
-    ion-card {
+    div#duotone {
+        //background-color: rgb(255, 255, 255) !important;
+        background: linear-gradient(to bottom, color($colors, colorHunt2) 0%,color($colors, colorHunt4) 100%);        
+        padding: 1vh;
 
-        ion-card-header {
-            white-space: normal !important;
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: color($colors, colorHunt1) !important;
+            //background: linear-gradient(to left, color($colors, colorHunt1) 0%,color($colors, colorHunt3) 100%);
+            mix-blend-mode: lighten;
+            //opacity: 0.5;
+        }
+
+        img {
+            filter: grayscale(100%) contrast(1.5)  !important;
+            mix-blend-mode: multiply !important;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            //image-rendering: crisp-edges;
+        }
+    }
+
+    div.main-content {
+        background-color: white !important;
+        width: 100vw !important;
+
+        ion-card {
+            border: 1px solid lightgray;
+            border-radius: 2vw !important;
+            max-width: 85vw !important;
+            box-sizing: border-box;
+            margin: 2.5vh auto !important;
+    
+            ion-card-header {
+                white-space: normal !important;
+            }
+        }
+    
+        div#description {
+            max-width: 80vw !important;
+            box-sizing: border-box;
+            margin: 2.5vh auto !important;
+            text-align: justify;
         }
     }
 

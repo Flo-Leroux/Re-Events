@@ -4,72 +4,74 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-  <ion-navbar></ion-navbar>
+<ion-header >
+  <ion-navbar transparent color='colorHunt1'></ion-navbar>
 </ion-header>
 
 
-<ion-content>
-  <div id="image" fixed>
-    <img src="{{ event.img }}">
+<ion-content parallax-header>
+  <div id="duotone" class="header-image">
+    <img [src]="event.img">
   </div>
 
-  <ion-card>
-    <ion-card-header>
-      {{ event.name }}
-    </ion-card-header>
-    <ion-card-content>
-      <ion-grid>
-        <ion-row>
-          <ion-col col-2>
-            <ion-icon class='icon-calendar' name="md-calendar"></ion-icon>
-          </ion-col>
-          <ion-col col-10>
-            {{ event.start_time | myDate:"ddMMMMyy hhmm":" ":" " }}
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col col-2>
-            <ion-icon class='icon-map' name="md-navigate"></ion-icon>
-          </ion-col>
-          <ion-col col-10>
-            {{ event.location }}
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col col-6>
-            <ion-row>
-              <ion-col col-3>
-                <li class="like" (click)='likeEvent($event)'>
-                  <img src="assets/icons/favorite_border.svg" alt="">
-                  <img src="assets/icons/favorite_black.svg" alt="">
-                </li>
-              </ion-col>
-              <ion-col col-9>
-                Je participe
-              </ion-col>
-            </ion-row>
-          </ion-col>
-          <ion-col col-6>
-            <ion-row>
-              <ion-col col-9>
-                Interessé(e)
-              </ion-col>
-              <ion-col col-3>
-                <li class="bookmark" (click)='bookmarkEvent($event)'>
-                  <img src="assets/icons/bookmark_border.svg" alt="">
-                  <img src="assets/icons/bookmark_black.svg" alt="">
-                </li>
-              </ion-col>
-            </ion-row>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
-
-  <div id="description" [innerHTML]="descriptionHTML">
+  <div class="main-content">
+    <ion-card>
+      <ion-card-header>
+        {{ event.name }}
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-2>
+              <ion-icon class='icon-calendar' name="md-calendar"></ion-icon>
+            </ion-col>
+            <ion-col col-10>
+              {{ event.start_time | myDate:"ddMMMMyy hhmm":" ":" " }}
+            </ion-col>
+          </ion-row>
+  
+          <ion-row>
+            <ion-col col-2>
+              <ion-icon class='icon-map' name="md-navigate"></ion-icon>
+            </ion-col>
+            <ion-col col-10>
+              {{ event.location }}
+            </ion-col>
+          </ion-row>
+  
+          <ion-row>
+            <ion-col col-6>
+              <ion-row>
+                <ion-col col-3>
+                  <li class="like" (click)='likeEvent($event)'>
+                    <img src="assets/icons/favorite_border.svg" alt="">
+                    <img src="assets/icons/favorite_black.svg" alt="">
+                  </li>
+                </ion-col>
+                <ion-col col-9>
+                  Je participe
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <ion-col col-6>
+              <ion-row>
+                <ion-col col-9>
+                  Interessé(e)
+                </ion-col>
+                <ion-col col-3>
+                  <li class="bookmark" (click)='bookmarkEvent($event)'>
+                    <img src="assets/icons/bookmark_border.svg" alt="">
+                    <img src="assets/icons/bookmark_black.svg" alt="">
+                  </li>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  
+    <div id="description" [innerHTML]="descriptionHTML">
+    </div>
   </div>
 </ion-content>

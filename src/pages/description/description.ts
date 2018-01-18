@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { DomSanitizer } from '@angular/platform-browser';
 
 // --- Add Plugins --- //
 /* Ionic's Plugins */
@@ -14,15 +15,16 @@ export class DescriptionPage {
 
   event: any;
   descriptionHTML: any;
+  img: any;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public statusBar: StatusBar,
-              private nativePageTransitions: NativePageTransitions
+              private nativePageTransitions: NativePageTransitions,
+              public san: DomSanitizer
               ) {
     this.event = navParams.get('event');
-    
-    
+
     this.descriptionHTML =  JSON.stringify(this.event.description)
                             .replace(/\\n/g, "<br>")
                             .substr(1)

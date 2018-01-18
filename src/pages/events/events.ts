@@ -115,7 +115,7 @@ export class EventsPage {
     let width = scroll[0].firstElementChild.parentElement.offsetWidth;
 
     for(let i=0; i<scroll.length; i++) {
-      scroll[i].scrollTo(width, 0);
+      //scroll[i].scrollLeft = width;
     }
   }
 
@@ -349,7 +349,7 @@ export class EventsPage {
             this.activeDate = this.datas[0].day;
             this.scrollEvent()
             this.scrollHorizontalCards();
-            this.redimensionnement();
+            //this.redimensionnement();
             setTimeout(() => {
               this.isLoading = false;  
               document.getElementById('myList').setAttribute('style', '');
