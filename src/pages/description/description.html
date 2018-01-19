@@ -1,15 +1,14 @@
-<!--
-  Generated template for the DescriptionPage page.
 
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header >
-  <ion-navbar transparent color='colorHunt1'></ion-navbar>
+<ion-header no-border>
+  <ion-navbar [class.showToolbar]="showToolbar" color="white">
+    <ion-title [hidden]="!showToolbar">
+      {{ event.name }}
+    </ion-title>
+  </ion-navbar>
 </ion-header>
 
 
-<ion-content parallax-header>
+<ion-content parallax-header (ionScroll)="onScroll($event)">
   <div id="duotone" class="header-image">
     <img [src]="event.img">
   </div>
@@ -21,8 +20,8 @@
       </ion-card-header>
       <ion-card-content>
         <ion-grid>
-          <ion-row>
-            <ion-col col-2>
+          <ion-row (click)='addCalendar($event)'>
+            <ion-col col-2 class='col-calendar'>
               <ion-icon class='icon-calendar' name="md-calendar"></ion-icon>
             </ion-col>
             <ion-col col-10>
@@ -30,47 +29,50 @@
             </ion-col>
           </ion-row>
   
+          <a id="link_map" [href]='event.link_map'>
           <ion-row>
-            <ion-col col-2>
+            <ion-col col-2 class='col-map'>
               <ion-icon class='icon-map' name="md-navigate"></ion-icon>
             </ion-col>
             <ion-col col-10>
               {{ event.location }}
             </ion-col>
           </ion-row>
+          </a>
   
           <ion-row>
-            <ion-col col-6>
-              <ion-row>
-                <ion-col col-3>
-                  <li class="like" (click)='likeEvent($event)'>
+            <ion-col col-12>
+              <ion-row (click)='likeEvent($event)'>
+                <ion-col col-2 class='col-like-book'>
+                  <li class="like">
                     <img src="assets/icons/favorite_border.svg" alt="">
                     <img src="assets/icons/favorite_black.svg" alt="">
                   </li>
                 </ion-col>
-                <ion-col col-9>
-                  Je participe
+                <ion-col col-10>
+                  Je participe ou suis interessé(e)
                 </ion-col>
               </ion-row>
             </ion-col>
-            <ion-col col-6>
-              <ion-row>
+<!--             <ion-col col-6>
+              <ion-row (click)='bookmarkEvent($event)'>
                 <ion-col col-9>
                   Interessé(e)
                 </ion-col>
-                <ion-col col-3>
-                  <li class="bookmark" (click)='bookmarkEvent($event)'>
+                <ion-col col-3 class='col-like-book'>
+                  <li class="bookmark">
                     <img src="assets/icons/bookmark_border.svg" alt="">
                     <img src="assets/icons/bookmark_black.svg" alt="">
                   </li>
                 </ion-col>
               </ion-row>
-            </ion-col>
+            </ion-col> -->
           </ion-row>
         </ion-grid>
       </ion-card-content>
     </ion-card>
   
+    <h2>Description de l'événement : </h2>
     <div id="description" [innerHTML]="descriptionHTML">
     </div>
   </div>

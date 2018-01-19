@@ -38,7 +38,6 @@ export class EventsPage {
 
   cityName: string;
 
-
   // --- Variables --- //
   isLoading: boolean = true;
   isError: boolean = false;
@@ -60,7 +59,7 @@ export class EventsPage {
   activeDatas: any = [];
 
   liked: Array<any> = [];
-  bookmarked: Array<any> = [];
+  // bookmarked: Array<any> = [];
 
   nbEventsBeforeReload: number = 5;
 
@@ -115,29 +114,9 @@ export class EventsPage {
     let width = scroll[0].firstElementChild.parentElement.offsetWidth;
 
     for(let i=0; i<scroll.length; i++) {
-      //scroll[i].scrollLeft = width;
+      scroll[i].scrollTo(width, 0);
     }
   }
-
-  redimensionnement(){ 
-    var image = document.getElementsByTagName('img');
-
-    for(var img in image) {
-      let i = parseInt(img);
-
-      var image_width = image.item(i).getBoundingClientRect().width;
-      var image_height = image.item(i).getBoundingClientRect().height; 
-
-      var ratio = image_width/image_height;
-
-      if(ratio >= 1.5) { // Paysage
-        image.item(i).style.height = '100%'; 
-      }
-      else { // Portrait
-        image.item(i).style.width = '100%'; 
-      }
-    }
-  } 
 
   in_array(string, array){
     let result = false;
@@ -284,7 +263,6 @@ export class EventsPage {
     setTimeout(() => {
       this.scrollHorizontalCards();
       this.scrollEvent();
-      this.redimensionnement();
       e.complete();
     }, 200);
 
@@ -349,7 +327,6 @@ export class EventsPage {
             this.activeDate = this.datas[0].day;
             this.scrollEvent()
             this.scrollHorizontalCards();
-            //this.redimensionnement();
             setTimeout(() => {
               this.isLoading = false;  
               document.getElementById('myList').setAttribute('style', '');
@@ -357,8 +334,6 @@ export class EventsPage {
           }, 250);
         }
       }
-    })
-    .then(() => {
     });
   }
 
@@ -418,7 +393,7 @@ export class EventsPage {
       });
   }
   
-  bookmarkEvent(e) {
+  /* bookmarkEvent(e) {
     console.log('Press Event');
 
     this.findParentBySelector(e.target, 'ion-item')
@@ -472,7 +447,7 @@ export class EventsPage {
         }
       }
     });
-  }
+  } */
 
   datePickerFunc() {
     this.datePicker.show({
@@ -530,7 +505,6 @@ export class EventsPage {
         })
       }
     })
-
   }
 
   getDescription(e) {

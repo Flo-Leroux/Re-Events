@@ -41,7 +41,7 @@ import { GeolocationProvider } from '../providers/geolocation/geolocation';
 import { PipesModule } from '../pipes/pipes.module';
 
 // --- Add Directives --- //
-import { ParallaxHeaderDirective } from '../directives/parallax-header/parallax-header';
+import { DirectivesModule } from '../directives/directives.module';
 
 // --- Add Configs --- //
 import { FIREBASE_CONFIG } from './app.firebase.config';
@@ -53,14 +53,13 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     RegisterPage,
     RegisterphotoPage,
     EventsPage,
-    DescriptionPage,
-
-    ParallaxHeaderDirective
+    DescriptionPage
   ],
   imports: [
     BrowserModule,
     HttpModule,
     PipesModule,
+    DirectivesModule,
 
     IonicModule.forRoot(ReEvents, {
       scrollAssist: true,

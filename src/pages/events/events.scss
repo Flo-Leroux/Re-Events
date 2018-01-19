@@ -48,6 +48,8 @@ page-events {
     }
 
     ion-content:not(#content-sideMenu) {
+        // background-color: gray;
+
         * {
             margin: 0 !important;
             padding: 0 !important;
@@ -81,6 +83,7 @@ page-events {
             left: 0;
             width: 100vw;
             max-width: 100vw;
+            background-color: transparent !important;
 
             ion-item-divider {
                 background-color: transparent !important;
@@ -89,18 +92,15 @@ page-events {
                 color: color($colors, colorHunt2) !important;
                 font-weight: bolder;
 
-                &.js-Header {
-                    color: red !important;
-                    z-index: 13 !important;
-                }
-
                 ion-label {
                     margin: 3vh !important;
                 }
             }
 
             ion-item {
-                box-sizing: content-box;                    
+                background-color: transparent !important;        
+                box-sizing: content-box;           
+                position: relative;         
 
                 ion-label {
                     box-sizing: content-box;
@@ -110,17 +110,34 @@ page-events {
                     box-sizing: content-box;
                     width: 90vw;
                     height: 30vh;
-                    overflow: hidden;
                     border-radius: 3vw;
                     margin-left: auto !important;
                     margin-right: auto !important;
-                    background-color: lightgray;
+                    background: linear-gradient(to left, color($colors, colorHunt2) 0%,color($colors, colorHunt4) 100%);        
+                    padding: 1vh;
+                    overflow: hidden;
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        border-radius: 3vw;
+                        margin-left: 50% !important;
+                        transform: translateX(-50%);
+                        width: 90vw;
+                        height: 30vh;
+                        background-color: color($colors, colorHunt1) !important;
+                        mix-blend-mode: lighten;
+                    }
 
                     img { 
                         width: 100%;
                         height: 100%;
                         object-fit: cover;
                         display: block;
+                        filter: grayscale(1) contrast(.7) brightness(1.3) !important;
+                        mix-blend-mode: multiply !important;
                     }
                 }
 
@@ -146,47 +163,42 @@ page-events {
                             max-width: 75vw;
                             max-height: 13vh;                        
                             height: 13vh;                        
-                            padding: 1% 1% !important;
+                            padding: 1% 2vw !important;
                             margin: auto !important;
                             border-radius: 2vw !important;
                             white-space: normal !important;
                             border: 1px solid grey;
                             box-sizing: border-box;
-                            position: relative;                                                       
+                            position: relative;
     
-                            .center {
+                            ion-grid {
+                                max-height: 100% !important;
                                 position: absolute;
                                 top: 50%;
                                 transform: translateY(-50%);
                             }
 
                             .title {
-                                display: inline-block;
-                                width: 84%;
-                                max-width: 80%;
-                                font-weight: bold;
-                                color: black;
-                                margin: auto;
+                                position: relative;
+                                
+                                p {
+                                    font-weight: bold;
+                                    color: black;
+                                    position: absolute;
+                                    top: 50%;
+                                    transform: translateY(-50%);
+                                }
                             }
         
                             .action {
-                                // vertical-align: top;                        
-                                display: inline-flex;
-                                flex-direction: column;
-                                list-style: none;
-                                width: 15%;
-                                padding: 4%;
-                                margin: 0 !important;
-                                padding: 0 !important;
-                                
-                                .like,
-                                .bookmark {
-                                    flex: 1;
+                                max-height: 100% !important;
+                                text-align: center;
+
+                                .like
+                                /* .bookmark */ {
         
                                     img {
-                                        margin-left: auto !important;
-                                        margin-right: auto !important;
-                                        max-width: 75%;
+                                        max-height: 6vh !important;
 
                                         &:first-of-type {
                                             filter: invert(0.5);
@@ -202,8 +214,6 @@ page-events {
                                 .icon-map {
                                     flex: 1;
                                     font-size: 40px;
-                                    // text-align: center;
-                                    // vertical-align: middle;
                                     color: color($colors, colorHunt2);
                                 }
                             }
@@ -212,27 +222,18 @@ page-events {
                 }
                 
                 .action_effect {
-                    vertical-align: top;                        
-                    display: inline-flex;
-                    flex-direction: column;
-                    list-style: none;
-                    width: 50%;
-                    padding: 4%;
-                    margin: auto !important;
-                    padding: 0 !important;
                     position: absolute;
                     top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    pointer-events: none;
+                    left: 50%;
+                    transform: translateX(-25%);
+                    width: 100vw !important;
 
                     .like,
                     .bookmark {
-                        flex: 1;
                         display: none;
 
                         img {
+                            width: 50vw;
                             max-width: 100%;
                         }
                     }

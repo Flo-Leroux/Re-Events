@@ -25,63 +25,76 @@
     <ion-list id='myList' no-lines *ngIf='isFinished' style='opacity: 0 !important;'>
         <ion-item-group *ngFor="let event of datas">
             <ion-item-divider sticky no-lines>{{ event.day | date:"dd-MM-yy" }}</ion-item-divider>
-            <ion-item id='{{ event.id }}' (click)='getDescription($event)' (dblclick)='likeEvent($event)' (press)='bookmarkEvent($event)'>
+            <ion-item no-border id='{{ event.id }}' (click)='getDescription($event)' (press)='likeEvent($event)'> <!-- (press)='bookmarkEvent($event)' -->
                 <div class='imageDiv'>
                     <img src="{{ event.img }}" alt="">
                 </div>
     
+                <div class="action_effect">
+                    <div class="like">
+                        <img src="assets/icons/favorite_black.svg" alt="">
+                    </div>
+                </div>
+                    <!-- <li class="bookmark">
+                        <img src="assets/icons/bookmark_black.svg" alt="">
+                    </li> -->
+
                 <ion-scroll scrollX='true' class='test'>
                     <div class="cardsCollection">
                         <ion-card class="card1">
-                            <div class="center">
-                                <p class="title">
-                                    {{ event.start_time | myDate:"ddMMMMyy hhmm":" ":" " }}
-                                </p>
-                                <div class="action" (click)='addCalendar($event)'>
-                                    <ion-icon class='icon-calendar' name="md-calendar"></ion-icon>
-                                </div>
-                            </div>
+                            <ion-grid>
+                                <ion-row  class="center">
+                                    <ion-col col-9 class="title">
+                                        <p> {{ event.start_time | myDate:"ddMMMMyy hhmm":" ":" " }} </p>
+                                    </ion-col>
+
+                                    <ion-col col-3 class="action" (click)='addCalendar($event)'>
+                                        <ion-icon class='icon-calendar' name="md-calendar"></ion-icon>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
                         </ion-card>
     
                         <ion-card class='card2'>
-                            <div class="center">
-                                <p class="title">
-                                    {{ event.name }}
-                                </p>
-                                <ul class="action">
-                                    <li class="like" (click)='likeEvent($event)'>
-                                        <img src="assets/icons/favorite_border.svg" alt="">
-                                        <img src="assets/icons/favorite_black.svg" alt="">
-                                    </li>
-                                    <li class="bookmark" (click)='bookmarkEvent($event)'>
-                                        <img src="assets/icons/bookmark_border.svg" alt="">
-                                        <img src="assets/icons/bookmark_black.svg" alt="">
-                                    </li>
-                                </ul>
-                            </div>
+                            <ion-grid>
+                                <ion-row class="center">
+                                    <ion-col col-9 class="title">
+                                        <p> {{ event.name }} </p>
+                                    </ion-col>
+
+                                    <ion-col col-3 class="action" (click)='likeEvent($event)'>
+                                        <div class="like">
+                                            <img src="assets/icons/favorite_border.svg" alt="">
+                                            <img src="assets/icons/favorite_black.svg" alt="">
+                                        </div>
+                                        <!-- <ion-row class="like" (click)='likeEvent($event)'> -->
+                                        <!-- </ion-row>
+                                        <ion-row class="bookmark" (click)='bookmarkEvent($event)'>
+                                            <img src="assets/icons/bookmark_border.svg" alt="">
+                                            <img src="assets/icons/bookmark_black.svg" alt="">
+                                        </ion-row> -->
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
                         </ion-card>
                         
                         <ion-card class="card3">
-                            <div class="center">
-                                <p class="title">
-                                    {{ event.location }}
-                                </p>
-                                <a class='action' href='{{ event.link_map }}'>
-                                    <ion-icon class='icon-map' name="md-navigate"></ion-icon>
-                                </a>
-                            </div>
+                            <ion-grid>
+                                <ion-row class="center">
+                                    <ion-col col-9 class="title">
+                                        <p> {{ event.location }} </p>
+                                    </ion-col>
+
+                                    <ion-col col-3 class='action'>
+                                        <a href='{{ event.link_map }}'>
+                                            <ion-icon class='icon-map' name="md-navigate"></ion-icon>
+                                        </a>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
                         </ion-card>
                     </div>
                 </ion-scroll>
-    
-                <ul class="action_effect">
-                    <li class="like">
-                        <img src="assets/icons/favorite_black.svg" alt="">
-                    </li>
-                    <li class="bookmark">
-                        <img src="assets/icons/bookmark_black.svg" alt="">
-                    </li>
-                </ul>
             </ion-item>
         </ion-item-group>
     </ion-list>
