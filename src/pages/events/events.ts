@@ -1,5 +1,5 @@
 import { Component, Injectable, ViewChild } from '@angular/core';
-import { NavController, Content } from 'ionic-angular';
+import { NavController, Content, Platform } from 'ionic-angular';
 import { Http } from '@angular/http';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
 
@@ -73,7 +73,8 @@ export class EventsPage {
               private animation: AnimationProvider,
               private facebook: FacebookProvider,
               private geolocation: GeolocationProvider,
-              private firebase: FirebaseProvider) {
+              private firebase: FirebaseProvider,
+              private platform: Platform) {
 
     //this.user = navParams.get('userInfo');
 
@@ -93,6 +94,17 @@ export class EventsPage {
     // set status bar to white
     this.statusBar.styleLightContent();
     // this.statusBar.backgroundColorByHexString('#000000DD');
+
+    this.platform.ready().then(() => {    
+      this.platform.pause.subscribe(() => {
+          console.log('[INFO] App paused');
+      });
+
+      this.platform.resume.subscribe(() => {
+          console.log('[INFO] App resumed');
+      });
+    });
+
   }
 
   // --- App Life State --- //
@@ -312,6 +324,7 @@ export class EventsPage {
         }, 5000);
 
         this.datas = events;
+        
         this.isFinished = true;    
         
         if(refresher) {
@@ -530,6 +543,7 @@ export class EventsPage {
       }      
     })    
   }
+  
   // --- Others --- //
 
   private loadJson(): Promise<any> {

@@ -28,6 +28,8 @@ import { RegisterPage } from '../pages/register/register';
 import { RegisterphotoPage } from '../pages/registerphoto/registerphoto';
 import { EventsPage } from '../pages/events/events';
 import { DescriptionPage } from '../pages/description/description';
+import { ProfilePage } from '../pages/profile/profile';
+import { PopoverProfilePage } from '../pages/popover-profile/popover-profile';
 
 // --- Add Providers --- //
 import { RegexProvider } from '../providers/regex/regex';
@@ -53,7 +55,9 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     RegisterPage,
     RegisterphotoPage,
     EventsPage,
-    DescriptionPage
+    DescriptionPage,
+    ProfilePage,
+    PopoverProfilePage
   ],
   imports: [
     BrowserModule,
@@ -76,7 +80,9 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     RegisterPage,
     RegisterphotoPage,
     EventsPage,
-    DescriptionPage
+    DescriptionPage,
+    ProfilePage,
+    PopoverProfilePage
   ],
   providers: [
     StatusBar,
