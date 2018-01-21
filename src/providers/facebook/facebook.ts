@@ -72,6 +72,23 @@ export class FacebookProvider {
     });
   }
 
+  public logout(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.fb.getLoginStatus()
+      .then(res => {
+        if(res == 'connected') {
+          return this.fb.logout();
+        }
+        else {
+          reject();
+        }
+      })
+      .then(() => {
+        resolve();
+      })
+    });
+  }
+
   /**
    * It is the method to access to Facebook Graph API
    * @param {string} request 

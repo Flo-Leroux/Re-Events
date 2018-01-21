@@ -5,10 +5,11 @@ import { NavController } from 'ionic-angular';
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add Pages --- //
 import { RegisterPage } from '../register/register';
-import { EventsPage } from '../events/events';
+import { TabsPage } from '../tabs/tabs';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
@@ -31,9 +32,17 @@ export class LoginPage {
   constructor(public navCtrl: NavController,
               private statusBar: StatusBar,
               private nativePageTransitions: NativePageTransitions,
+              private nativeStorage: NativeStorage,
               private reg: RegexProvider,
               private firebase: FirebaseProvider,
               private facebook: FacebookProvider) {
+    
+    this.nativeStorage.getItem('USER')
+    .then(res => {
+      this.user = res;
+      console.log(this.user);
+      this.login();
+    })
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
 
@@ -75,7 +84,7 @@ export class LoginPage {
   }
 
   login() {
-    if(this.password==true && this.email==true) {
+    if(this.password==true && this.email==true || this.user != null) {
       
       this.firebase.emailLogin(this.user)
       .then(() => {
@@ -84,7 +93,7 @@ export class LoginPage {
           slowdownfactor: -1
         }
         this.nativePageTransitions.fade(options);
-        this.navCtrl.setRoot(EventsPage, {'userInfo': this.user});
+        this.navCtrl.setRoot(TabsPage, {'userInfo': this.user});
       })
       .catch(() => {
         let options2: NativeTransitionOptions = {
@@ -105,7 +114,7 @@ export class LoginPage {
         slowdownfactor: -1
       }
       this.nativePageTransitions.fade(options);
-      this.navCtrl.setRoot(EventsPage, {'userInfo': this.user});
+      this.navCtrl.setRoot(TabsPage, {'userInfo': this.user});
     })
   }
 

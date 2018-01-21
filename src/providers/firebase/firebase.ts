@@ -16,8 +16,9 @@ import { FIREBASE_CONFIG } from '../../app/app.firebase.config';
 @Injectable()
 export class FirebaseProvider {
 
-  constructor(private toastCtrl: ToastController) {
+  user = {} as User;
 
+  constructor(private toastCtrl: ToastController) {
     firebase.initializeApp(FIREBASE_CONFIG);
   }
 
@@ -53,9 +54,21 @@ export class FirebaseProvider {
     }
   }
 
-  upload_Profil_Picture(userId: string, image: any): void {
-    firebase.storage().ref(`users/${userId}/profile.jpg`)
-                      .putString(image, 'data_url');
+  upload_Profil_Picture(userId: string, image: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if(image == 'assets/imgs/persona.jpg') {
+        resolve();
+      } 
+      else {
+        firebase.storage().ref(`users/${userId}/profile.jpg`).putString(image, 'data_url')
+        .then(res => {
+          resolve(res.downloadURL);
+        })
+        .catch(err => {
+          reject(err);
+        })
+      }
+    });
   }
 
   lostPassword(user: User) {
@@ -106,10 +119,10 @@ export class FirebaseProvider {
     return new Promise((resolve, reject) => {
       firebase.auth().signInWithEmailAndPassword(user.email, user.password)
       .then(res => {
-        resolve();
+        resolve(res);
       })
       .catch(err => {
-        reject();
+        reject(err);
       });
     });
   }
@@ -121,6 +134,79 @@ export class FirebaseProvider {
       firebase.database().ref(`users/${uid}/firstname`).on('value', (snap) => {
         name = snap.val();
         resolve(name);
+      })
+    });
+  }
+
+  emailRegister(user: User): Promise<any> {
+    return new Promise((resolve, reject) => {
+      firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        reject(err);
+      })
+    });
+  }
+
+  getStatus(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let user = firebase.auth().currentUser;
+      if(user != null) {
+        resolve(user);
+      }
+      else {
+        reject();
+      }
+    });
+  }
+
+  logout(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getStatus()
+      .then(user => {
+        firebase.auth().signOut()
+        .then(() => {
+          resolve();
+        })
+      })
+    });
+  }
+
+  setUserInfo(user: User): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const currentUser = firebase.auth().currentUser;
+
+      console.log('Set User Info');
+      if(currentUser != null) {
+        currentUser.updateProfile({
+          displayName: user.prenom+' '+user.nom,
+          photoURL: user.pictureURL
+        })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        })
+      }
+      else {
+        reject();
+      }
+    });
+  }
+
+  sendEmailVerification(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const currentUser = firebase.auth().currentUser;
+
+      currentUser.sendEmailVerification()
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        reject(err);
       })
     });
   }

@@ -1,0 +1,56 @@
+
+<ion-header>
+  <div id="rectBackground"></div>
+
+  <ion-navbar transparent>
+    <ion-title>Mes info's</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6 id="profileIMG">
+        <img src="../../assets/imgs/persona.jpg">
+      </ion-col>
+
+      <ion-col col-6 id="profileName">
+        <ion-row>
+          <p>Florian</p>
+        </ion-row>
+        <ion-row>
+          <p>Leroux</p>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div id="description">
+    <h2>Ma petite bio' :</h2>
+
+    <form>
+      <ion-item>
+        <ion-textarea rows="6" cols="50" maxlength='120' placeholder='Es-tu capable de te présenter en 120 caractères ?' (keydown)='countCharBio()' [(ngModel)]='biographie' name='biographie'>
+        </ion-textarea>
+      </ion-item>
+    </form>
+    <p>{{ biographieCount }}/120</p>
+  </div>
+  
+  <form id='statut'>
+    <ion-item no-lines>
+      <ion-label>Mon statut :</ion-label>
+      <ion-input maxlength='20' placeholder='Etudiant' [(ngModel)]='statut' name='statut'></ion-input>
+    </ion-item>
+  </form>
+
+  <ion-item no-lines id='birthday'>
+    <h2><span>Date de naissance :</span> {{ user.birthday | date:"dd/MM/yyyy" }}</h2>
+  </ion-item>
+
+  <button ion-button round>
+    Mettre à jour
+  </button>
+</ion-content>

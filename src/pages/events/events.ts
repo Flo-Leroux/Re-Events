@@ -9,6 +9,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { DatePicker } from '@ionic-native/date-picker';
 import { Calendar } from '@ionic-native/calendar';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add Pages --- //
 import { RegisterPage } from '../register/register';
@@ -70,24 +71,31 @@ export class EventsPage {
               private nativePageTransitions: NativePageTransitions,
               private datePicker: DatePicker,
               private calendar: Calendar,
+              private nativeStorage: NativeStorage,
               private animation: AnimationProvider,
               private facebook: FacebookProvider,
               private geolocation: GeolocationProvider,
               private firebase: FirebaseProvider,
               private platform: Platform) {
 
-    //this.user = navParams.get('userInfo');
-
-    this.user.email = 'test@test.com';
-    this.user.password = 'test1234';
     
-    if(this.user.email) {
-      this.firebase.emailLogin(this.user)
-      .then(() => {
-        this.getUserName();
-      })
-    }
+    this.nativeStorage.getItem('USER')
+    .then(res => {
+      this.user = res;
 
+      if(this.user.email) {
+        firebase.emailLogin(this.user)
+        .then(() => {
+          this.getUserName();
+        })
+      }
+    })
+
+    console.log(this.user);
+    
+    // this.user.email = 'test@test.com';
+    // this.user.password = 'test1234';
+    
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
 
@@ -274,7 +282,7 @@ export class EventsPage {
 
     setTimeout(() => {
       this.scrollHorizontalCards();
-      this.scrollEvent();
+      //this.scrollEvent();
       e.complete();
     }, 200);
 
@@ -338,7 +346,7 @@ export class EventsPage {
           setTimeout(() => {
             console.log('Events ok');
             this.activeDate = this.datas[0].day;
-            this.scrollEvent()
+            //this.scrollEvent()
             this.scrollHorizontalCards();
             setTimeout(() => {
               this.isLoading = false;  

@@ -10,18 +10,14 @@ import { NavParams } from 'ionic-angular/navigation/nav-params';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
-
-/* Npm's Plugins */
-import { AngularFireAuth } from 'angularfire2/auth';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
 
-// --- Add Pages --- //
-
 // --- Add Providers --- //
 import { FirebaseProvider } from '../../providers/firebase/firebase';
-import { EventsPage } from '../events/events';
+import { TabsPage } from '../tabs/tabs';
 
 @Component({
   selector: 'page-registerphoto',
@@ -37,8 +33,8 @@ export class RegisterphotoPage {
               public navParams: NavParams,
               public navTrans:NativePageTransitions,
               private statusBar: StatusBar,
-              private aFauth : AngularFireAuth,
-              private firebaseProvid: FirebaseProvider,
+              private firebase: FirebaseProvider,
+              private nativeStorage: NativeStorage,
               private camera: Camera) {
     this.user = navParams.get('userInfo');
 
@@ -48,9 +44,6 @@ export class RegisterphotoPage {
     // set status bar to white
     this.statusBar.styleLightContent();
     // this.statusBar.backgroundColorByHexString('#000000DD');
-  }
-
-  ionViewDidEnter() {    
   }
 
   selectImage(){
@@ -67,30 +60,41 @@ export class RegisterphotoPage {
     this.camera.getPicture(cameraOptions)
     .then(data =>{
       if(data.length==0) {
-        this.imgPath = './assets/imgs/persona.jpg';
+        this.imgPath = 'assets/imgs/persona.jpg';
       }
       else {
         this.imgPath 	= "data:image/png;base64," + data;
       }
     })
     .catch(err => {
-      this.imgPath = './assets/imgs/persona.jpg';
+      this.imgPath = 'assets/imgs/persona.jpg';
     })       
   }
 
-  async register() {
-    this.aFauth.auth.createUserWithEmailAndPassword(this.user.email, this.user.password)
+  register() {
+    this.firebase.emailRegister(this.user)
     .then(res => {      
-      this.firebaseProvid.upload_Profil_Picture(res.uid, this.imgPath);
-      this.firebaseProvid.write_User_Infos(res.uid, this.user);
+      return Promise.all([res.uid, this.firebase.upload_Profil_Picture(res.uid, this.imgPath)]);
+    })
+    .then(([uid, url]) => {
+      this.user.pictureURL = url;
+      return this.firebase.write_User_Infos(uid, this.user);
     })
     .then(res => {
+      return this.firebase.sendEmailVerification();
+    })
+    .then(res => {
+      console.log('USER INFOS');
+      console.log(this.user);
+      
+      this.nativeStorage.setItem('USER', this.user);
+
       let options: NativeTransitionOptions = {
         duration: 800,
         slowdownfactor: -1
       }; 
       this.navTrans.fade(options);
-      this.navCtrl.setRoot(EventsPage, {'userInfo': this.user});
+      this.navCtrl.setRoot(TabsPage, {'userInfo': this.user});
     })
   }
 }

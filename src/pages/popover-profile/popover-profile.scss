@@ -13,3 +13,28 @@ page-popover-profile {
         }
     }
 }
+
+ion-alert {
+
+    div.alert-wrapper {
+        // background: linear-gradient(to top, color($colors, colorHunt1) 0%,color($colors, colorHunt2) 100%) !important;
+        
+        * {
+            color: color($colors, colorHunt1) !important;
+        }
+
+        div.alert-message {
+            font-size: 1.3em !important;
+            padding-top: 2vh;
+        }
+
+        div.alert-button-group {
+            * {
+                // border: none !important;
+            }
+
+            button {
+            }
+        }
+    }
+}

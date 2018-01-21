@@ -14,6 +14,7 @@ import { Facebook } from '@ionic-native/facebook';
 import { Geolocation } from '@ionic-native/geolocation';
 import { DatePicker } from '@ionic-native/date-picker';
 import { Calendar } from '@ionic-native/calendar';
+import { NativeStorage } from '@ionic-native/native-storage';
 import * as firebase from 'firebase';
 
 /* Npm's Plugins */
@@ -30,6 +31,8 @@ import { EventsPage } from '../pages/events/events';
 import { DescriptionPage } from '../pages/description/description';
 import { ProfilePage } from '../pages/profile/profile';
 import { PopoverProfilePage } from '../pages/popover-profile/popover-profile';
+import { EditProfilePage } from '../pages/edit-profile/edit-profile';
+import { TabsPage } from '../pages/tabs/tabs';
 
 // --- Add Providers --- //
 import { RegexProvider } from '../providers/regex/regex';
@@ -57,7 +60,9 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     EventsPage,
     DescriptionPage,
     ProfilePage,
-    PopoverProfilePage
+    PopoverProfilePage,
+    EditProfilePage,
+    TabsPage
   ],
   imports: [
     BrowserModule,
@@ -67,7 +72,10 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
 
     IonicModule.forRoot(ReEvents, {
       scrollAssist: true,
-      autoFocusAssist: true 
+      autoFocusAssist: true,
+      tabsHideOnSubPages: true,
+      tabsPlacement: 'bottom',
+      backButtonText: 'Retour'
     }),
     AngularFireModule.initializeApp(FIREBASE_CONFIG),
     AngularFireDatabaseModule,
@@ -82,7 +90,9 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     EventsPage,
     DescriptionPage,
     ProfilePage,
-    PopoverProfilePage
+    PopoverProfilePage,
+    EditProfilePage,
+    TabsPage
   ],
   providers: [
     StatusBar,
@@ -94,6 +104,7 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     Geolocation,
     DatePicker,
     Calendar,
+    NativeStorage,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     RegexProvider,
     PermissionsProvider,
