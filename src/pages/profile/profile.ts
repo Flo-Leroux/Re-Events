@@ -6,6 +6,7 @@ import { Http } from '@angular/http';
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add Pages --- //
 import { PopoverProfilePage } from '../../pages/popover-profile/popover-profile';
@@ -30,6 +31,8 @@ export class ProfilePage {
   showToolbar: boolean = false;
   imgHeight: any;
 
+  pictureURL: string;
+
   jsonPATH: string = 'assets/json/eventsOrganised.json';
   datas: JSON;
 
@@ -39,18 +42,25 @@ export class ProfilePage {
               private nativePageTransitions: NativePageTransitions,
               private http: Http,
               private firebase: FirebaseProvider,
+              private nativeStorage: NativeStorage,
               public ref: ChangeDetectorRef,
               public popoverCtrl: PopoverController) {
+
+    console.log('Profile Enter Construct');
     
-    this.user.email = 'test@test.com';
-    this.user.password = 'test1234';
-    
-    if(this.user.email) {
-      this.firebase.emailLogin(this.user)
-    }
+    this.nativeStorage.getItem('USER')
+    .then(res => {
+      this.user = res;
+      if(this.user.pictureURL) {
+        this.pictureURL = this.user.pictureURL;
+      }
+      else {
+        this.pictureURL = 'assets/imgs/persona.jpg';
+      }
+    })
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.imgHeight =  document.getElementById('duotone').offsetTop + 
                       document.getElementById('duotone').offsetHeight -
                       document.documentElement.clientHeight * 0.1;
@@ -67,6 +77,16 @@ export class ProfilePage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
+
+    this.navCtrl.viewDidEnter.toPromise()
+    .then(res => {
+      console.log('Profile Enter');
+      
+      return this.nativeStorage.getItem('USER')
+    })
+    .then(res => {
+      this.user = res;
+    })
 
     this.loadJson()
     .then(res => {

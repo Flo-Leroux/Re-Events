@@ -5,6 +5,7 @@ import { NavController, NavParams, AlertController } from 'ionic-angular';
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add PAges --- //
 import { LoginPage } from '../login/login';
@@ -14,16 +15,22 @@ import { EditProfilePage } from '../edit-profile/edit-profile';
 import { FacebookProvider } from '../../providers/facebook/facebook';
 import { FirebaseProvider } from '../../providers/firebase/firebase';
 
+// --- Add Models --- //
+import { User } from '../../models/User';
+
 @Component({
   selector: 'page-popover-profile',
   templateUrl: 'popover-profile.html',
 })
 export class PopoverProfilePage {
 
+  user = {} as User;
+
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public alertCtrl: AlertController,
               private statusBar: StatusBar,
+              private nativeStorage: NativeStorage,
               private nativePageTransitions: NativePageTransitions,
               private facebook: FacebookProvider,
               private firebase: FirebaseProvider) {
@@ -63,7 +70,10 @@ export class PopoverProfilePage {
               }
             })
             .then(([res, provider]) => {
-              console.log(res);
+              this.nativeStorage.remove('USER');
+              return this.nativeStorage.clear();
+            })
+            .then(() => {
               let options: NativeTransitionOptions = {
                 duration: 500,
                 slowdownfactor: -1

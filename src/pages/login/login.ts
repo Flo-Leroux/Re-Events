@@ -37,12 +37,8 @@ export class LoginPage {
               private firebase: FirebaseProvider,
               private facebook: FacebookProvider) {
     
-    this.nativeStorage.getItem('USER')
-    .then(res => {
-      this.user = res;
-      console.log(this.user);
-      this.login();
-    })
+    this.nativeStorage.clear();
+
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
 
@@ -84,16 +80,28 @@ export class LoginPage {
   }
 
   login() {
-    if(this.password==true && this.email==true || this.user != null) {
+
+    if(this.password==true && this.email==true) {
       
       this.firebase.emailLogin(this.user)
       .then(() => {
+        return this.firebase.getUserInfo();
+      })
+      .then((userInfos) => {
+
+        userInfos.facebook = false;
+        userInfos.email = this.user.email;
+        userInfos.password = this.user.password;
+        
+        console.log(userInfos);
+        this.nativeStorage.setItem('USER', userInfos);
+
         let options: NativeTransitionOptions = {
           duration: 500,
           slowdownfactor: -1
         }
         this.nativePageTransitions.fade(options);
-        this.navCtrl.setRoot(TabsPage, {'userInfo': this.user});
+        this.navCtrl.setRoot(TabsPage);
       })
       .catch(() => {
         let options2: NativeTransitionOptions = {
@@ -109,12 +117,19 @@ export class LoginPage {
   facebookConnect() {
     this.facebook.login()
     .then(res => {
+      return this.firebase.getUserInfo();
+    })
+    .then(userInfos => {
+      this.user.facebook = true;
+
+      this.nativeStorage.setItem('USER', userInfos);
+
       let options: NativeTransitionOptions = {
         duration: 500,
         slowdownfactor: -1
       }
       this.nativePageTransitions.fade(options);
-      this.navCtrl.setRoot(TabsPage, {'userInfo': this.user});
+      this.navCtrl.setRoot(TabsPage);
     })
   }
 

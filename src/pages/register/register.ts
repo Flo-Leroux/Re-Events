@@ -6,6 +6,7 @@ import { NavController, NavParams, ToastController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { NativeStorage } from '@ionic-native/native-storage';
 import * as firebase from 'firebase';
 
 // --- Add Models --- //
@@ -13,7 +14,7 @@ import { User } from '../../models/User';
 
 // --- Add Pages --- //
 import { RegisterphotoPage } from '../registerphoto/registerphoto';
-import { EventsPage } from '../events/events';
+import { TabsPage } from '../tabs/tabs';
 import { LoginPage } from '../login/login';
 
 // --- Add Providers --- //
@@ -45,6 +46,7 @@ export class RegisterPage {
               public toastCtrl: ToastController,
               private statusBar: StatusBar,
               private nativePageTransitions: NativePageTransitions,
+              private nativeStorage: NativeStorage,
               private reg: RegexProvider,
               private firebase: FirebaseProvider,
               private facebook: FacebookProvider,
@@ -167,13 +169,18 @@ export class RegisterPage {
 
   facebookRegister() {
     this.facebook.login()
-    .then(() => {
+    .then(res => {
+
+      this.user.facebook = true;
+
+      this.nativeStorage.setItem('USER', this.user);
+
       let options: NativeTransitionOptions = {
         duration: 800,
         slowdownfactor: -10
       }; 
       this.nativePageTransitions.fade(options);
-      this.navCtrl.setRoot(EventsPage);
+      this.navCtrl.setRoot(TabsPage);
     });
   }
 

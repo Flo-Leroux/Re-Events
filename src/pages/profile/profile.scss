@@ -63,16 +63,21 @@ page-profile {
         background-color: white;
 
         div#profile {
+            background: white;            
+            padding: 3px;
             width: 35vw;
             height: 35vw;
-            border: 3px solid white;
-            border-radius: calc(50vw);
-            overflow: hidden;
+            border-radius: 50vw !important;
+            overflow: hidden !important;
             margin: 0 auto !important;
-            transform: translateY(-55%);
+            transform: translateY(-50%);
 
             img {
+                width: 100%;
+                height: 100%;
                 object-fit: cover;
+                display: block;
+                border-radius: 50vw !important;                    
             }
         }
 
@@ -98,7 +103,7 @@ page-profile {
         div#description {
             width: 80vw;
             margin: 0 auto !important;
-            transform: translateY(-25%);
+            transform: translateY(-5vh);
 
             h2 {
                 font-size: 115%;

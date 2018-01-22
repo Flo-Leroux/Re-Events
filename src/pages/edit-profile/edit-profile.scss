@@ -2,13 +2,13 @@ page-edit-profile {
 
     ion-header {
         
-        div#rectBackground {
+/*         div#rectBackground {
             width: 100vw;
             height: calc(30vh + 16px);
             background: linear-gradient(to bottom, color($colors, colorHunt1) 0%,color($colors, colorHunt2) 100%);
             transform: skewY(8deg) translateY(-10vh);
             position: absolute !important;
-        }
+        } */
 
         ion-navbar {
             margin-top: calc(2vh + 16px) !important;
@@ -26,7 +26,7 @@ page-edit-profile {
     ion-content {
         
         .scroll-content {
-            padding-top: 15vh !important;
+            // padding-top: 15vh !important;
             // margin-bottom: 15vh !important;
             // padding-bottom: 15vh !important;
         }
@@ -48,7 +48,6 @@ page-edit-profile {
                 object-fit: cover;
                 display: block;
                 border-radius: 50vw !important;
-                
             }
         }
 

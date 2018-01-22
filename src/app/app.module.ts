@@ -75,7 +75,7 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
       autoFocusAssist: true,
       tabsHideOnSubPages: true,
       tabsPlacement: 'bottom',
-      backButtonText: 'Retour'
+      backButtonText: ''
     }),
     AngularFireModule.initializeApp(FIREBASE_CONFIG),
     AngularFireDatabaseModule,

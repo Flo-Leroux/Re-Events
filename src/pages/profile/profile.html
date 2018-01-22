@@ -19,31 +19,29 @@
 
   <div class="header-image">
     <div id="duotone">
-      <img src="../../assets/imgs/persona.jpg">
+      <img [src]="pictureURL">
     </div> 
 
     <div id="profile">
-      <img src="../../assets/imgs/persona.jpg">
+      <img [src]="pictureURL">
     </div>
   </div>
 
   <div class="main-content">
     <div id="profileTitle">
-        <h1>Prenom Nom</h1>
-        <p>Etudiant, 21ans</p>
+        <h1>{{ user.firstname }} {{ user.lastname }}</h1>
+        <p [hidden]='!user.statut'>{{ user.statut }}</p>
     </div>
     
-    <div id="description">
+    <div id="description" [hidden]='!user.biography'>
       <h2>Ma petite bio' :</h2>
-      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Curabitur sed dolor nec magna semper volutpat ut non lac
-          us. Nam sed augue in ipsum accumsan venenatis at vitae p
-          urus. Phasellus pulvinar metus.</p>
+      <p>{{ user.biography }}</p>
     </div>
 
     <ion-list id='myList' no-lines style='opacity: 1 !important;'>
       <ion-item-group *ngFor="let event of datas">
         <ion-item no-border id='{{ event.id }}'>
+
           <div class="imageDiv">
             <img src="{{ event.img }}" alt="" (click)="getDescription($event)">
             <div class="action_effect" (click)="dislikeEvent($event)">

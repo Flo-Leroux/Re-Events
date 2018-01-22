@@ -1,8 +1,8 @@
 
-<ion-header>
+<ion-header no-border>
   <div id="rectBackground"></div>
 
-  <ion-navbar transparent>
+  <ion-navbar color='colorHunt2'>
     <ion-title>Mes info's</ion-title>
   </ion-navbar>
 </ion-header>
@@ -12,17 +12,12 @@
 
   <ion-grid>
     <ion-row>
-      <ion-col col-6 id="profileIMG">
-        <img src="../../assets/imgs/persona.jpg">
+      <ion-col col-6 id="profileIMG" (click)='selectImage()'>
+        <img [src]="pictureURL">
       </ion-col>
 
       <ion-col col-6 id="profileName">
-        <ion-row>
-          <p>Florian</p>
-        </ion-row>
-        <ion-row>
-          <p>Leroux</p>
-        </ion-row>
+        <p>{{ user.firstname }} {{ user.lastname }}</p>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -32,11 +27,11 @@
 
     <form>
       <ion-item>
-        <ion-textarea rows="6" cols="50" maxlength='120' placeholder='Es-tu capable de te présenter en 120 caractères ?' (keydown)='countCharBio()' [(ngModel)]='biographie' name='biographie'>
+        <ion-textarea rows="6" cols="50" maxlength='120' placeholder='Es-tu capable de te présenter en 120 caractères ?' (keydown)='countCharBio()' [(ngModel)]='biography' name='biography'>
         </ion-textarea>
       </ion-item>
     </form>
-    <p>{{ biographieCount }}/120</p>
+    <p>{{ biographyCount }}/120</p>
   </div>
   
   <form id='statut'>
@@ -50,7 +45,7 @@
     <h2><span>Date de naissance :</span> {{ user.birthday | date:"dd/MM/yyyy" }}</h2>
   </ion-item>
 
-  <button ion-button round>
+  <button ion-button round (click)='updateProfileDatas()'>
     Mettre à jour
   </button>
 </ion-content>

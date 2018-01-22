@@ -82,7 +82,7 @@ export class EventsPage {
     this.nativeStorage.getItem('USER')
     .then(res => {
       this.user = res;
-
+      console.log(res);
       if(this.user.email) {
         firebase.emailLogin(this.user)
         .then(() => {
@@ -91,7 +91,6 @@ export class EventsPage {
       }
     })
 
-    console.log(this.user);
     
     // this.user.email = 'test@test.com';
     // this.user.password = 'test1234';
@@ -103,7 +102,7 @@ export class EventsPage {
     this.statusBar.styleLightContent();
     // this.statusBar.backgroundColorByHexString('#000000DD');
 
-    this.platform.ready().then(() => {    
+/*     this.platform.ready().then(() => {    
       this.platform.pause.subscribe(() => {
           console.log('[INFO] App paused');
       });
@@ -111,7 +110,7 @@ export class EventsPage {
       this.platform.resume.subscribe(() => {
           console.log('[INFO] App resumed');
       });
-    });
+    }); */
 
   }
 

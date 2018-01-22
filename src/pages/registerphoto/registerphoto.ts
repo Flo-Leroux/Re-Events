@@ -84,9 +84,7 @@ export class RegisterphotoPage {
       return this.firebase.sendEmailVerification();
     })
     .then(res => {
-      console.log('USER INFOS');
-      console.log(this.user);
-      
+      this.user.facebook = false;      
       this.nativeStorage.setItem('USER', this.user);
 
       let options: NativeTransitionOptions = {
@@ -94,7 +92,7 @@ export class RegisterphotoPage {
         slowdownfactor: -1
       }; 
       this.navTrans.fade(options);
-      this.navCtrl.setRoot(TabsPage, {'userInfo': this.user});
+      this.navCtrl.setRoot(TabsPage);
     })
   }
 }

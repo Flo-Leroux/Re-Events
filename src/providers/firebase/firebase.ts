@@ -28,7 +28,8 @@ export class FirebaseProvider {
       firebase.database().ref(`users/${userId}/`).set({
         firstname   : user.prenom,
         lastname    : user.nom,
-        birthday    : user.birthday
+        birthday    : user.birthday,
+        pictureURL  : './assets/imgs/persona.jpg'
       });
     }
     else if(user.pictureURL && !user.birthday) {
@@ -49,7 +50,8 @@ export class FirebaseProvider {
     else {
       firebase.database().ref(`users/${userId}/`).set({
         firstname   : user.prenom,
-        lastname    : user.nom
+        lastname    : user.nom,
+        pictureURL  : './assets/imgs/persona.jpg'
       });
     }
   }
@@ -178,7 +180,6 @@ export class FirebaseProvider {
     return new Promise((resolve, reject) => {
       const currentUser = firebase.auth().currentUser;
 
-      console.log('Set User Info');
       if(currentUser != null) {
         currentUser.updateProfile({
           displayName: user.prenom+' '+user.nom,
@@ -197,6 +198,17 @@ export class FirebaseProvider {
     });
   }
 
+  getUserInfo(): Promise<any> {
+    return new Promise((resolve, reject) => {
+
+      const uid= firebase.auth().currentUser.uid;
+
+      firebase.database().ref(`users/${uid}`).once('value', snap => {
+        resolve(snap.val());
+      })
+    });
+  }
+
   sendEmailVerification(): Promise<any> {
     return new Promise((resolve, reject) => {
       const currentUser = firebase.auth().currentUser;
@@ -209,5 +221,39 @@ export class FirebaseProvider {
         reject(err);
       })
     });
+  }
+
+  updateUserInfo(userKey: string, userValue: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const uid = firebase.auth().currentUser.uid;
+      console.log(uid);
+      firebase.database().ref(`users/${uid}/${userKey}`).set(userValue)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        return this.updateUserInfo2(userKey, userValue);
+      })
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        reject(err);
+      })
+    })
+  }
+
+  updateUserInfo2(userKey: string, userValue: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const uid = firebase.auth().currentUser.uid;
+      console.log(uid);
+      firebase.database().ref(`users/${uid}/${userKey}`).update(userValue)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        reject(err);
+      })
+    })
   }
 }
