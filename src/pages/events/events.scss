@@ -1,8 +1,8 @@
 
 /* .scroll-content {
     overflow: hidden;
-} */
-
+}
+ */
 page-events {
     
     .has-refresher scroll-content {
@@ -141,21 +141,12 @@ page-events {
                     }
                 }
 
-                ion-scroll {
-                    width: 100vw !important;
-                    min-height: 20vh;
+                ion-slides {
                     transform: translateY(-30%);
-                    
-                    .cardsCollection {
-                        width: 300vw;
-                        display: flex;
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        left: 0;
-                        bottom: 0;
-                        box-sizing: border-box;
-                        padding: 0 25% !important;
+
+                    ion-slide {
+                        width: 80vw !important;
+                        min-height: 20vh;
 
                         ion-card {
                             flex: 1;
@@ -195,7 +186,7 @@ page-events {
                                 text-align: center;
 
                                 .like
-                                /* .bookmark */ {
+                                /* .bookmark */  {
         
                                     img {
                                         max-height: 6vh !important;
@@ -220,6 +211,24 @@ page-events {
                         }
                     }
                 }
+
+                /*ion-slides {
+                    width: 100vw !important;
+                    
+                    &.cardsCollection {
+                        width: 300vw;
+                        display: flex;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        left: 0;
+                        bottom: 0;
+                        box-sizing: border-box;
+                        padding: 0 25% !important;
+
+                        
+                    }
+                }*/
                 
                 .action_effect {
                     position: absolute;

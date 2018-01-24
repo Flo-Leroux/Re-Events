@@ -226,34 +226,10 @@ export class FirebaseProvider {
   updateUserInfo(userKey: string, userValue: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const uid = firebase.auth().currentUser.uid;
-      console.log(uid);
-      firebase.database().ref(`users/${uid}/${userKey}`).set(userValue)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(err => {
-        return this.updateUserInfo2(userKey, userValue);
-      })
-      .then(res => {
-        resolve(res);
-      })
-      .catch(err => {
-        reject(err);
-      })
-    })
-  }
-
-  updateUserInfo2(userKey: string, userValue: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const uid = firebase.auth().currentUser.uid;
-      console.log(uid);
-      firebase.database().ref(`users/${uid}/${userKey}`).update(userValue)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(err => {
-        reject(err);
-      })
+      let update = {};
+      update[`users/${uid}/${userKey}`] = userValue;
+      firebase.database().ref().update(update);
+      resolve();
     })
   }
 }

@@ -9,7 +9,7 @@
     </button>
 </ion-header>
 
-<ion-content>
+<ion-content scroll-horizontal-center>
     <ion-refresher no-lines (ionRefresh)="doRefreshGeolocation($event)"></ion-refresher>
 
     <div id='loading' *ngIf='isLoading'>
@@ -25,7 +25,7 @@
     <ion-list id='myList' no-lines *ngIf='isFinished' style='opacity: 0 !important;'>
         <ion-item-group *ngFor="let event of datas">
             <ion-item-divider sticky no-lines>{{ event.day | date:"dd-MM-yy" }}</ion-item-divider>
-            <ion-item no-border id='{{ event.id }}' (click)='getDescription($event)' (press)='likeEvent($event)'> <!-- (press)='bookmarkEvent($event)' -->
+            <ion-item no-border id='{{ event.id }}' (click)='getDescription($event)' (press)='likeEvent($event)'> <!-- (press)='bookmarkEvent($event)'  -->
                 <div class='imageDiv'>
                     <img src="{{ event.img }}" alt="">
                 </div>
@@ -35,12 +35,9 @@
                         <img src="assets/icons/favorite_black.svg" alt="">
                     </div>
                 </div>
-                    <!-- <li class="bookmark">
-                        <img src="assets/icons/bookmark_black.svg" alt="">
-                    </li> -->
 
-                <ion-scroll scrollX='true' class='test'>
-                    <div class="cardsCollection">
+                <ion-slides (ionSlideDidChange)="slideChanged()" loop="true" initialSlide="1" slidesPerView="auto" loopedSlides="3" centeredSlides="true">
+                    <ion-slide>
                         <ion-card class="card1">
                             <ion-grid>
                                 <ion-row  class="center">
@@ -54,7 +51,9 @@
                                 </ion-row>
                             </ion-grid>
                         </ion-card>
-    
+                    </ion-slide>
+
+                    <ion-slide>
                         <ion-card class='card2'>
                             <ion-grid>
                                 <ion-row class="center">
@@ -68,16 +67,18 @@
                                             <img src="assets/icons/favorite_black.svg" alt="">
                                         </div>
                                         <!-- <ion-row class="like" (click)='likeEvent($event)'> -->
-                                        <!-- </ion-row>
+                                        <!-- </ion-row> 
                                         <ion-row class="bookmark" (click)='bookmarkEvent($event)'>
                                             <img src="assets/icons/bookmark_border.svg" alt="">
                                             <img src="assets/icons/bookmark_black.svg" alt="">
-                                        </ion-row> -->
+                                        </ion-row>-->
                                     </ion-col>
                                 </ion-row>
                             </ion-grid>
                         </ion-card>
-                        
+                    </ion-slide>
+                    
+                    <ion-slide>
                         <ion-card class="card3">
                             <ion-grid>
                                 <ion-row class="center">
@@ -93,8 +94,19 @@
                                 </ion-row>
                             </ion-grid>
                         </ion-card>
-                    </div>
-                </ion-scroll>
+                    </ion-slide>
+
+                </ion-slides>
+
+
+
+
+
+
+
+
+
+
             </ion-item>
         </ion-item-group>
     </ion-list>

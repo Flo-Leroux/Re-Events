@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { Component, Output } from '@angular/core';
+import { NavController, NavParams, Events } from 'ionic-angular';
 
 // --- Add Plugins --- //
 /* Ionic's Plugins */
@@ -12,6 +12,7 @@ import { User } from '../../models/User';
 // --- Add Providers --- //
 import { FirebaseProvider } from '../../providers/firebase/firebase';
 import { ProfilePage } from '../profile/profile';
+import { EventEmitter } from '@angular/core/src/event_emitter';
 
 @Component({
   selector: 'page-edit-profile',
@@ -30,6 +31,7 @@ export class EditProfilePage {
 
   constructor(public navCtrl: NavController,
               private firebase: FirebaseProvider,
+              private eventsCtrl: Events,
               private nativeStorage: NativeStorage,
               private camera: Camera,
               public navParams: NavParams) {
@@ -61,31 +63,54 @@ export class EditProfilePage {
 
     if(this.pictureURL != 'assets/imgs/persona.jpg') {
       console.log('UPDATE Picture');
+
+      if(this.statut != "") {
+        console.log('UPDATE statut');
+        this.firebase.updateUserInfo('statut', this.statut);
+        this.user.statut = this.statut;
+      }
+  
+      if(this.biography != "") {
+        console.log('UPDATE biography');
+        this.firebase.updateUserInfo('biography', this.biography);
+        this.user.biography = this.biography;      
+      }
+
       this.firebase.getStatus()
       .then(user => {
-        console.log(user);
         return this.firebase.upload_Profil_Picture(user.uid, this.pictureURL);
       })
       .then(url => {
         this.user.pictureURL = url;
-        this.firebase.updateUserInfo('pictureURL', url);
-        
-        console.log(this.user);
-        this.nativeStorage.setItem('USER', this.user);
+        return this.firebase.updateUserInfo('pictureURL', url);
       })
+      .then(() => {
+        return this.nativeStorage.setItem('USER', this.user)
+      })
+      .then(() => {
+        this.eventsCtrl.publish('userNativeUpdate');
+      });
+    }
+    else {
+      if(this.statut != "") {
+        console.log('UPDATE statut');
+        this.firebase.updateUserInfo('statut', this.statut);
+        this.user.statut = this.statut;
+      }
+  
+      if(this.biography != "") {
+        console.log('UPDATE biography');
+        this.firebase.updateUserInfo('biography', this.biography);
+        this.user.biography = this.biography;      
+      }
+
+      this.nativeStorage.setItem('USER', this.user)
+      .then(() => {
+        this.eventsCtrl.publish('userNativeUpdate');
+      });
     }
 
-    if(this.statut != this.user.statut) {
-      console.log('UPDATE statut');
-      this.firebase.updateUserInfo('statut', this.userDefault.statut);
-    }
 
-    if(this.biography != this.user.biography) {
-      console.log('UPDATE biography');
-      this.firebase.updateUserInfo('biography', this.userDefault.biography);
-    }
-
-    this.nativeStorage.setItem('USER', this.user);
   }
 
   selectImage(){

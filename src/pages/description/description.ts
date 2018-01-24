@@ -59,11 +59,11 @@ export class DescriptionPage {
                       document.getElementsByTagName('ion-navbar').item(0).firstElementChild.parentElement.offsetHeight/2;
   }
 
-  onScroll($event: any){
-    let scrollTop = $event.scrollTop;
+  onScroll(event: any){
+    let scrollTop = event.scrollTop;
     this.showToolbar = scrollTop >= this.imgHeight;
 
-    console.log(this.showToolbar);
+    // console.log(this.showToolbar);
 
     this.ref.detectChanges();
   }

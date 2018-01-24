@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content, PopoverController } from 'ionic-angular';
+import { NavController, NavParams, Content, PopoverController, Events } from 'ionic-angular';
 import { Http } from '@angular/http';
 
 // --- Add Plugins --- //
@@ -39,6 +39,7 @@ export class ProfilePage {
   constructor(public navCtrl: NavController,
               private statusBar: StatusBar,
               private navParams: NavParams,
+              private eventsCtrl: Events,
               private nativePageTransitions: NativePageTransitions,
               private http: Http,
               private firebase: FirebaseProvider,
@@ -47,7 +48,20 @@ export class ProfilePage {
               public popoverCtrl: PopoverController) {
 
     console.log('Profile Enter Construct');
-    
+
+    this.eventsCtrl.subscribe('userNativeUpdate', () => {
+      console.log('USER SUBSCRIBE');
+      this.nativeStorage.getItem('USER')
+      .then(user => {
+        this.user = user;
+        this.pictureURL = this.user.pictureURL;
+      })
+    })
+
+  }
+
+  ionViewWillEnter() {
+    console.log('Profile Enter');
     this.nativeStorage.getItem('USER')
     .then(res => {
       this.user = res;
@@ -61,9 +75,8 @@ export class ProfilePage {
   }
 
   ionViewDidEnter() {
-    this.imgHeight =  document.getElementById('duotone').offsetTop + 
-                      document.getElementById('duotone').offsetHeight -
-                      document.documentElement.clientHeight * 0.1;
+    let h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    this.imgHeight = (28 * h) / 100;
   }
 
   onScroll($event: any){
@@ -129,6 +142,10 @@ export class ProfilePage {
 
   dislikeEvent(e) {
 
+  }
+
+  onReloadUserDatas() {
+    console.log('Reload Datas');
   }
 
   // --- Others --- //

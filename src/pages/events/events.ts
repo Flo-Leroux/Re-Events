@@ -1,5 +1,5 @@
 import { Component, Injectable, ViewChild } from '@angular/core';
-import { NavController, Content, Platform } from 'ionic-angular';
+import { NavController, Content, Platform, Events, Slides } from 'ionic-angular';
 import { Http } from '@angular/http';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
 
@@ -51,8 +51,8 @@ export class EventsPage {
   loadingMessage: string = 'Initialisation';
   errorMessage: string = 'Rrrh ! On n\'arrive pas à te localiser. Active ton GPS et recharge la page ;)'
 
-  @ViewChild(Content)
-  content: Content;
+  @ViewChild(Content) content: Content;
+  @ViewChild(Slides) slides: Slides;
 
   jsonPATH: string = 'assets/json/eventsOrganised.json';
   datas: JSON;
@@ -68,6 +68,7 @@ export class EventsPage {
               private http: Http,
               private statusBar: StatusBar,
               private navParams: NavParams,
+              private eventsCtrl: Events,
               private nativePageTransitions: NativePageTransitions,
               private datePicker: DatePicker,
               private calendar: Calendar,
@@ -77,23 +78,6 @@ export class EventsPage {
               private geolocation: GeolocationProvider,
               private firebase: FirebaseProvider,
               private platform: Platform) {
-
-    
-    this.nativeStorage.getItem('USER')
-    .then(res => {
-      this.user = res;
-      console.log(res);
-      if(this.user.email) {
-        firebase.emailLogin(this.user)
-        .then(() => {
-          this.getUserName();
-        })
-      }
-    })
-
-    
-    // this.user.email = 'test@test.com';
-    // this.user.password = 'test1234';
     
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
@@ -102,7 +86,15 @@ export class EventsPage {
     this.statusBar.styleLightContent();
     // this.statusBar.backgroundColorByHexString('#000000DD');
 
-/*     this.platform.ready().then(() => {    
+    this.eventsCtrl.subscribe('userNativeUpdate', () => {
+      console.log('USER SUBSCRIBE');
+      this.nativeStorage.getItem('USER')
+      .then(user => {
+        this.user = user;
+      })
+    })
+    
+    /*     this.platform.ready().then(() => {    
       this.platform.pause.subscribe(() => {
           console.log('[INFO] App paused');
       });
@@ -117,25 +109,33 @@ export class EventsPage {
   // --- App Life State --- //
 
   ionViewDidLoad() {
-
+    this.nativeStorage.getItem('USER')
+    .then(res => {
+      this.user = res;
+    })
+    this.doRefreshGeolocation();
   }
 
   ionViewWillEnter() {
     console.log('Will Enter')
-    
-    this.doRefreshGeolocation();
+  }
+
+
+  slideChanged() {
+    console.log('Slides Changed');
+    this.slides.startAutoplay();
   }
 
   // --- Design Transformations --- //
 
-  private scrollHorizontalCards() {
+/*   private scrollHorizontalCards() {
     let scroll = document.querySelectorAll('ion-scroll.scroll-x .scroll-content');
     let width = scroll[0].firstElementChild.parentElement.offsetWidth;
 
     for(let i=0; i<scroll.length; i++) {
       scroll[i].scrollTo(width, 0);
     }
-  }
+  } */
 
   in_array(string, array){
     let result = false;
@@ -280,7 +280,7 @@ export class EventsPage {
     }
 
     setTimeout(() => {
-      this.scrollHorizontalCards();
+     // this.scrollHorizontalCards();
       //this.scrollEvent();
       e.complete();
     }, 200);
@@ -346,7 +346,7 @@ export class EventsPage {
             console.log('Events ok');
             this.activeDate = this.datas[0].day;
             //this.scrollEvent()
-            this.scrollHorizontalCards();
+            //this.scrollHorizontalCards();
             setTimeout(() => {
               this.isLoading = false;  
               document.getElementById('myList').setAttribute('style', '');
