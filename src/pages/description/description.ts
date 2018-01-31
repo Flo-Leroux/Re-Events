@@ -29,6 +29,9 @@ export class DescriptionPage {
   likedID: Array<any>;
   likedDATA: Array<any>;
 
+  display1: object;
+  display2: object;
+
   constructor(public navCtrl: NavController, 
               private eventsCtrl: Events,
               public navParams: NavParams,
@@ -46,7 +49,7 @@ export class DescriptionPage {
                             .substr(1)
                             .slice(0, -1);
     
-    this.descriptionHTML =this.regex.urlify(descriptionHTML);
+    this.descriptionHTML = this.regex.urlify(descriptionHTML);
     
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
@@ -66,23 +69,19 @@ export class DescriptionPage {
     this.nativeStorage.getItem('likedID')
     .then(data => {
       this.likedID = data;
-      
-      const border = document.getElementsByClassName('like').item(0)
-                            .getElementsByTagName('img').item(0);
-
-      const black = document.getElementsByClassName('like').item(0)
-                          .getElementsByTagName('img').item(1);
 
       const id = this.event.id;
       const isExist = this.in_array(id, this.likedID);
 
       if(isExist) {
-        black.style.display = 'none';
-        border.style.display = 'block';
+        this.display1 = {'display': 'none'};
+        this.display2 = {'display': 'block'};
       }
     })
     .catch(() => {
       this.likedID = [];
+      this.display1 = {'display': 'block'};
+      this.display2 = {'display': 'none'};
     });
 
     this.nativeStorage.getItem('likedDATA')
@@ -111,19 +110,13 @@ export class DescriptionPage {
         
         if(res != null) {          
           const effect = res.getElementsByClassName('like').item(0);
-  
-          const border = res.getElementsByClassName('like').item(0)
-                            .getElementsByTagName('img').item(0);
-  
-          const black = res.getElementsByClassName('like').item(0)
-                            .getElementsByTagName('img').item(1);
 
           const id = this.event.id;
           const isExist = this.in_array(id, this.likedID);
           
           if(isExist) {
-            black.style.display = 'none';
-            border.style.display = 'block';
+            this.display1 = {'display': 'block'};
+            this.display2 = {'display': 'none'};
             let index = this.likedID.indexOf(id);
 
             if(index!=-1) {
@@ -134,8 +127,8 @@ export class DescriptionPage {
             }
           }
           else {
-            border.style.display = 'none';
-            black.style.display = 'block';
+            this.display1 = {'display': 'none'};
+            this.display2 = {'display': 'block'};
 
             this.likedID.push(id);
             this.likedDATA.push(this.event);

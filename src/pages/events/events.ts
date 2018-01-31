@@ -63,6 +63,7 @@ export class EventsPage {
   likedDATA: Array<any> = [];
 
   nbEventsBeforeReload: number = 5;
+  weeksReload: number = 0;
 
   constructor(public navCtrl: NavController,
               public eventsCtrl: Events,
@@ -278,18 +279,46 @@ export class EventsPage {
 
   getMoreEvents(e) {
     console.log('Getting More Events');
-    let lgt = this.activeDatas.length;
+    
+    this.geolocation.getCurrentPosition()    
+    .then(coords => {
+      this.weeksReload++;
+      return this.facebook.findEventsByPlaces(this.keywordsInput, coords, this.rangeNumber, this.firstDatePicker, this.weeksReload);
+    })
+    .then(events => {
+      if(!this.isError) {
+        setTimeout(() => {
+          if(events.length>1) {
+            this.loadingMessage = 'Yeah des événements sont disponibles ! Profites-en !';
+          }
+          else if(events.length==1) {
+            this.loadingMessage = 'Yeah un événement disponible près de toi ! N\'hésites pas à changer tes paramètres de recherche !';
+          }
+          else {
+            this.loadingMessage = 'Oups, pas d\'événement. Essayes d\'autres paramètres de recherche.';
+          }
+        }, 5000);
 
-    for(let i=0; i<this.nbEventsBeforeReload; i++) {
-      this.activeDatas.push(this.datas[lgt+i]);
-    }
-
-    setTimeout(() => {
-     // this.scrollHorizontalCards();
-      //this.scrollEvent();
-      e.complete();
-    }, 200);
-
+        this.datas = events;
+        
+        this.isFinished = true;
+      }
+    })
+    .then(() => {
+      if(!this.isError) {
+        if(this.datas[0]) {
+          setTimeout(() => {
+            this.scrollEvent()
+            setTimeout(() => {
+              this.isLoading = false;  
+              this.addLikeInEvent();    
+              e.complete();     
+              document.getElementById('myList').setAttribute('style', '');
+            }, 250);
+          }, 250);
+        }
+      }
+    });
   }
 
   doRefreshGeolocation(refresher?) {
@@ -309,7 +338,7 @@ export class EventsPage {
       console.log(coords[0] + ',' + coords[1]);
       this.loadingMessage = 'Geolocalisation réussie ! Nous t\'avons trouvé ;)';
       this.getCityName(coords);
-      return this.facebook.findEventsByPlaces(this.keywordsInput, coords, this.rangeNumber, this.firstDatePicker);
+      return this.facebook.findEventsByPlaces(this.keywordsInput, coords, this.rangeNumber, this.firstDatePicker, this.weeksReload);
     })
     .catch(err => {
       console.log('Geolocation Error');
@@ -395,7 +424,7 @@ export class EventsPage {
           border.style.display = 'none';
           black.style.display = 'block';
 
-/*        this.animation.fadeIn(effect)
+         /*  this.animation.fadeIn(effect)
           .then(() => {
             effect.style.opacity = 1;      
             effect.style.display = 'block';

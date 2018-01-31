@@ -25,7 +25,7 @@
               <ion-icon class='icon-calendar' name="md-calendar"></ion-icon>
             </ion-col>
             <ion-col col-10>
-              {{ event.start_time }} <!--  | myDate:"ddMMMMyy hhmm":" ":" " -->
+              {{ event.start_time | myDate:"ddMMMMyy hhmm":" ":" " }} <!--   -->
             </ion-col>
           </ion-row>
   
@@ -45,8 +45,8 @@
               <ion-row (click)='likeEvent($event)'>
                 <ion-col col-2 class='col-like-book'>
                   <li class="like">
-                    <img src="assets/icons/favorite_border.svg" alt="">
-                    <img src="assets/icons/favorite_black.svg" alt="">
+                    <img src="assets/icons/favorite_border.svg" alt="" [ngStyle]='display1'>
+                    <img src="assets/icons/favorite_black.svg" alt="" [ngStyle]='display2'>
                   </li>
                 </ion-col>
                 <ion-col col-10>

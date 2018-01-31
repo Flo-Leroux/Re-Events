@@ -97,10 +97,20 @@ export class FacebookProvider {
     return new Promise((resolve, reject) => {
       this.fb.api(request, FACEBOOK_CONFIG)
       .then(res => {
+        console.log(res);
         resolve(res);
       })
       .catch(err => {
-        reject(err);
+        console.log(err);
+        this.requestToHTTP('https://graph.facebook.fr/'+request)
+        .then(res => {
+          console.log(res);
+          resolve(res);
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        })
       });
     });
   }
@@ -108,7 +118,7 @@ export class FacebookProvider {
   /**
    * It the method to find all Facebook Events around a GPS Center 
    */
-  public findEventsByPlaces(query?: string, center?: Array<number>, distance?: number, since?: Date): Promise<any> {
+  public findEventsByPlaces(query?: string, center?: Array<number>, distance?: number, since?: Date, weeksReload?: number): Promise<any> {
     return new Promise((resolve) => {
 
       let current_DateTime = new Date();
@@ -128,28 +138,32 @@ export class FacebookProvider {
       }
 
       // Add Comments here to...
-      /* this.prepareRequestPlaces(query, center, distance)
+      this.prepareRequestPlaces(query, center, distance)
       .then(stmt => {
         console.log('Prepare quest ok');
         return this.api(stmt);
       })
       .then(datas => {
+        console.log('datas');
         return this.allResultsPlaces(datas);
       })
       .then(all => {
-        return this.allResultsEvents(all, since);
+        console.log('all');
+        console.log(weeksReload);
+        return this.allResultsEvents(all, since, weeksReload);
       })
       .then(events => {
+        console.log('events');
         return this.deletePlacesWithoutEvents(events);      
-      }) */
+      })
       // ... Here for testing with local datas
 
       // Remove Comments to...
-      this.loadJson('assets/json/eventsBrut.json')
+      /* this.loadJson('assets/json/eventsBrut.json')
       .then(res => {
         let datas = res.json();
         return this.deletePlacesWithoutEvents(datas);
-      })
+      }) */
       // ... Here for testing with local datas
 
       .then(res => {
@@ -171,12 +185,7 @@ export class FacebookProvider {
   public findEventsById(id: any): Promise<any> {
     return new Promise((resolve, reject) => {
 
-      console.log(id);
-
       let stm = 'Event?fields=id,name,description,start_time,end_time,cover,place&ids='+id+'&access_token='+FACEBOOK_TOKEN;
-
-      console.log('stm');
-      console.log(stm);
 
       this.api(stm)
       .then(res => {    
@@ -258,13 +267,16 @@ export class FacebookProvider {
         stm = 'search?q='+query+'&type=place&center='+center[0]+','+center[1]+'&distance='+distance+'&fields=id,name&categories=["'+category+'"]';    
       }
 
-      this.getAccessTokenFacebook()
+      stm += '&access_token='+FACEBOOK_TOKEN;
+
+      resolve(stm);
+      /* this.getAccessTokenFacebook()
       .then(res => {
         resolve(stm+'&access_token='+this.facebook_token);
       })
       .catch(err => {
         reject();
-      })
+      }) */
     })
   }
 
@@ -273,7 +285,7 @@ export class FacebookProvider {
    * @param {Array<any>} places Facebook ID of places
    * @param {number} count 
    */
-  private prepareRequestEventsByPlaces(places: Array<any>, count: number, since: Date): string {
+  private prepareRequestEventsByPlaces(places: Array<any>, count: number, since: Date, weeksReload: number): string {
     let composer: string = ""; // Composer is the somme of ID Places
     for (let i=count; i<(count+50); i++) {
       if (places[i]) {
@@ -283,16 +295,32 @@ export class FacebookProvider {
         break;
       }
     }
-    
-    // let datetime_UNIX = this.formatDate.transformeDateToUNIX(this.newDate);
-    let datetime_UNIX = this.getUnixTime(since);
 
+    
+    let datetime_since: Date = this.addDays(since, (0*weeksReload));
+    weeksReload++;
+    let datetime_until: Date = this.addDays(since, (14*weeksReload));
+
+    let datetime_UNIX_since = this.getUnixTime(datetime_since);
+    let datetime_UNIX_until = this.getUnixTime(datetime_until);
+    
     if (composer != "") {
       composer = composer.substring(0, composer.length-1);
-      let stm = 'events?fields=id,name,description,start_time,end_time,cover,place&since='+datetime_UNIX+'&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
+      let stm = 'events?fields=id,name,description,start_time,end_time,cover,place&since='+datetime_UNIX_since+'&until='+datetime_UNIX_until+'&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
       return stm;
     }
   }
+
+  addDays(startDate,numberOfDays) {
+		let returnDate = new Date(
+                        startDate.getFullYear(),
+                        startDate.getMonth(),
+                        startDate.getDate()+numberOfDays,
+                        startDate.getHours(),
+                        startDate.getMinutes(),
+                        startDate.getSeconds());
+		return returnDate;
+	}
 
   /**
    * A classic method to get data without use the Graph API. 
@@ -318,7 +346,7 @@ export class FacebookProvider {
     }
 
     while(typeof datas.paging != "undefined") {
-      datas = await this.requestToHTTP(datas.paging.next+'&access_token='+this.facebook_token);
+      datas = await this.requestToHTTP(datas.paging.next+'&access_token='+FACEBOOK_TOKEN);
       for(let i=0; i<datas.data.length; i++){
         places.push(datas.data[i]);
       }
@@ -330,12 +358,12 @@ export class FacebookProvider {
    * To get all events associated to Facebook places
    * @param {Array<any>} places All places find by allResultsPlaces Method
    */
-  private async allResultsEvents(places: Array<any>, since: Date): Promise<any> {
+  private async allResultsEvents(places: Array<any>, since: Date, weeksReload: number): Promise<any> {
     let events = [];
     let count = 0;
 
     while(count < places.length) {
-      let stm = this.prepareRequestEventsByPlaces(places, count, since);
+      let stm = this.prepareRequestEventsByPlaces(places, count, since, weeksReload);
       let datas = await this.fb.api(stm, []);
       for(let i=count; i<count+50; i++){
         if(places[i]){

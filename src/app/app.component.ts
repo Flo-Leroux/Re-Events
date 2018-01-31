@@ -36,7 +36,7 @@ export class ReEvents {
               private firebase: FirebaseProvider,
               private facebook: FacebookProvider) {
 
-/*     this.nativeStorage.getItem('USER')
+    this.nativeStorage.getItem('USER')
     .then(res => {
       console.log('NATIVE STORAGE');
       console.log(res);
@@ -53,7 +53,7 @@ export class ReEvents {
     .catch(err => {
       console.log('Empty Data');
       this.rootPage = LoginPage;              
-    }) */
+    })
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

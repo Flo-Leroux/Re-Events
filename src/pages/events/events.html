@@ -25,8 +25,8 @@
     <ion-list id='myList' no-lines *ngIf='isFinished' style='opacity: 0 !important;'>
         <ion-item-group *ngFor="let event of datas">
             <ion-item-divider sticky no-lines>{{ event.day | date:"dd-MM-yy" }}</ion-item-divider>
-            <ion-item no-border id='{{ event.id }}' (click)='getDescription($event)' (press)='likeEvent($event)'>  
-                <div class='imageDiv'>
+            <ion-item no-border id='{{ event.id }}'>  
+                <div class='imageDiv' (click)='getDescription($event)' (press)='likeEvent($event)'>
                     <img src="{{ event.img }}" alt="">
                 </div>
     
@@ -60,12 +60,6 @@
                                             <img src="assets/icons/favorite_border.svg" alt="">
                                             <img src="assets/icons/favorite_black.svg" alt="">
                                         </div>
-                                        <!-- <ion-row class="like" (click)='likeEvent($event)'> -->
-                                        <!-- </ion-row> 
-                                        <ion-row class="bookmark" (click)='bookmarkEvent($event)'>
-                                            <img src="assets/icons/bookmark_border.svg" alt="">
-                                            <img src="assets/icons/bookmark_black.svg" alt="">
-                                        </ion-row>-->
                                     </ion-col>
                                 </ion-row>
                             </ion-grid>
@@ -101,9 +95,10 @@
         </ion-item-group>
     </ion-list>
 
-<!--     <ion-infinite-scroll (ionInfinite)="getMoreEvents($event)">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll> -->
+    <ion-infinite-scroll (ionInfinite)="getMoreEvents($event)">
+        <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 
     <div id="refresher">
         <ion-icon name="arrow-down"></ion-icon>
