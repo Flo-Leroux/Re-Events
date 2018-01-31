@@ -1,4 +1,4 @@
-import { Component, Injectable, ViewChild } from '@angular/core';
+import { Component, Injectable, ViewChild, ElementRef } from '@angular/core';
 import { NavController, Content, Platform, Events, Slides } from 'ionic-angular';
 import { Http } from '@angular/http';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
@@ -59,16 +59,17 @@ export class EventsPage {
 
   activeDatas: any = [];
 
-  liked: Array<any> = [];
-  // bookmarked: Array<any> = [];
+  likedID: Array<any>;
+  likedDATA: Array<any> = [];
 
   nbEventsBeforeReload: number = 5;
 
   constructor(public navCtrl: NavController,
+              public eventsCtrl: Events,
               private http: Http,
+              private elementRef: ElementRef,
               private statusBar: StatusBar,
               private navParams: NavParams,
-              private eventsCtrl: Events,
               private nativePageTransitions: NativePageTransitions,
               private datePicker: DatePicker,
               private calendar: Calendar,
@@ -84,15 +85,6 @@ export class EventsPage {
 
     // set status bar to white
     this.statusBar.styleLightContent();
-    // this.statusBar.backgroundColorByHexString('#000000DD');
-
-    this.eventsCtrl.subscribe('userNativeUpdate', () => {
-      console.log('USER SUBSCRIBE');
-      this.nativeStorage.getItem('USER')
-      .then(user => {
-        this.user = user;
-      })
-    })
     
     /*     this.platform.ready().then(() => {    
       this.platform.pause.subscribe(() => {
@@ -104,38 +96,51 @@ export class EventsPage {
       });
     }); */
 
+    this.eventsCtrl.subscribe('dislikeID', (id) => {
+      const elt = document.getElementById(id);
+
+      if(elt) {
+        let border =  elt.getElementsByClassName('swiper-slide-active').item(0)
+                        .getElementsByClassName('card2').item(0)
+                        .getElementsByTagName('img').item(0);
+  
+        let black =  elt.getElementsByClassName('swiper-slide-active').item(0)
+                        .getElementsByClassName('card2').item(0)
+                        .getElementsByTagName('img').item(1);
+  
+        border.style.display = 'block';
+        black.style.display = 'none';
+      }
+    });
+
   }
 
   // --- App Life State --- //
 
   ionViewDidLoad() {
-    this.nativeStorage.getItem('USER')
-    .then(res => {
-      this.user = res;
-    })
     this.doRefreshGeolocation();
   }
 
   ionViewWillEnter() {
     console.log('Will Enter')
-  }
-
-
-  slideChanged() {
-    console.log('Slides Changed');
-    this.slides.startAutoplay();
+    this.nativeStorage.getItem('likedID')
+    .then(data => {
+      this.likedID = data;
+      this.addLikeInEvent();
+    })
+    .catch(() => {
+      this.likedID = [];     
+    });
+    this.nativeStorage.getItem('likedDATA')
+    .then(data => {
+      this.likedDATA = data;
+    })
+    .catch(() => {
+      this.likedDATA = [];
+    })
   }
 
   // --- Design Transformations --- //
-
-/*   private scrollHorizontalCards() {
-    let scroll = document.querySelectorAll('ion-scroll.scroll-x .scroll-content');
-    let width = scroll[0].firstElementChild.parentElement.offsetWidth;
-
-    for(let i=0; i<scroll.length; i++) {
-      scroll[i].scrollTo(width, 0);
-    }
-  } */
 
   in_array(string, array){
     let result = false;
@@ -343,12 +348,11 @@ export class EventsPage {
       if(!this.isError) {
         if(this.datas[0]) {
           setTimeout(() => {
-            console.log('Events ok');
             this.activeDate = this.datas[0].day;
-            //this.scrollEvent()
-            //this.scrollHorizontalCards();
+            this.scrollEvent()
             setTimeout(() => {
               this.isLoading = false;  
+              this.addLikeInEvent();    
               document.getElementById('myList').setAttribute('style', '');
             }, 250);
           }, 250);
@@ -361,113 +365,99 @@ export class EventsPage {
     console.log('Like Event');
 
     this.findParentBySelector(e.target, 'ion-item')
-      .then(res => {
-        
-        if(res != null) {          
-          const effect = res.getElementsByClassName('action_effect').item(0)
-                          .getElementsByClassName('like').item(0);
-  
-          const border = res.getElementsByClassName('card2').item(0)
-                          .getElementsByClassName('like').item(0)
+    .then(res => {
+      if(res != null) {            
+        const border =  res.getElementsByClassName('swiper-slide-active').item(0)
+                          .getElementsByClassName('card2').item(0)
                           .getElementsByTagName('img').item(0);
   
-          const black = res.getElementsByClassName('card2').item(0)
-                          .getElementsByClassName('like').item(0)
+        const black =   res.getElementsByClassName('swiper-slide-active').item(0)
+                          .getElementsByClassName('card2').item(0)
                           .getElementsByTagName('img').item(1);
 
-          const id = res.firstChild.parentNode.getAttribute('id');
-          const isExist = this.in_array(id, this.liked);
-          
-          if(isExist) {
-            black.style.display = 'none';
-            border.style.display = 'block';
-            let index = this.liked.indexOf(id);
+        const id = res.getAttribute('id');
+        const isExist = this.in_array(id, this.likedID);          
 
-            if(index!=-1) {
-              this.liked.splice(index, 1);
-            }
-          }
-          else {
-            this.liked.push(id);
-
-            effect.style.opacity = 0;
-            effect.style.display = 'block';
-
-            this.animation.fadeIn(effect)
-              .then(() => {
-                effect.style.opacity = 1;      
-                effect.style.display = 'block';
-                border.style.display = 'none';
-                black.style.display = 'block';
-                setTimeout(() => {
-                  return this.animation.fadeOut(effect);
-                }, 250);
-              })
-              .then(() => {
-                setTimeout(() => {
-                  effect.style.display = 'none';
-                }, 500);
-              });
-          }
-        }
-      });
-  }
-  
-  /* bookmarkEvent(e) {
-    console.log('Press Event');
-
-    this.findParentBySelector(e.target, 'ion-item')
-    .then(res => {
-      
-      if(res != null) {          
-        const effect = res.getElementsByClassName('action_effect').item(0)
-                        .getElementsByClassName('bookmark').item(0);
-
-        const border = res.getElementsByClassName('card2').item(0)
-                        .getElementsByClassName('bookmark').item(0)
-                        .getElementsByTagName('img').item(0);
-
-        const black = res.getElementsByClassName('card2').item(0)
-                        .getElementsByClassName('bookmark').item(0)
-                        .getElementsByTagName('img').item(1);
-
-        const id = res.firstChild.parentNode.getAttribute('id');
-        const isExist = this.in_array(id, this.bookmarked);
-        
-        if(isExist) {
-          black.style.display = 'none';
+        if(isExist) {          
           border.style.display = 'block';
-          let index = this.bookmarked.indexOf(id);
+          black.style.display = 'none';
+          let index = this.likedID.indexOf(id);
 
           if(index!=-1) {
-            this.bookmarked.splice(index, 1);
+            this.likedID.splice(index, 1);
+            this.likedDATA.splice(index, 1);
           }
         }
         else {
-          this.bookmarked.push(id);
+          if(!this.likedID) {
+            this.likedID = [];
+          }
+          border.style.display = 'none';
+          black.style.display = 'block';
 
-          effect.style.opacity = 0;
-          effect.style.display = 'block';
-
-          this.animation.fadeIn(effect)
-            .then(() => {
-              effect.style.opacity = 1;      
-              effect.style.display = 'block';
-              border.style.display = 'none';
-              black.style.display = 'block';
-              setTimeout(() => {
-                return this.animation.fadeOut(effect);
-              }, 250);
-            })
-            .then(() => {
-              setTimeout(() => {
-                effect.style.display = 'none';
-              }, 500);
-            });
+/*        this.animation.fadeIn(effect)
+          .then(() => {
+            effect.style.opacity = 1;      
+            effect.style.display = 'block';
+            border.style.display = 'none';
+            black.style.display = 'block';
+            setTimeout(() => {
+              return this.animation.fadeOut(effect);
+            }, 100);
+          })
+          .then(() => {
+            setTimeout(() => {
+              effect.style.display = 'none';
+            }, 200);
+          }); */
+          let obj = this.findObjectByKey(this.datas, 'id', id);
+          this.likedDATA.push(obj);
+          this.likedID.push(id);       
+          this.eventsCtrl.publish('likeID', id);             
         }
+        this.nativeStorage.setItem('likedID', this.likedID);
+        this.nativeStorage.setItem('likedDATA', this.likedDATA);
       }
     });
-  } */
+  }
+
+
+  addLikeInEvent() {
+    if(this.likedID && this.likedID.length>0) {
+
+      this.likedID.forEach((like, i) => {
+        const elt = document.getElementById(like);
+  
+        const border =  document.getElementById(like)
+                                .getElementsByClassName('swiper-slide-active').item(0)
+                                .getElementsByClassName('card2').item(0)
+                                .getElementsByTagName('img').item(0);
+  
+        const black =   document.getElementById(like)
+                                .getElementsByClassName('swiper-slide-active').item(0)
+                                .getElementsByClassName('card2').item(0)
+                                .getElementsByTagName('img').item(1);
+
+        if(elt) {
+          border.style.display = 'none';
+          black.style.display = 'block';
+        }
+        else {
+          border.style.display = 'black';
+          black.style.display = 'none';
+        }
+      });
+    }
+  }
+
+  findObjectByKey(array, key, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][key] === value) {
+            return array[i];
+        }
+    }
+    return null;
+  }
 
   datePickerFunc() {
     this.datePicker.show({
@@ -550,6 +540,8 @@ export class EventsPage {
       }      
     })    
   }
+
+
   
   // --- Others --- //
 

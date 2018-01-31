@@ -13,7 +13,7 @@ export class GeolocationProvider {
 
   public getCurrentPosition(): Promise<Array<any>> {
     return new Promise((resolve, reject) => {
-      this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout: 3000})
+      this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout: 5000})
       .then(res => {
         resolve([res.coords.latitude, res.coords.longitude]);
       })

@@ -57,7 +57,6 @@ export class PopoverProfilePage {
       buttons: [
         {
           text: 'Oui, sûr',
-          role: 'oui',
           handler: () => {
             this.firebase.getStatus()
             .then((user) => {
@@ -70,7 +69,6 @@ export class PopoverProfilePage {
               }
             })
             .then(([res, provider]) => {
-              this.nativeStorage.remove('USER');
               return this.nativeStorage.clear();
             })
             .then(() => {

@@ -37,7 +37,10 @@ export class LoginPage {
               private firebase: FirebaseProvider,
               private facebook: FacebookProvider) {
     
-    this.nativeStorage.clear();
+    console.log('KEYS');
+    this.nativeStorage.keys()
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
 
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
@@ -93,7 +96,6 @@ export class LoginPage {
         userInfos.email = this.user.email;
         userInfos.password = this.user.password;
         
-        console.log(userInfos);
         this.nativeStorage.setItem('USER', userInfos);
 
         let options: NativeTransitionOptions = {

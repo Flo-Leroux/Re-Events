@@ -168,6 +168,77 @@ export class FacebookProvider {
     })
   }
 
+  public findEventsById(id: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+
+      console.log(id);
+
+      let stm = 'Event?fields=id,name,description,start_time,end_time,cover,place&ids='+id+'&access_token='+FACEBOOK_TOKEN;
+
+      console.log('stm');
+      console.log(stm);
+
+      this.api(stm)
+      .then(res => {    
+        
+        let events_final: Array<object> = [];
+
+        let array = res[id];
+
+        let event_info = {
+          day: null,
+          time: null,
+          id: null,
+          name: null,
+          description: null,
+          location: null,
+          img: null,
+          start_time: null,
+          link_map: null
+        }
+
+        event_info.day = event_info.time = new Date(array.start_time.replace('T', ' '));
+        event_info.id = array.id;
+        event_info.name = array.name;
+        event_info.start_time = new Date(array.start_time.replace('T', ' '));
+
+        if(array.description){
+          event_info.description = array.description;
+        }
+        
+        if(array.place && array.place.location) {
+          let street, city, country: string = "";
+          if (array.place.location.street) {
+            street = array.place.location.street;
+          }
+          if(array.place.location.city){
+            city = array.place.location.city;
+          }
+          if(array.place.location.country){
+            country = array.place.location.country;
+          }
+
+          event_info.location = street +', '+ city + ', '+ country;
+          event_info.link_map = encodeURI('https://www.google.com/maps/search/?api=1&query='+event_info.location);
+        }
+
+        if(array.cover) {
+          event_info.img = array.cover.source;
+        }
+        else {
+          event_info.img = null;
+        }
+
+        events_final.push(event_info);
+
+        resolve(events_final);
+      })
+      .catch(err => {
+        reject(err);
+      })
+    });
+  }
+
   // --- Privates Methods --- //
 
   /**
@@ -215,7 +286,6 @@ export class FacebookProvider {
     
     // let datetime_UNIX = this.formatDate.transformeDateToUNIX(this.newDate);
     let datetime_UNIX = this.getUnixTime(since);
-    console.log('Date ' + datetime_UNIX);
 
     if (composer != "") {
       composer = composer.substring(0, composer.length-1);
@@ -331,7 +401,7 @@ export class FacebookProvider {
           if(array[i].description){
             event_info.description = array[i].description;
           }
-
+          
           if(array[i].place && array[i].place.location) {
             let street, city, country: string = "";
             if (array[i].place.location.street) {

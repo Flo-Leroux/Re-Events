@@ -26,7 +26,7 @@ import { FacebookProvider } from '../providers/facebook/facebook';
 })
 export class ReEvents {
 
-  rootPage:any = TabsPage;
+  rootPage:any = LoginPage;
   user = {} as User;
 
   constructor(public platform: Platform,
@@ -39,6 +39,7 @@ export class ReEvents {
 /*     this.nativeStorage.getItem('USER')
     .then(res => {
       console.log('NATIVE STORAGE');
+      console.log(res);
 
       if(res.facebook == false) {
         console.log('Email');
@@ -54,15 +55,15 @@ export class ReEvents {
       this.rootPage = LoginPage;              
     }) */
 
-/*     platform.ready().then(() => {
+    platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-    }); */
+    });
   }
 
-/*   login(user) {
+  login(user) {
     if(user != null) {
       this.firebase.emailLogin(user)
       .then(() => {
@@ -82,6 +83,6 @@ export class ReEvents {
     .catch(err => {
       this.rootPage = LoginPage;
     })
-  } */
+  }
 }
 

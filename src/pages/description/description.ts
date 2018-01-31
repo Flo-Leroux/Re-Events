@@ -1,12 +1,13 @@
 
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content } from 'ionic-angular';
+import { NavController, NavParams, Content, Events } from 'ionic-angular';
 
 // --- Add Plugins --- //
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { Calendar } from '@ionic-native/calendar';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add Providers --- //
 import { RegexProvider } from '../../providers/regex/regex';
@@ -25,13 +26,15 @@ export class DescriptionPage {
 
   imgHeight: any;
 
-  liked: Array<any> = [];
-  bookmarked: Array<any> = [];
+  likedID: Array<any>;
+  likedDATA: Array<any>;
 
   constructor(public navCtrl: NavController, 
+              private eventsCtrl: Events,
               public navParams: NavParams,
               public statusBar: StatusBar,
               private calendar: Calendar,
+              private nativeStorage: NativeStorage,
               private nativePageTransitions: NativePageTransitions,
               public ref: ChangeDetectorRef,
               private regex: RegexProvider
@@ -54,9 +57,41 @@ export class DescriptionPage {
   }
 
   ionViewWillEnter() {
+    console.log('Description ENTER');
+
     this.imgHeight =  document.getElementById('duotone').offsetTop + 
                       document.getElementById('duotone').offsetHeight -
                       document.getElementsByTagName('ion-navbar').item(0).firstElementChild.parentElement.offsetHeight/2;
+
+    this.nativeStorage.getItem('likedID')
+    .then(data => {
+      this.likedID = data;
+      
+      const border = document.getElementsByClassName('like').item(0)
+                            .getElementsByTagName('img').item(0);
+
+      const black = document.getElementsByClassName('like').item(0)
+                          .getElementsByTagName('img').item(1);
+
+      const id = this.event.id;
+      const isExist = this.in_array(id, this.likedID);
+
+      if(isExist) {
+        black.style.display = 'none';
+        border.style.display = 'block';
+      }
+    })
+    .catch(() => {
+      this.likedID = [];
+    });
+
+    this.nativeStorage.getItem('likedDATA')
+    .then(data => {
+      this.likedDATA = data;
+    })
+    .catch(() => {
+      this.likedDATA = [];
+    });
   }
 
   onScroll(event: any){
@@ -84,64 +119,31 @@ export class DescriptionPage {
                             .getElementsByTagName('img').item(1);
 
           const id = this.event.id;
-          const isExist = this.in_array(id, this.liked);
+          const isExist = this.in_array(id, this.likedID);
           
           if(isExist) {
             black.style.display = 'none';
             border.style.display = 'block';
-            let index = this.liked.indexOf(id);
+            let index = this.likedID.indexOf(id);
 
             if(index!=-1) {
-              this.liked.splice(index, 1);
+              this.likedID.splice(index, 1);
+              this.likedDATA.splice(index, 1);
+
+              this.eventsCtrl.publish('dislikeID', id);
             }
           }
           else {
             border.style.display = 'none';
             black.style.display = 'block';
 
-            this.liked.push(id);
+            this.likedID.push(id);
+            this.likedDATA.push(this.event);
           }
-          console.log(this.liked);
+          this.nativeStorage.setItem('likedID', this.likedID);
+          this.nativeStorage.setItem('likedDATA', this.likedDATA);
         }
       });
-  }
-  
-  bookmarkEvent(e) {
-    console.log('Press Event');
-
-    this.findParentBySelector(e.target, 'ion-grid')
-    .then(res => {
-      
-      if(res != null) {          
-        const effect = res.getElementsByClassName('bookmark').item(0);
-
-        const border = res.getElementsByClassName('bookmark').item(0)
-                          .getElementsByTagName('img').item(0);
-
-        const black = res.getElementsByClassName('bookmark').item(0)
-                          .getElementsByTagName('img').item(1);
-
-        const id = this.event.id;
-        const isExist = this.in_array(id, this.bookmarked);
-        
-        if(isExist) {
-          black.style.display = 'none';
-          border.style.display = 'block';
-          let index = this.bookmarked.indexOf(id);
-
-          if(index!=-1) {
-            this.bookmarked.splice(index, 1);
-          }
-        }
-        else {
-          this.bookmarked.push(id);
-          
-          border.style.display = 'none';
-          black.style.display = 'block';
-        }
-        console.log(this.bookmarked);
-      }
-    });
   }
 
   addCalendar(e) {

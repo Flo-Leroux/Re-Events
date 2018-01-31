@@ -25,18 +25,12 @@
     <ion-list id='myList' no-lines *ngIf='isFinished' style='opacity: 0 !important;'>
         <ion-item-group *ngFor="let event of datas">
             <ion-item-divider sticky no-lines>{{ event.day | date:"dd-MM-yy" }}</ion-item-divider>
-            <ion-item no-border id='{{ event.id }}' (click)='getDescription($event)' (press)='likeEvent($event)'> <!-- (press)='bookmarkEvent($event)'  -->
+            <ion-item no-border id='{{ event.id }}' (click)='getDescription($event)' (press)='likeEvent($event)'>  
                 <div class='imageDiv'>
                     <img src="{{ event.img }}" alt="">
                 </div>
     
-                <div class="action_effect">
-                    <div class="like">
-                        <img src="assets/icons/favorite_black.svg" alt="">
-                    </div>
-                </div>
-
-                <ion-slides (ionSlideDidChange)="slideChanged()" loop="true" initialSlide="1" slidesPerView="auto" loopedSlides="3" centeredSlides="true">
+                <ion-slides loop="true" initialSlide="1" slidesPerView="auto" loopedSlides="3" centeredSlides="true">
                     <ion-slide>
                         <ion-card class="card1">
                             <ion-grid>
@@ -98,15 +92,11 @@
 
                 </ion-slides>
 
-
-
-
-
-
-
-
-
-
+                <div class="action_effect">
+                    <div class="like">
+                        <img src="assets/icons/favorite_black.svg" alt="">
+                    </div>
+                </div>
             </ion-item>
         </ion-item-group>
     </ion-list>

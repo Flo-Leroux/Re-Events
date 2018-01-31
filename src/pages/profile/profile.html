@@ -15,35 +15,35 @@
 </ion-header>
 
 
-<ion-content (ionScroll)="onScroll($event)">
+<ion-content  (ionScroll)="onScroll($event)">
 
   <div class="header-image">
     <div id="duotone">
-      <img [src]="pictureURL">
+      <img *ngIf='pictureURL' [src]="pictureURL">
     </div> 
 
-    <div id="profile">
-      <img [src]="pictureURL">
+    <div *ngIf='pictureURL' id="profile">
+      <img *ngIf='pictureURL' [src]="pictureURL">
     </div>
   </div>
 
   <div class="main-content">
     <div id="profileTitle">
-        <h1>{{ user.firstname }} {{ user.lastname }}</h1>
-        <p [hidden]='!user.statut'>{{ user.statut }}</p>
+        <h1 *ngIf='user.firstname'>{{ user.firstname }} {{ user.lastname }}</h1>
+        <p *ngIf='user.statut'>{{ user.statut }}</p>
     </div>
     
-    <div id="description" [hidden]='!user.biography'>
+    <div id="description" *ngIf='user.biography'>
       <h2>Ma petite bio' :</h2>
       <p>{{ user.biography }}</p>
     </div>
 
-    <ion-list id='myList' no-lines style='opacity: 1 !important;'>
-      <ion-item-group *ngFor="let event of datas">
+    <ion-list *ngIf='likedDATA' id='myList' no-lines style='opacity: 1 !important;'>
+      <ion-item-group *ngFor="let event of likedDATA">
         <ion-item no-border id='{{ event.id }}'>
 
           <div class="imageDiv">
-            <img src="{{ event.img }}" alt="" (click)="getDescription($event)">
+            <img src="{{ event.img }}" alt="" (click)="getDescription($event)" (press)="dislikeEvent($event)">
             <div class="action_effect" (click)="dislikeEvent($event)">
               <div class="like">
                 <img src="assets/icons/favorite_black.svg" alt="">

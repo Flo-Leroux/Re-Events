@@ -14,6 +14,7 @@ import { DescriptionPage } from '../description/description';
 
 // --- Add Providers --- //
 import { FirebaseProvider } from '../../providers/firebase/firebase';
+import { FacebookProvider } from '../../providers/facebook/facebook';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
@@ -34,7 +35,9 @@ export class ProfilePage {
   pictureURL: string;
 
   jsonPATH: string = 'assets/json/eventsOrganised.json';
-  datas: JSON;
+
+  likedDATA: any;
+  likedID: any;
 
   constructor(public navCtrl: NavController,
               private statusBar: StatusBar,
@@ -43,70 +46,46 @@ export class ProfilePage {
               private nativePageTransitions: NativePageTransitions,
               private http: Http,
               private firebase: FirebaseProvider,
+              private facebook: FacebookProvider,
               private nativeStorage: NativeStorage,
               public ref: ChangeDetectorRef,
               public popoverCtrl: PopoverController) {
 
     console.log('Profile Enter Construct');
 
-    this.eventsCtrl.subscribe('userNativeUpdate', () => {
-      console.log('USER SUBSCRIBE');
-      this.nativeStorage.getItem('USER')
-      .then(user => {
-        this.user = user;
-        this.pictureURL = this.user.pictureURL;
-      })
-    })
-
   }
 
-  ionViewWillEnter() {
-    console.log('Profile Enter');
+  ionViewDidLoad() {
     this.nativeStorage.getItem('USER')
     .then(res => {
       this.user = res;
+
       if(this.user.pictureURL) {
         this.pictureURL = this.user.pictureURL;
       }
       else {
-        this.pictureURL = 'assets/imgs/persona.jpg';
+        this.pictureURL = '/assets/imgs/persona.jpg';
       }
     })
   }
 
-  ionViewDidEnter() {
-    let h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    this.imgHeight = (28 * h) / 100;
+  ionViewWillEnter() {
+    console.log('Profile Enter');
+
+    this.nativeStorage.getItem('likedDATA')
+    .then(data => {this.likedDATA = data;})
+    .catch(() => {this.likedDATA = [];})
+
+    this.nativeStorage.getItem('likedID')
+    .then(res => {this.likedID = res;})
+    .catch(() => {this.likedID = [];});
   }
 
   onScroll($event: any){
     let scrollTop = $event.scrollTop;
     this.showToolbar = scrollTop >= this.imgHeight;
 
-    console.log(this.showToolbar);
-
     this.ref.detectChanges();
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ProfilePage');
-
-    this.navCtrl.viewDidEnter.toPromise()
-    .then(res => {
-      console.log('Profile Enter');
-      
-      return this.nativeStorage.getItem('USER')
-    })
-    .then(res => {
-      this.user = res;
-    })
-
-    this.loadJson()
-    .then(res => {
-      let datas = res.json();
-      this.datas = datas;
-      console.log(this.datas);
-    })
   }
 
   popover(e) {
@@ -124,7 +103,7 @@ export class ProfilePage {
         
         this.findEventsById(id)
         .then(res => {
-          let event = this.datas[res];
+          let event = this.likedDATA[res];
           
           let options: NativeTransitionOptions = {
             direction: 'left',
@@ -141,11 +120,28 @@ export class ProfilePage {
   }
 
   dislikeEvent(e) {
+    this.findParentBySelector(e.target, 'ion-item')
+    .then(res => {
+      if(res != null) {
+        let id = res.firstChild.parentNode.getAttribute('id');
+        let parent = res.parentNode;
+        let index = this.likedID.indexOf(id);
+        if(index!=-1) {
+          this.likedID.splice(index, 1);
+          this.likedDATA.splice(index, 1);
 
-  }
+          this.nativeStorage.setItem('likedID', this.likedID);          
+          this.nativeStorage.setItem('likedDATA', this.likedDATA);
 
-  onReloadUserDatas() {
-    console.log('Reload Datas');
+          let eltByID = res.firstChild.parentNode;
+          parent.removeChild(eltByID);
+
+          this.eventsCtrl.publish('dislikeID', id);
+        }
+
+
+      }
+    });
   }
 
   // --- Others --- //
@@ -184,8 +180,8 @@ export class ProfilePage {
 
   private findEventsById(id: string | number): Promise<any> {
     return new Promise((resolve, reject) => {
-      for(let i in this.datas) {
-        let tmpId = this.datas[i].id;
+      for(let i in this.likedDATA) {
+        let tmpId = this.likedDATA[i].id;
         if(tmpId == id) {
           resolve(i);
         }

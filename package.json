@@ -40,6 +40,7 @@
     "angularfire2": "^5.0.0-rc.4",
     "com.telerik.plugins.nativepagetransitions": "^0.6.5",
     "cordova-android": "6.3.0",
+    "cordova-browser": "5.0.3",
     "cordova-plugin-calendar": "^5.0.0",
     "cordova-plugin-camera": "^3.0.0",
     "cordova-plugin-datepicker": "^0.9.3",
@@ -56,6 +57,7 @@
     "ionic-angular": "^3.9.1-201711081842",
     "ionic-plugin-keyboard": "^2.2.1",
     "ionicons": "3.0.0",
+    "package.json": "^2.0.1",
     "rxjs": "5.5.2",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.18"
@@ -75,19 +77,20 @@
       "cordova-plugin-ionic-webview": {},
       "com.telerik.plugins.nativepagetransitions": {},
       "cordova-plugin-camera": {},
-      "cordova-plugin-facebook4": {
-        "APP_ID": "1306889219440575",
-        "APP_NAME": "Re-Events"
-      },
       "cordova-plugin-geolocation": {
         "GEOLOCATION_USAGE_DESCRIPTION": "To find some events around you"
       },
       "cordova-plugin-datepicker": {},
       "cordova-plugin-calendar": {},
-      "cordova-plugin-nativestorage": {}
+      "cordova-plugin-nativestorage": {},
+      "cordova-plugin-facebook4": {
+        "APP_ID": "1306889219440575",
+        "APP_NAME": "Re-Events"
+      }
     },
     "platforms": [
-      "android"
+      "android",
+      "browser"
     ]
   }
 }
