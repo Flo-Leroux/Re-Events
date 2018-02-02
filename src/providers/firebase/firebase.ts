@@ -232,4 +232,22 @@ export class FirebaseProvider {
       resolve();
     })
   }
+
+  updateUserLikes(like: Array<any>): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log('Events Firebase');
+      const uid = firebase.auth().currentUser.uid;
+      firebase.database().ref(`users/${uid}/likedEvents`).set(like);
+    });
+  }
+
+  getUserLikes(): Promise<Array<number>> {
+    return new Promise((resolve, reject) => {
+      const uid = firebase.auth().currentUser.uid;
+      firebase.database().ref(`users/${uid}/likedEvents`).once('value')
+      .then(likeID => {
+        resolve(likeID.val());
+      })
+    });
+  }
 }

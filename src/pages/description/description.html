@@ -24,8 +24,8 @@
             <ion-col col-2 class='col-calendar'>
               <ion-icon class='icon-calendar' name="md-calendar"></ion-icon>
             </ion-col>
-            <ion-col col-10>
-              {{ event.start_time | myDate:"ddMMMMyy hhmm":" ":" " }} <!--   -->
+            <ion-col col-10 *ngIf="event.start_time">
+              {{ event.start_time | myDate:"T" }}
             </ion-col>
           </ion-row>
   

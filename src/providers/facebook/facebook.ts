@@ -97,18 +97,14 @@ export class FacebookProvider {
     return new Promise((resolve, reject) => {
       this.fb.api(request, FACEBOOK_CONFIG)
       .then(res => {
-        console.log(res);
         resolve(res);
       })
       .catch(err => {
-        console.log(err);
         this.requestToHTTP('https://graph.facebook.fr/'+request)
         .then(res => {
-          console.log(res);
           resolve(res);
         })
         .catch(err => {
-          console.log(err);
           reject(err);
         })
       });
@@ -140,20 +136,15 @@ export class FacebookProvider {
       // Add Comments here to...
       this.prepareRequestPlaces(query, center, distance)
       .then(stmt => {
-        console.log('Prepare quest ok');
         return this.api(stmt);
       })
       .then(datas => {
-        console.log('datas');
         return this.allResultsPlaces(datas);
       })
       .then(all => {
-        console.log('all');
-        console.log(weeksReload);
         return this.allResultsEvents(all, since, weeksReload);
       })
       .then(events => {
-        console.log('events');
         return this.deletePlacesWithoutEvents(events);      
       })
       // ... Here for testing with local datas
@@ -176,71 +167,41 @@ export class FacebookProvider {
         return this.groupEvents(res);
       }) */
       .then(res => {
-        console.log(res[0]);
+        console.log('RESULT');
+        console.log(res);
         resolve(res);
       })
     })
   }
 
-  public findEventsById(id: any): Promise<any> {
+  public findEventsById(ids: Array<any>): Promise<any> {
     return new Promise((resolve, reject) => {
+      let composer = "";
+      for(let i=0; i<ids.length; i++) {
+        composer += ids[i] + ',';
+      }
+      composer = composer.substring(0, composer.length-1);
 
-      let stm = 'Event?fields=id,name,description,start_time,end_time,cover,place&ids='+id+'&access_token='+FACEBOOK_TOKEN;
-
+      let stm = 'Event?fields=id,name,description,start_time,end_time,cover,place&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
+      
       this.api(stm)
       .then(res => {    
+        let array = [];
+        ids.map(id => {
+          array.push(res[id]);
+        });
         
-        let events_final: Array<object> = [];
+        let result = [];
+        array.map(elt => {
+          let datas = this.formatEvents(elt);    
+          result.push(datas);
+        });
 
-        let array = res[id];
-
-        let event_info = {
-          day: null,
-          time: null,
-          id: null,
-          name: null,
-          description: null,
-          location: null,
-          img: null,
-          start_time: null,
-          link_map: null
-        }
-
-        event_info.day = event_info.time = new Date(array.start_time.replace('T', ' '));
-        event_info.id = array.id;
-        event_info.name = array.name;
-        event_info.start_time = new Date(array.start_time.replace('T', ' '));
-
-        if(array.description){
-          event_info.description = array.description;
-        }
-        
-        if(array.place && array.place.location) {
-          let street, city, country: string = "";
-          if (array.place.location.street) {
-            street = array.place.location.street;
-          }
-          if(array.place.location.city){
-            city = array.place.location.city;
-          }
-          if(array.place.location.country){
-            country = array.place.location.country;
-          }
-
-          event_info.location = street +', '+ city + ', '+ country;
-          event_info.link_map = encodeURI('https://www.google.com/maps/search/?api=1&query='+event_info.location);
-        }
-
-        if(array.cover) {
-          event_info.img = array.cover.source;
-        }
-        else {
-          event_info.img = null;
-        }
-
-        events_final.push(event_info);
-
-        resolve(events_final);
+        this.organizeEvents(result)      
+        .then(res => {
+          console.log(res);
+          resolve(res);
+        })
       })
       .catch(err => {
         reject(err);
@@ -296,14 +257,13 @@ export class FacebookProvider {
       }
     }
 
-    
-    let datetime_since: Date = this.addDays(since, (0*weeksReload));
+    let datetime_since: Date = this.addDays(since, (14*weeksReload));
     weeksReload++;
     let datetime_until: Date = this.addDays(since, (14*weeksReload));
 
     let datetime_UNIX_since = this.getUnixTime(datetime_since);
     let datetime_UNIX_until = this.getUnixTime(datetime_until);
-    
+
     if (composer != "") {
       composer = composer.substring(0, composer.length-1);
       let stm = 'events?fields=id,name,description,start_time,end_time,cover,place&since='+datetime_UNIX_since+'&until='+datetime_UNIX_until+'&ids='+composer+'&access_token='+FACEBOOK_TOKEN;
@@ -404,60 +364,60 @@ export class FacebookProvider {
    */
   private mergeEvents(events: Array<any>): Promise<Array<object>> {
     return new Promise ((resolve) => {
-      let events_final: Array<object> = [];
-
-      for (let j=0; j < events.length; j++){
-        for(let i=0; i<events[j].data.length; i++){
-          let array = events[j].data;
-          let event_info = {
-            day: null,
-            time: null,
-            id: null,
-            name: null,
-            description: null,
-            location: null,
-            img: null,
-            start_time: null,
-            link_map: null
-          }
-
-          event_info.day = event_info.time = new Date(array[i].start_time.replace('T', ' '));
-          event_info.id = array[i].id;
-          event_info.name = array[i].name;
-          event_info.start_time = new Date(array[i].start_time.replace('T', ' '));
-
-          if(array[i].description){
-            event_info.description = array[i].description;
-          }
-          
-          if(array[i].place && array[i].place.location) {
-            let street, city, country: string = "";
-            if (array[i].place.location.street) {
-              street = array[i].place.location.street;
-            }
-            if(array[i].place.location.city){
-              city = array[i].place.location.city;
-            }
-            if(array[i].place.location.country){
-              country = array[i].place.location.country;
-            }
-
-            event_info.location = street +', '+ city + ', '+ country;
-            event_info.link_map = encodeURI('https://www.google.com/maps/search/?api=1&query='+event_info.location);
-          }
-
-          if(array[i].cover) {
-            event_info.img = array[i].cover.source;
-          }
-          else {
-            event_info.img = null;
-          }
-
-          events_final.push(event_info);
-        }
-      }
-      resolve(events_final);
+      let result: Array<object> = [];
+      events.map(eventsByPlace => {
+        eventsByPlace.data.map(elt => {
+          let datas = this.formatEvents(elt);
+          result.push(datas);
+        });
+      });      
+      resolve(result);
     })
+  }
+
+  private formatEvents(elt: any) {
+    let datas = {
+      id: null,
+      name: null,
+      description: null,
+      location: null,
+      img: null,
+      start_time: null,
+      link_map: null
+    }
+
+    datas.start_time = new Date(elt.start_time.replace('T', ' ')); 
+    datas.id = elt.id;
+    
+    datas.name = elt.name;
+
+    if(elt.description){
+      datas.description = elt.description;
+    }
+    
+    if(elt.place && elt.place.location) {
+      let street, city, country: string = "";
+      if (elt.place.location.street) {
+        street = elt.place.location.street;
+      }
+      if(elt.place.location.city){
+        city = elt.place.location.city;
+      }
+      if(elt.place.location.country){
+        country = elt.place.location.country;
+      }
+
+      datas.location = street +', '+ city + ', '+ country;
+      datas.link_map = encodeURI('https://www.google.com/maps/search/?api=1&query='+datas.location);
+    }
+
+    if(elt.cover && elt.cover.source) {
+      datas.img = elt.cover.source;
+    }
+    else {
+      datas.img = null;
+    }
+    return datas;
   }
 
   /**

@@ -2,7 +2,7 @@
 <ion-header>
     <div id="rectBackground"></div>
 
-    <h1>{{activeDate | date:"dd-MM-yyyy"}}</h1>
+    <h1 *ngIf="activeDate">{{ activeDate }}</h1>
     
     <button ion-button icon-only menuToggle="right">
         <ion-icon name='md-funnel'></ion-icon>
@@ -22,13 +22,75 @@
         <p>{{ errorMessage }}</p>
     </div>
 
+  <!--   <ion-list id="myList" no-lines *ngIf='isFinished'>
+        <ion-item-group *ngFor="let event of datas">        
+            <ion-item-divider sticky no-lines>{{ event.start_time | myDate }}</ion-item-divider>        
+            <ion-item no-border [id]="event.id" *ngFor="let event of datas">
+                <ion-img cache="true" [src]="event.img" style='width: 90vw !important; height: 30vh !important'></ion-img>
+                <ion-slides loop="true" initialSlide="1" slidesPerView="auto" loopedSlides="3" centeredSlides="true">
+                        <ion-slide>
+                            <ion-card class="card1">
+                                <ion-grid>
+                                    <ion-row  class="center">
+                                        <ion-col col-9 class="title">
+                                            <p> {{ event.start_time | myDate:"T" }} </p>
+                                        </ion-col>
+
+                                        <ion-col col-3 class="action" (click)='addCalendar($event)'>
+                                            <ion-icon class='icon-calendar' name="md-calendar"></ion-icon>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-grid>
+                            </ion-card>
+                        </ion-slide>
+
+                        <ion-slide>
+                            <ion-card class='card2'>
+                                <ion-grid>
+                                    <ion-row class="center">
+                                        <ion-col col-9 class="title">
+                                            <p> {{ event.name }} </p>
+                                        </ion-col>
+
+                                        <ion-col col-3 class="action" (click)='likeEvent($event)'>
+                                            <div class="like">
+                                                <img src="assets/icons/favorite_border.svg" alt="">
+                                                <img src="assets/icons/favorite_black.svg" alt="">
+                                            </div>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-grid>
+                            </ion-card>
+                        </ion-slide>
+                        
+                        <ion-slide>
+                            <ion-card class="card3">
+                                <ion-grid>
+                                    <ion-row class="center">
+                                        <ion-col col-9 class="title">
+                                            <p> {{ event.location }} </p>
+                                        </ion-col>
+
+                                        <ion-col col-3 class='action'>
+                                            <a href='{{ event.link_map }}'>
+                                                <ion-icon class='icon-map' name="md-navigate"></ion-icon>
+                                            </a>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-grid>
+                            </ion-card>
+                        </ion-slide>
+
+                    </ion-slides>
+            </ion-item>
+        </ion-item-group>
+    </ion-list> -->
+
     <ion-list id='myList' no-lines *ngIf='isFinished' style='opacity: 0 !important;'>
         <ion-item-group *ngFor="let event of datas">
-            <ion-item-divider sticky no-lines>{{ event.day | date:"dd-MM-yy" }}</ion-item-divider>
-            <ion-item no-border id='{{ event.id }}'>  
-                <div class='imageDiv' (click)='getDescription($event)' (press)='likeEvent($event)'>
-                    <img src="{{ event.img }}" alt="">
-                </div>
+            <ion-item-divider sticky no-lines>{{ event.start_time | myDate }}</ion-item-divider>
+            <ion-item no-border id='{{ event.id }}'> 
+                <ion-img [src]="event.img" (click)='getDescription($event)' (press)='likeEvent($event)' cache='true'></ion-img>
     
                 <ion-slides loop="true" initialSlide="1" slidesPerView="auto" loopedSlides="3" centeredSlides="true">
                     <ion-slide>
@@ -36,7 +98,7 @@
                             <ion-grid>
                                 <ion-row  class="center">
                                     <ion-col col-9 class="title">
-                                        <p> {{ event.start_time | myDate:"ddMMMMyy hhmm":" ":" " }} </p>
+                                        <p> {{ event.start_time | myDate:"T" }} </p>
                                     </ion-col>
 
                                     <ion-col col-3 class="action" (click)='addCalendar($event)'>
@@ -96,7 +158,9 @@
     </ion-list>
 
     <ion-infinite-scroll (ionInfinite)="getMoreEvents($event)">
-        <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+        <ion-infinite-scroll-content
+        loadingSpinner="bubbles"
+        loadingText="Loading more data...">
         </ion-infinite-scroll-content>
     </ion-infinite-scroll>
 

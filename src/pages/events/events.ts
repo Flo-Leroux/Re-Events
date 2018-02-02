@@ -1,5 +1,5 @@
 import { Component, Injectable, ViewChild, ElementRef } from '@angular/core';
-import { NavController, Content, Platform, Events, Slides } from 'ionic-angular';
+import { NavController, Content, Platform, Events, Slides, LoadingController } from 'ionic-angular';
 import { Http } from '@angular/http';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
 
@@ -23,6 +23,7 @@ import { FirebaseProvider } from '../../providers/firebase/firebase';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
+import { MyDatePipe } from '../../pipes/my-date/my-date';
 
 @Component({
   selector: 'page-events',
@@ -55,7 +56,7 @@ export class EventsPage {
   @ViewChild(Slides) slides: Slides;
 
   jsonPATH: string = 'assets/json/eventsOrganised.json';
-  datas: JSON;
+  datas: any;
 
   activeDatas: any = [];
 
@@ -65,7 +66,10 @@ export class EventsPage {
   nbEventsBeforeReload: number = 5;
   weeksReload: number = 0;
 
+  loading: any;
+
   constructor(public navCtrl: NavController,
+              public loadingCtrl: LoadingController,
               public eventsCtrl: Events,
               private http: Http,
               private elementRef: ElementRef,
@@ -119,6 +123,25 @@ export class EventsPage {
   // --- App Life State --- //
 
   ionViewDidLoad() {
+    this.firebase.getUserLikes()
+    .then(res => {
+      if(res) {
+        this.likedID = res; 
+        this.facebook.findEventsById(this.likedID)
+        .then(res => {
+          this.likedDATA = res;
+          this.nativeStorage.setItem('likedID', this.likedID);
+          this.nativeStorage.setItem('likedDATA', this.likedDATA);
+        })
+      }
+      else {
+        this.likedID = [];
+        this.likedDATA = [];
+        this.nativeStorage.setItem('likedID', this.likedID);
+        this.nativeStorage.setItem('likedDATA', this.likedDATA);
+      }
+    })
+
     this.doRefreshGeolocation();
   }
 
@@ -132,6 +155,7 @@ export class EventsPage {
     .catch(() => {
       this.likedID = [];     
     });
+
     this.nativeStorage.getItem('likedDATA')
     .then(data => {
       this.likedDATA = data;
@@ -207,13 +231,13 @@ export class EventsPage {
     arrayDate.forEach((element, i ) => {
       let elt0;
       if(i==0) {
-        elt0 = this.datas[0].day.toString().substring(0, 15);
+        elt0 = new MyDatePipe().transform(this.datas[0].start_time);
       }
       else {
-        elt0 = this.datas[i-1].day.toString().substring(0, 15);
+        elt0 = new MyDatePipe().transform(this.datas[i-1].start_time);
       }  
 
-      let elt1 = this.datas[i].day.toString().substring(0, 15);
+      let elt1 = new MyDatePipe().transform(this.datas[i].start_time);
 
       if(elt0==elt1) {
         element.getElementsByTagName('ion-item-divider').item(0).style.display = 'none';
@@ -231,7 +255,7 @@ export class EventsPage {
         if(scrollTop>=top && scrollTop<=bottom && this.nbActiveDate!=i) {
           element.classList.add('js-Header');
         
-          this.activeDate = this.datas[i].day;
+          this.activeDate = new MyDatePipe().transform(this.datas[i].start_time);
           this.nbActiveDate = i;
 
         }
@@ -279,7 +303,13 @@ export class EventsPage {
 
   getMoreEvents(e) {
     console.log('Getting More Events');
-    
+    let loading = this.loadingCtrl.create({
+      spinner: 'hide',
+      content: `
+        <img src='../../assets/imgs/loader.svg' width='50%' height='50%'> `
+    });
+    loading.present();
+
     this.geolocation.getCurrentPosition()    
     .then(coords => {
       this.weeksReload++;
@@ -299,7 +329,9 @@ export class EventsPage {
           }
         }, 5000);
 
-        this.datas = events;
+        events.map(event => {
+          this.datas.push(event);
+        });
         
         this.isFinished = true;
       }
@@ -312,7 +344,8 @@ export class EventsPage {
             setTimeout(() => {
               this.isLoading = false;  
               this.addLikeInEvent();    
-              e.complete();     
+              e.complete(); 
+              loading.dismiss();
               document.getElementById('myList').setAttribute('style', '');
             }, 250);
           }, 250);
@@ -377,7 +410,7 @@ export class EventsPage {
       if(!this.isError) {
         if(this.datas[0]) {
           setTimeout(() => {
-            this.activeDate = this.datas[0].day;
+            this.activeDate = new MyDatePipe().transform(this.datas[0].start_time);
             this.scrollEvent()
             setTimeout(() => {
               this.isLoading = false;  
@@ -440,10 +473,12 @@ export class EventsPage {
             }, 200);
           }); */
           let obj = this.findObjectByKey(this.datas, 'id', id);
+
           this.likedDATA.push(obj);
           this.likedID.push(id);       
-          this.eventsCtrl.publish('likeID', id);             
+          this.eventsCtrl.publish('likeID', id);            
         }
+        this.firebase.updateUserLikes(this.likedID);
         this.nativeStorage.setItem('likedID', this.likedID);
         this.nativeStorage.setItem('likedDATA', this.likedDATA);
       }

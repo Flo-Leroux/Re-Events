@@ -26,7 +26,7 @@ import { FacebookProvider } from '../providers/facebook/facebook';
 })
 export class ReEvents {
 
-  rootPage:any = LoginPage;
+  rootPage: any;
   user = {} as User;
 
   constructor(public platform: Platform,

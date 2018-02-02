@@ -11,6 +11,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add Providers --- //
 import { RegexProvider } from '../../providers/regex/regex';
+import { FirebaseProvider } from '../../providers/firebase/firebase';
 
 @Component({
   selector: 'page-description',
@@ -40,7 +41,8 @@ export class DescriptionPage {
               private nativeStorage: NativeStorage,
               private nativePageTransitions: NativePageTransitions,
               public ref: ChangeDetectorRef,
-              private regex: RegexProvider
+              private regex: RegexProvider,
+              private firebase: FirebaseProvider
               ) {
     this.event = navParams.get('event');
 
@@ -135,6 +137,7 @@ export class DescriptionPage {
           }
           this.nativeStorage.setItem('likedID', this.likedID);
           this.nativeStorage.setItem('likedDATA', this.likedDATA);
+          this.firebase.updateUserLikes(this.likedID);
         }
       });
   }

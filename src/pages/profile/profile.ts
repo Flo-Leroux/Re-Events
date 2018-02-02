@@ -103,15 +103,20 @@ export class ProfilePage {
         
         this.findEventsById(id)
         .then(res => {
+
+          console.log('Get Description Profile');
           let event = this.likedDATA[res];
-          
+
+          event.start_time = event.start_time.toString().replace('T', ' ');
+          event.start_time = event.start_time.substr(0, 18);
+          event.start_time = new Date(event.start_time);
+
           let options: NativeTransitionOptions = {
             direction: 'left',
             duration: 500,
             slowdownfactor: 3,
           }
           this.nativePageTransitions.slide(options);
-          console.log(event);
 
           this.navCtrl.push(DescriptionPage, {'event': event});          
         });        
@@ -136,10 +141,9 @@ export class ProfilePage {
           let eltByID = res.firstChild.parentNode;
           parent.removeChild(eltByID);
 
+          this.firebase.updateUserLikes(this.likedID);
           this.eventsCtrl.publish('dislikeID', id);
         }
-
-
       }
     });
   }
