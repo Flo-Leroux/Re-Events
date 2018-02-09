@@ -50,7 +50,7 @@ export class EventsPage {
   nbActiveDate: number;
 
   loadingMessage: string = 'Initialisation';
-  errorMessage: string = 'Rrrh ! On n\'arrive pas à te localiser. Active ton GPS et recharge la page ;)'
+  errorMessage: string = 'Rrrh ! Nous n\'arrivons pas à te localiser. Active ton GPS, puis tire la page vers le bas pour rafraichir ta position.';
 
   @ViewChild(Content) content: Content;
   @ViewChild(Slides) slides: Slides;
@@ -150,7 +150,7 @@ export class EventsPage {
     this.nativeStorage.getItem('likedID')
     .then(data => {
       this.likedID = data;
-      this.addLikeInEvent();
+      // this.addLikeInEvent();
     })
     .catch(() => {
       this.likedID = [];     
@@ -236,12 +236,15 @@ export class EventsPage {
       else {
         elt0 = new MyDatePipe().transform(this.datas[i-1].start_time);
       }  
+      
+      if(this.datas[i].start_time) {
+        let elt1 = new MyDatePipe().transform(this.datas[i].start_time);
 
-      let elt1 = new MyDatePipe().transform(this.datas[i].start_time);
-
-      if(elt0==elt1) {
-        element.getElementsByTagName('ion-item-divider').item(0).style.display = 'none';
+        if(elt0==elt1) {
+          element.getElementsByTagName('ion-item-divider').item(0).style.display = 'none';
+        }
       }
+
     });
 
     // Scroll Event Function
@@ -303,12 +306,6 @@ export class EventsPage {
 
   getMoreEvents(e) {
     console.log('Getting More Events');
-    let loading = this.loadingCtrl.create({
-      spinner: 'hide',
-      content: `
-        <img src='../../assets/imgs/loader.svg' width='50%' height='50%'> `
-    });
-    loading.present();
 
     this.geolocation.getCurrentPosition()    
     .then(coords => {
@@ -345,7 +342,6 @@ export class EventsPage {
               this.isLoading = false;  
               this.addLikeInEvent();    
               e.complete(); 
-              loading.dismiss();
               document.getElementById('myList').setAttribute('style', '');
             }, 250);
           }, 250);
@@ -358,6 +354,7 @@ export class EventsPage {
     console.log('Do Refresh');
 
     if(refresher) {
+      this.datas = [];
       this.loadingMessage = 'Nouvelle recherche !'
     }
 
@@ -369,7 +366,7 @@ export class EventsPage {
     .then(coords => {
       console.log('Geolocation Success');
       console.log(coords[0] + ',' + coords[1]);
-      this.loadingMessage = 'Geolocalisation réussie ! Nous t\'avons trouvé ;)';
+      this.loadingMessage = 'Geolocalisation réussie !';
       this.getCityName(coords);
       return this.facebook.findEventsByPlaces(this.keywordsInput, coords, this.rangeNumber, this.firstDatePicker, this.weeksReload);
     })
@@ -402,7 +399,7 @@ export class EventsPage {
         this.isFinished = true;    
         
         if(refresher) {
-          refresher.complete();
+         refresher.complete();
         }
       }
     })
@@ -489,27 +486,30 @@ export class EventsPage {
   addLikeInEvent() {
     if(this.likedID && this.likedID.length>0) {
 
+      // console.log(this.likedID);
       this.likedID.forEach((like, i) => {
         const elt = document.getElementById(like);
-  
-        const border =  document.getElementById(like)
-                                .getElementsByClassName('swiper-slide-active').item(0)
-                                .getElementsByClassName('card2').item(0)
-                                .getElementsByTagName('img').item(0);
-  
-        const black =   document.getElementById(like)
-                                .getElementsByClassName('swiper-slide-active').item(0)
-                                .getElementsByClassName('card2').item(0)
-                                .getElementsByTagName('img').item(1);
-
+        
         if(elt) {
-          border.style.display = 'none';
-          black.style.display = 'block';
+          const border =  document.getElementById(like)
+                                  .getElementsByClassName('swiper-slide-active').item(0)
+                                  .getElementsByClassName('card2').item(0)
+                                  .getElementsByTagName('img').item(0);
+    
+          const black =   document.getElementById(like)
+                                  .getElementsByClassName('swiper-slide-active').item(0)
+                                  .getElementsByClassName('card2').item(0)
+                                  .getElementsByTagName('img').item(1);
+          if(elt) {
+            border.style.display = 'none';
+            black.style.display = 'block';
+          }
+          else {
+            border.style.display = 'black';
+            black.style.display = 'none';
+          }
         }
-        else {
-          border.style.display = 'black';
-          black.style.display = 'none';
-        }
+
       });
     }
   }

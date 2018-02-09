@@ -77,18 +77,20 @@ export class RegisterPage {
 
     if(regEmail) {
       this.firebase.EmailExist(user.email)
-      .then(() => {
-        this.email = true;
-      })
-      .catch(() => {
-        this.email = false;
-        this.errors.email = true;
-        let toastEmail = this.toastCtrl.create({
-          message: 'Cette adresse email est déjà utilisé.',
-          duration: 3000,
-          position: 'top'
-        });
-        toastEmail.present();
+      .then((res) => {
+        if(res[0]) {
+          this.email = false;
+          this.errors.email = true;
+          let toastEmail = this.toastCtrl.create({
+            message: 'Cette adresse email est déjà utilisé.',
+            duration: 3000,
+            position: 'top'
+          });
+          toastEmail.present();
+        }
+        else {
+          this.email = true;
+        }
       });
     }
     else {

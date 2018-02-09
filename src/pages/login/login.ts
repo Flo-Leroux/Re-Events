@@ -119,6 +119,8 @@ export class LoginPage {
   facebookConnect() {
     this.facebook.login()
     .then(res => {
+      console.log('facebook Connect');
+      console.log(res);
       return this.firebase.getUserInfo();
     })
     .then(userInfos => {

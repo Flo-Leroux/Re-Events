@@ -24,36 +24,40 @@ export class FirebaseProvider {
 
   write_User_Infos(userId: string, user: User) {
     console.log("Write User Infos");
-    if(user.birthday && !user.pictureURL) {
-      firebase.database().ref(`users/${userId}/`).set({
-        firstname   : user.prenom,
-        lastname    : user.nom,
-        birthday    : user.birthday,
-        pictureURL  : './assets/imgs/persona.jpg'
-      });
-    }
-    else if(user.pictureURL && !user.birthday) {
-      firebase.database().ref(`users/${userId}/`).set({
-        firstname   : user.prenom,
-        lastname    : user.nom,
-        pictureURL  : user.pictureURL
-      });
-    }
-    else if(user.birthday && user.pictureURL) {
-      firebase.database().ref(`users/${userId}/`).set({
-        firstname   : user.prenom,
-        lastname    : user.nom,
-        pictureURL  : user.pictureURL,
-        birthday    : user.birthday
-      });      
-    }
-    else {
-      firebase.database().ref(`users/${userId}/`).set({
-        firstname   : user.prenom,
-        lastname    : user.nom,
-        pictureURL  : './assets/imgs/persona.jpg'
-      });
-    }
+    firebase.database().ref(`users/${userId}`).on('value', res => {
+      if(!res.val()) {
+        if(user.birthday && !user.pictureURL) {
+          firebase.database().ref(`users/${userId}/`).set({
+            firstname   : user.prenom,
+            lastname    : user.nom,
+            birthday    : user.birthday,
+            pictureURL  : './assets/imgs/persona.jpg'
+          });
+        }
+        else if(user.pictureURL && !user.birthday) {
+          firebase.database().ref(`users/${userId}/`).set({
+            firstname   : user.prenom,
+            lastname    : user.nom,
+            pictureURL  : user.pictureURL
+          });
+        }
+        else if(user.birthday && user.pictureURL) {
+          firebase.database().ref(`users/${userId}/`).set({
+            firstname   : user.prenom,
+            lastname    : user.nom,
+            pictureURL  : user.pictureURL,
+            birthday    : user.birthday
+          });      
+        }
+        else {
+          firebase.database().ref(`users/${userId}/`).set({
+            firstname   : user.prenom,
+            lastname    : user.nom,
+            pictureURL  : './assets/imgs/persona.jpg'
+          });
+        }
+      }
+    })
   }
 
   upload_Profil_Picture(userId: string, image: string): Promise<any> {
@@ -70,6 +74,21 @@ export class FirebaseProvider {
           reject(err);
         })
       }
+    });
+  }
+
+  getProfileURL(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let userId = firebase.auth().currentUser.uid;
+      setTimeout(() => {
+        firebase.database().ref(`users/${userId}/pictureURL`).on('value', (snap) => {
+          let url = snap.val();
+          console.log('URL IMAGE');
+          console.log(userId);
+          console.log(url);
+          resolve(url);
+        });
+      }, 2000);
     });
   }
 
@@ -90,6 +109,8 @@ export class FirebaseProvider {
     return new Promise((resolve, reject) => {
       firebase.auth().fetchProvidersForEmail(email)
       .then(res => {
+        console.log('Email Exist');
+        console.log(res);
         if(res[0]) {
           reject();
         }
@@ -106,9 +127,10 @@ export class FirebaseProvider {
     return new Promise((resolve, reject) => {
   
       const facebookCredential = firebase.auth.FacebookAuthProvider.credential(facebook_token);
-  
       firebase.auth().signInWithCredential(facebookCredential)
       .then(res => {
+        console.log('Facebook Login Firebase');
+        console.log(res);
         resolve(res);
       })
       .catch(err => {

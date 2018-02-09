@@ -52,7 +52,20 @@ export class ProfilePage {
               public popoverCtrl: PopoverController) {
 
     console.log('Profile Enter Construct');
-
+    
+    this.eventsCtrl.subscribe('userUpdate', res => {
+      this.nativeStorage.getItem('USER')
+      .then(res => {
+        this.user = res;
+  
+        if(this.user.pictureURL) {
+          this.pictureURL = this.user.pictureURL;
+        }
+        else {
+          this.pictureURL = '/assets/imgs/persona.jpg';
+        }
+      });
+    });
   }
 
   ionViewDidLoad() {
@@ -79,6 +92,12 @@ export class ProfilePage {
     this.nativeStorage.getItem('likedID')
     .then(res => {this.likedID = res;})
     .catch(() => {this.likedID = [];});
+
+    this.nativeStorage.getItem('USER')
+    .then(res => {this.user = res;});
+
+    this.imgHeight =  document.getElementById('duotone').offsetHeight;
+
   }
 
   onScroll($event: any){

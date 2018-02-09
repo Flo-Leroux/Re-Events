@@ -8,7 +8,7 @@
 
             .a,
             .b {
-                stroke:#FFF;
+                stroke:#700961;
                 stroke-miterlimit:10;
                 stroke-width:5px;
                 stroke-dasharray:100;
@@ -16,7 +16,7 @@
             }
 
             .b {
-                fill:#700961;
+                fill:#FFF;
             }
 
             @keyframes dash {

@@ -81,14 +81,17 @@ export class EditProfilePage {
         return this.firebase.upload_Profil_Picture(user.uid, this.pictureURL);
       })
       .then(url => {
-        this.user.pictureURL = url;
         return this.firebase.updateUserInfo('pictureURL', url);
       })
       .then(() => {
+        return this.firebase.getProfileURL();
+      })
+      .then((url) => {
+        this.user.pictureURL = url;
         return this.nativeStorage.setItem('USER', this.user)
       })
       .then(() => {
-        this.eventsCtrl.publish('userNativeUpdate');
+        this.eventsCtrl.publish('userUpdate');
       });
     }
     else {

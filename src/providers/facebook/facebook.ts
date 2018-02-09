@@ -55,10 +55,6 @@ export class FacebookProvider {
         .then(() => {
           return this.firebase.FacebookRegister(this.facebook_token);
         })
-        .catch(() => {
-          console.log("OK Logged");
-          resolve();
-        })
         .then(res => {
           if(res) {
             this.firebase.write_User_Infos(res.uid, this.user);
@@ -163,9 +159,6 @@ export class FacebookProvider {
       .then(res => {
         return this.organizeEvents(res);
       })
-/*       .then(res => {
-        return this.groupEvents(res);
-      }) */
       .then(res => {
         console.log('RESULT');
         console.log(res);
@@ -257,9 +250,9 @@ export class FacebookProvider {
       }
     }
 
-    let datetime_since: Date = this.addDays(since, (14*weeksReload));
+    let datetime_since: Date = this.addDays(since, (30*weeksReload));
     weeksReload++;
-    let datetime_until: Date = this.addDays(since, (14*weeksReload));
+    let datetime_until: Date = this.addDays(since, (30*weeksReload));
 
     let datetime_UNIX_since = this.getUnixTime(datetime_since);
     let datetime_UNIX_until = this.getUnixTime(datetime_until);
@@ -428,43 +421,6 @@ export class FacebookProvider {
     return new Promise ((resolve) => {
       events = events.sort((item1, item2): number => this.sortByDate(item1, item2));
       resolve(events);
-    })
-  }
-
-  /**
-   * Groupe events by date
-   * @param {Array<any>} events 
-   */
-  private groupEvents(events: Array<any>): Promise<any> {
-    return new Promise ((resolve) => {
-      let eventDay: String = "";
-      let groupTmp = {
-          day: null,
-          tableEvent: []
-      };
-      let eventsGrouped: Array<any> = [];
-
-      for (let i=0; i<events.length; i++) {
-        if (i == 0) {
-          eventDay = events[i].day.toDateString();
-          groupTmp.day = eventDay;
-          groupTmp.tableEvent.push(events[i]);
-        }
-        else if (events[i].day.toDateString() == eventDay) {
-          groupTmp.tableEvent.push(events[i]);
-        }
-        else {
-          eventsGrouped.push(groupTmp);
-          groupTmp = {
-            day: null,
-            tableEvent: []
-          };
-          eventDay = events[i].day.toDateString();
-          groupTmp.day = eventDay;
-          groupTmp.tableEvent.push(events[i]);
-        }
-      }
-      resolve(eventsGrouped);
     })
   }
 

@@ -6,20 +6,24 @@ page-profile {
     }
 
     ion-header {
+        height: 12vh !important;
+        padding-top: 20px !important;
+        
+        &.showToolbar {
+            box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.35); 
+            background-color: color($colors, colorHunt2);       
+        }
 
         ion-navbar {
             background-color: transparent;
             transition: all ease-in-out .3s;
             color: white;
-
+            
+            
             div.toolbar-background {
                 background-color: transparent !important;
             }
 
-            &.showToolbar {
-                box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.35); 
-                background-color: color($colors, colorHunt2);       
-            }
 
             span.button-inner {
                 color: white !important;

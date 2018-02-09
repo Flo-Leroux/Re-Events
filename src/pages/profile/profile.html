@@ -1,9 +1,6 @@
 
-<ion-header no-border>
-  <!-- <div id="rectBackground"></div> -->
-  <ion-navbar [class.showToolbar]="showToolbar" color='white'>
-    
-    
+<ion-header no-border [class.showToolbar]="showToolbar">
+  <ion-navbar  color='white'>
     <ion-title [hidden]="!showToolbar">Mon profil</ion-title>
 
     <ion-buttons end>
@@ -15,7 +12,7 @@
 </ion-header>
 
 
-<ion-content  (ionScroll)="onScroll($event)">
+<ion-content (ionScroll)="onScroll($event)">
 
   <div class="header-image">
     <div id="duotone">
