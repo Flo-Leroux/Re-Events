@@ -24,35 +24,37 @@ export class FirebaseProvider {
 
   write_User_Infos(userId: string, user: User) {
     console.log("Write User Infos");
+    console.log(user);
     firebase.database().ref(`users/${userId}`).on('value', res => {
+      console.log(res.val());
       if(!res.val()) {
         if(user.birthday && !user.pictureURL) {
           firebase.database().ref(`users/${userId}/`).set({
-            firstname   : user.prenom,
-            lastname    : user.nom,
+            firstname   : user.firstname,
+            lastname    : user.lastname,
             birthday    : user.birthday,
             pictureURL  : './assets/imgs/persona.jpg'
           });
         }
         else if(user.pictureURL && !user.birthday) {
           firebase.database().ref(`users/${userId}/`).set({
-            firstname   : user.prenom,
-            lastname    : user.nom,
+            firstname   : user.firstname,
+            lastname    : user.lastname,
             pictureURL  : user.pictureURL
           });
         }
         else if(user.birthday && user.pictureURL) {
           firebase.database().ref(`users/${userId}/`).set({
-            firstname   : user.prenom,
-            lastname    : user.nom,
+            firstname   : user.firstname,
+            lastname    : user.lastname,
             pictureURL  : user.pictureURL,
             birthday    : user.birthday
           });      
         }
         else {
           firebase.database().ref(`users/${userId}/`).set({
-            firstname   : user.prenom,
-            lastname    : user.nom,
+            firstname   : user.firstname,
+            lastname    : user.lastname,
             pictureURL  : './assets/imgs/persona.jpg'
           });
         }

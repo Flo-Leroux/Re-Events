@@ -45,8 +45,8 @@ export class FacebookProvider {
         })
         .then(res => {
           this.user.email = res.email;
-          this.user.nom = res.last_name;
-          this.user.prenom = res.first_name;
+          this.user.lastname = res.last_name;
+          this.user.firstname = res.first_name;
           this.user.birthday = res.birthday;
           this.user.pictureURL = res.picture.data.url;
   

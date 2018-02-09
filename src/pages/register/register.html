@@ -26,11 +26,11 @@
     <div *ngIf="!(step1)" [ngClass]="{'showOpacity': !(step1)}">
       <ion-item>
         <ion-label floating>Nom</ion-label>
-        <ion-input type="text" required [(ngModel)]="user.nom" (input)="step2Inputs(user)"></ion-input>
+        <ion-input type="text" required [(ngModel)]="user.lastname" (input)="step2Inputs(user)"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Prénom</ion-label>
-        <ion-input type="text" required [(ngModel)]="user.prenom" (input)="step2Inputs(user)"></ion-input>
+        <ion-input type="text" required [(ngModel)]="user.firstname" (input)="step2Inputs(user)"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Date d'anniversaire</ion-label>

@@ -60,28 +60,51 @@ export class RegisterphotoPage {
     this.camera.getPicture(cameraOptions)
     .then(data =>{
       if(data.length==0) {
-        this.imgPath = 'assets/imgs/persona.jpg';
+        this.imgPath = './assets/imgs/persona.jpg';
       }
       else {
         this.imgPath 	= "data:image/png;base64," + data;
       }
     })
     .catch(err => {
-      this.imgPath = 'assets/imgs/persona.jpg';
+      this.imgPath = './assets/imgs/persona.jpg';
     })       
   }
 
   register() {
     this.firebase.emailRegister(this.user)
-    .then(res => {      
-      return Promise.all([res.uid, this.firebase.upload_Profil_Picture(res.uid, this.imgPath)]);
+    .then(res => {
+      if(this.imgPath != './assets/imgs/persona.jpg') {
+        return this.firebase.upload_Profil_Picture(res.uid, this.imgPath);
+      }
+      else {
+        return false;
+      }
     })
-    .then(([uid, url]) => {
-      this.user.pictureURL = url;
-      return this.firebase.write_User_Infos(uid, this.user);
+    .then(() => {
+      if(this.imgPath != './assets/imgs/persona.jpg') {
+        return this.firebase.getProfileURL();
+      }
+      else {
+        return false;
+      }
+    })
+    .then(url => {
+      if(url == false) {
+        this.user.pictureURL = url;
+      }
+      else {
+        this.user.pictureURL = './assets/imgs/persona.jpg';
+      }
+      return this.firebase.getStatus();
+    })
+    .then(user => {
+      console.log('USER');
+      console.log(user.uid);
+      return this.firebase.write_User_Infos(user.uid, this.user);
     })
     .then(res => {
-      return this.firebase.sendEmailVerification();
+      //return this.firebase.sendEmailVerification();
     })
     .then(res => {
       this.user.facebook = false;      
