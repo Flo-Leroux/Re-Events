@@ -34,13 +34,16 @@ export class FacebookProvider {
    * Log the user to Firebase database with Facebook Informations
    */
   public login(): Promise<any>{
+    console.log('FACEBOOK');
     return new Promise((resolve, reject) => {
       if (this.platform.is('cordova')){
         this.fb.login(FACEBOOK_CONFIG)
-        .then(res => {        
+        .then(res => {      
+          console.log(res);  
           if(res.status=="connected") {
             let userFacebookId: string = res.authResponse.userID;
             this.facebook_token = res.authResponse.accessToken;
+            console.log(this.facebook_token);  
             return this.api(userFacebookId + '?fields=id,email,first_name,last_name,birthday,picture{url}');
           }
         })
@@ -50,54 +53,14 @@ export class FacebookProvider {
           this.user.firstname = res.first_name;
           this.user.birthday = res.birthday;
           this.user.pictureURL = res.picture.data.url;
-  
-          return this.firebase.EmailExist(this.user.email);
+          return this.firebase.EmailExist(this.user.email)
         })
         .then(() => {
-          let alert = this.alertCtrl.create({
-            message: `
-              <div style='text-align: center !important;'>En utilisant l'application Re-Events,
-              j'accepte les <a href="https://re-events-officiel.firebaseio.com">conditions
-              générales d'utilisation</a>.</div>`,
-            buttons: [
-              {
-                text: 'Accepter',
-                handler: () => {
-                  this.firebase.FacebookRegister(this.facebook_token)
-                  .then(res => {
-                    if(res) {
-                      return this.firebase.write_User_Infos(res.uid, this.user);
-                    }
-                  })
-                  .then(() => {
-                    console.log("Logged");
-                    resolve();
-                  });
-                }
-              },
-              {
-                text: 'Refuser',
-                handler: () => {
-                  reject();
-                }
-              }
-            ]
-          });
-          alert.present();
+          reject([this.facebook_token, this.user]);
         })
-        .catch(() => {
-          this.firebase.FacebookRegister(this.facebook_token)
-          .then(res => {
-            if(res) {
-              return this.firebase.write_User_Infos(res.uid, this.user);
-            }
-          })
-          .then(() => {
-            console.log("Logged");
-            resolve();
-          });
-        })
-        
+        .catch((err) => {
+          resolve(this.facebook_token);
+        });
       }
     });
   }

@@ -18,6 +18,8 @@ page-profile {
             background-color: transparent;
             transition: all ease-in-out .3s;
             color: white;
+            padding-left: 5vw !important;
+            padding-right: 5vw !important;
             
             
             div.toolbar-background {
@@ -31,6 +33,19 @@ page-profile {
 
             ion-title div {
                 color: white !important;
+            }
+
+            ion-buttons {
+                button {
+                    background-color: transparent !important;
+                    color: white;
+                    box-shadow: none !important;
+
+                    ion-icon {
+                        font-size: 2.4em !important;
+                        color: white !important;
+                    }
+                }
             }
         }
     }

@@ -2,9 +2,6 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
 
-// --- Add Firebase --- //
-
-
 // --- Add Plugins --- //
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
@@ -12,12 +9,15 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { NativeStorage } from '@ionic-native/native-storage';
 
+// --- Add Pages --- //
+import { CguPage } from '../cgu/cgu';
+import { TabsPage } from '../tabs/tabs';
+
 // --- Add Models --- //
 import { User } from '../../models/User';
 
 // --- Add Providers --- //
 import { FirebaseProvider } from '../../providers/firebase/firebase';
-import { TabsPage } from '../tabs/tabs';
 
 @Component({
   selector: 'page-registerphoto',
@@ -72,51 +72,13 @@ export class RegisterphotoPage {
   }
 
   register() {
-    console.log('Register');
-    this.firebase.emailRegister(this.user)
-    .then(res => {
-      if(this.imgPath != './assets/imgs/persona.jpg') {
-        return this.firebase.upload_Profil_Picture(res.uid, this.imgPath);
-      }
-      else {
-        return false;
-      }
-    })
-    .then(() => {
-      if(this.imgPath != './assets/imgs/persona.jpg') {
-        return this.firebase.getProfileURL();
-      }
-      else {
-        return false;
-      }
-    })
-    .then(url => {
-      if(url == false) {
-        this.user.pictureURL = url;
-      }
-      else {
-        this.user.pictureURL = './assets/imgs/persona.jpg';
-      }
-      return this.firebase.getStatus();
-    })
-    .then(user => {
-      console.log('USER');
-      console.log(user.uid);
-      return this.firebase.write_User_Infos(user.uid, this.user);
-    })
-    .then(res => {
-      //return this.firebase.sendEmailVerification();
-    })
-    .then(res => {
-      this.user.facebook = false;      
-      this.nativeStorage.setItem('USER', this.user);
-
-      let options: NativeTransitionOptions = {
-        duration: 800,
-        slowdownfactor: -1
-      }; 
-      this.navTrans.fade(options);
-      this.navCtrl.setRoot(TabsPage);
-    })
+    let options: NativeTransitionOptions = {
+      duration: 800,
+      slowdownfactor: -1,
+      iosdelay: 50,
+      androiddelay: 100,
+    }; 
+    this.navTrans.fade(options);
+    this.navCtrl.setRoot(CguPage, {'origin': 'email', 'user': this.user, 'img': this.imgPath});
   }
 }

@@ -10,6 +10,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 // --- Add PAges --- //
 import { LoginPage } from '../login/login';
 import { EditProfilePage } from '../edit-profile/edit-profile';
+import { CguPage } from '../cgu/cgu';
 
 // --- Add Providers --- //
 import { FacebookProvider } from '../../providers/facebook/facebook';
@@ -49,6 +50,16 @@ export class PopoverProfilePage {
 
   goSettings() {
 
+  }
+
+  goCGU() {
+    let options: NativeTransitionOptions = {
+      direction: 'left',
+      duration: 500,
+      slowdownfactor: -1
+    }
+    this.nativePageTransitions.slide(options);
+    this.navCtrl.push(CguPage, {'origin': 'profile'});
   }
 
   logout() {

@@ -16,6 +16,7 @@ import { User } from '../../models/User';
 import { RegisterphotoPage } from '../registerphoto/registerphoto';
 import { TabsPage } from '../tabs/tabs';
 import { LoginPage } from '../login/login';
+import { CguPage } from '../cgu/cgu';
 
 // --- Add Providers --- //
 import { RegexProvider } from '../../providers/regex/regex';
@@ -171,23 +172,33 @@ export class RegisterPage {
     this.facebook.login()
     .then(res => {
       console.log('facebook Connect');
-      console.log(res);
-      return this.firebase.getUserInfo();
+      this.firebase.FacebookRegister(res)
+      .then(() => {
+        return this.firebase.getUserInfo();
+      })
+      .then(userInfos => {
+        this.user.facebook = userInfos.facebook = true;
+  
+        this.nativeStorage.setItem('USER', userInfos);
+  
+        let options: NativeTransitionOptions = {
+          duration: 500,
+          slowdownfactor: -1
+        }
+        this.nativePageTransitions.fade(options);
+        this.navCtrl.setRoot(TabsPage);
+      });
     })
-    .then(userInfos => {
-      this.user.facebook = userInfos.facebook = true;
-
-      console.log('userInfos');
-      console.log(userInfos);
-
-      this.nativeStorage.setItem('USER', userInfos);
-
+    .catch((res) => {
+      console.log('Facebook TOKEN');
+      console.log(res);
       let options: NativeTransitionOptions = {
+        direction: 'left',
         duration: 500,
         slowdownfactor: -1
       }
-      this.nativePageTransitions.fade(options);
-      this.navCtrl.setRoot(TabsPage);
+      this.nativePageTransitions.slide(options);
+      this.navCtrl.push(CguPage, {'origin': 'facebook', 'token': res[0], 'user': res[1]});
     });
   }
 
