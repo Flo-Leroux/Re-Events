@@ -22,13 +22,4 @@ export class GeolocationProvider {
       })
     });
   }
-
-  public watchPosition(): Promise<Array<any>> {
-    return new Promise((resolve, reject) => {
-      let watch = this.geolocation.watchPosition();
-
-
-
-    });
-  }
 }

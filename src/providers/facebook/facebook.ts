@@ -422,49 +422,12 @@ export class FacebookProvider {
   }
 
   /**
-   * Get an access token to use Facebook Services.
-   * Resolve => Get a private token
-   * Reject => Get a public token
-   */
-  private getAccessTokenFacebook(): Promise<String> {
-    return new Promise ((resolve, reject) => {
-      if(this.facebook_token!='') {
-        resolve();
-      }
-      else {
-        this.fb.getAccessToken()
-        .then(res => {
-          this.facebook_token = res;
-          resolve();
-        })
-        .catch(err => {
-          this.facebook_token = FACEBOOK_TOKEN;
-          resolve();
-        })
-      }      
-    });
-  }
-
-  /**
    * Local function to sort item by date
    * @param {any} item1 
    * @param {any} item2 
    */
   private sortByDate(item1: any, item2: any): any {
     return (item1.start_time < item2.start_time) ? -1 : (item1.start_time === item2.start_time ? 0 : 1);
-  }
-
-  /**
-   * This method is to load a JSON file for testing with local data
-   * @param {string} jsonPATH The path to the JSON file 
-   */
-  private loadJson(jsonPATH: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(jsonPATH)
-      .subscribe(res => {
-        resolve(res);
-      })
-    });
   }
 
   /**

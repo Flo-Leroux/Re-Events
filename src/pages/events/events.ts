@@ -1,4 +1,4 @@
-import { Component, Injectable, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, Content, Platform, Events, Slides, LoadingController } from 'ionic-angular';
 import { Http } from '@angular/http';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
@@ -12,7 +12,6 @@ import { Calendar } from '@ionic-native/calendar';
 import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add Pages --- //
-import { RegisterPage } from '../register/register';
 import { DescriptionPage } from '../description/description';
 
 // --- Add Providers --- //
@@ -72,18 +71,14 @@ export class EventsPage {
               public loadingCtrl: LoadingController,
               public eventsCtrl: Events,
               private http: Http,
-              private elementRef: ElementRef,
               private statusBar: StatusBar,
-              private navParams: NavParams,
               private nativePageTransitions: NativePageTransitions,
               private datePicker: DatePicker,
               private calendar: Calendar,
               private nativeStorage: NativeStorage,
-              private animation: AnimationProvider,
               private facebook: FacebookProvider,
               private geolocation: GeolocationProvider,
-              private firebase: FirebaseProvider,
-              private platform: Platform) {
+              private firebase: FirebaseProvider) {
     
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
@@ -205,13 +200,6 @@ export class EventsPage {
     });
   }
 
-  private getUserName() {
-    this.firebase.getUserName()
-    .then(res => {
-      this.user.nom = res;
-    })
-  }
-
   // --- User Events --- //
 
   /**
@@ -221,7 +209,6 @@ export class EventsPage {
   private scrollEvent() {
 
     // Local Variables
-    const myContent = document.getElementsByClassName('scroll-content').item(0);
     const dividerDate = document.querySelectorAll('ion-item-group');
     const header = document.getElementById('rectBackground');
     
@@ -608,16 +595,6 @@ export class EventsPage {
 
   
   // --- Others --- //
-
-  private loadJson(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(this.jsonPATH)
-      .subscribe(res => {
-        resolve(res);
-      })
-    });
-  }
-
   private collectionHas(a, b) { //helper function (see below)
     for(var i = 0, len = a.length; i < len; i ++) {
         if(a[i] == b) return true;

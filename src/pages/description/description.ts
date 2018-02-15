@@ -5,7 +5,7 @@ import { NavController, NavParams, Content, Events } from 'ionic-angular';
 // --- Add Plugins --- //
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
-import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+import { NativePageTransitions } from '@ionic-native/native-page-transitions';
 import { Calendar } from '@ionic-native/calendar';
 import { NativeStorage } from '@ionic-native/native-storage';
 
@@ -39,7 +39,6 @@ export class DescriptionPage {
               public statusBar: StatusBar,
               private calendar: Calendar,
               private nativeStorage: NativeStorage,
-              private nativePageTransitions: NativePageTransitions,
               public ref: ChangeDetectorRef,
               private regex: RegexProvider,
               private firebase: FirebaseProvider
@@ -111,8 +110,6 @@ export class DescriptionPage {
       .then(res => {
         
         if(res != null) {          
-          const effect = res.getElementsByClassName('like').item(0);
-
           const id = this.event.id;
           const isExist = this.in_array(id, this.likedID);
           
@@ -144,9 +141,6 @@ export class DescriptionPage {
 
   addCalendar(e) {
     console.log('Calendar');
-
-    const id = this.event.id;
-
     this.calendar.hasWritePermission()
     .then(res => {
       console.log(res);
