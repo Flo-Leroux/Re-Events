@@ -170,15 +170,22 @@ export class RegisterPage {
   facebookRegister() {
     this.facebook.login()
     .then(res => {
+      console.log('facebook Connect');
+      console.log(res);
+      return this.firebase.getUserInfo();
+    })
+    .then(userInfos => {
+      this.user.facebook = userInfos.facebook = true;
 
-      this.user.facebook = true;
+      console.log('userInfos');
+      console.log(userInfos);
 
-      this.nativeStorage.setItem('USER', this.user);
+      this.nativeStorage.setItem('USER', userInfos);
 
       let options: NativeTransitionOptions = {
-        duration: 800,
-        slowdownfactor: -10
-      }; 
+        duration: 500,
+        slowdownfactor: -1
+      }
       this.nativePageTransitions.fade(options);
       this.navCtrl.setRoot(TabsPage);
     });

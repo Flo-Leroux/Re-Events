@@ -114,9 +114,7 @@
     <ion-content id="content-sideMenu">
 
         <header id="rectBackgroundSide">
-            <h2>
-                Hey {{ user.nom }} ici, <br> personnalise ta recherche <br> {{ cityName }}
-            </h2>
+            <h2>Hey {{ user.firstname }} ici, <br> personnalise ta recherche <br> {{ cityName }}</h2>
         </header>
 
         <form>
@@ -151,7 +149,7 @@
                 </ion-row>
 
                 <ion-row>
-                    <button ion-button id="buttonSearch" (click)='doRefreshGeolocation()'>Lancer la recherche</button>
+                    <button menuClose ion-button id="buttonSearch" (click)='doRefreshGeolocation()'>Lancer la recherche</button>
                 </ion-row>
             </ion-grid>
         </form>

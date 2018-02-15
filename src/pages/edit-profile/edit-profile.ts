@@ -1,5 +1,5 @@
 import { Component, Output } from '@angular/core';
-import { NavController, NavParams, Events } from 'ionic-angular';
+import { NavController, NavParams, Events, ToastController, LoadingController } from 'ionic-angular';
 
 // --- Add Plugins --- //
 /* Ionic's Plugins */
@@ -30,6 +30,8 @@ export class EditProfilePage {
   statut: string;
 
   constructor(public navCtrl: NavController,
+              public loaderCtrl: LoadingController,
+              public toastCtrl: ToastController,
               private firebase: FirebaseProvider,
               private eventsCtrl: Events,
               private nativeStorage: NativeStorage,
@@ -54,23 +56,41 @@ export class EditProfilePage {
     })
   }
 
-  countCharBio() {
+  countCharBio(e?) {
     this.biographyCount = this.user.biography.length;
+    
+    if(e) {
+      let minRows = e.target.getAttribute('data-min-rows')|0, rows;
+      e.target.rows = minRows;
+      rows = Math.ceil((e.target.scrollHeight - e.target.baseScrollHeight) / 16);
+      e.target.rows = minRows + rows;
+    }
   }
 
   updateProfileDatas() {
     console.log('UPDATE');
+    let loading = this.loaderCtrl.create({
+      spinner: 'hide',
+      content: `
+        <div class="custom-spinner-container">
+          <div class="custom-spinner-box">
+            <img src='./assets/imgs/loader.svg'>
+            <h2></h2>
+          </div>
+        </div>`
+    });
+    loading.present();
 
-    if(this.pictureURL != 'assets/imgs/persona.jpg') {
+    if(this.pictureURL!=='./assets/imgs/persona.jpg' && this.pictureURL!==this.user.pictureURL) {
       console.log('UPDATE Picture');
 
-      if(this.statut != "") {
+      if(this.statut!="" && this.statut!==this.user.statut) {
         console.log('UPDATE statut');
         this.firebase.updateUserInfo('statut', this.statut);
         this.user.statut = this.statut;
       }
   
-      if(this.biography != "") {
+      if(this.biography!="" && this.biography!==this.user.biography) {
         console.log('UPDATE biography');
         this.firebase.updateUserInfo('biography', this.biography);
         this.user.biography = this.biography;      
@@ -91,29 +111,51 @@ export class EditProfilePage {
         return this.nativeStorage.setItem('USER', this.user)
       })
       .then(() => {
+        let toast = this.toastCtrl.create({
+          message: 'Tes modifications ont été prise en compte !',
+          duration: 3000,
+          position: 'top'
+        });
         this.eventsCtrl.publish('userUpdate');
+        toast.present();
       });
+      loading.dismiss();      
     }
     else {
-      if(this.statut != "") {
+      if(this.statut!="" && this.statut!=this.user.statut) {
         console.log('UPDATE statut');
         this.firebase.updateUserInfo('statut', this.statut);
         this.user.statut = this.statut;
       }
   
-      if(this.biography != "") {
+      if(this.biography!="" && this.biography!=this.user.biography) {
         console.log('UPDATE biography');
         this.firebase.updateUserInfo('biography', this.biography);
         this.user.biography = this.biography;      
       }
+      let toast = this.toastCtrl.create({
+        message: 'Tes modifications ont été prise en compte !',
+        duration: 3000,
+        position: 'top'
+      });
+      loading.dismiss();
+      toast.present();
 
       this.nativeStorage.setItem('USER', this.user)
       .then(() => {
         this.eventsCtrl.publish('userNativeUpdate');
       });
     }
+  }
 
-
+  autoExpand(e) {
+    console.log(e);
+    let savedValue = e.target.value;
+    console.log(savedValue);
+    e.target.value = '';
+    e.target.baseScrollHeight = e.target.scrollHeight;
+    console.log(e.target.baseScrollHeight);
+    e.target.value = savedValue;
   }
 
   selectImage(){

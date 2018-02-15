@@ -62,7 +62,7 @@ export class ProfilePage {
           this.pictureURL = this.user.pictureURL;
         }
         else {
-          this.pictureURL = '/assets/imgs/persona.jpg';
+          this.pictureURL = './assets/imgs/persona.jpg';
         }
       });
     });
@@ -77,7 +77,7 @@ export class ProfilePage {
         this.pictureURL = this.user.pictureURL;
       }
       else {
-        this.pictureURL = '/assets/imgs/persona.jpg';
+        this.pictureURL = './assets/imgs/persona.jpg';
       }
     })
   }

@@ -33,6 +33,7 @@ import { ProfilePage } from '../pages/profile/profile';
 import { PopoverProfilePage } from '../pages/popover-profile/popover-profile';
 import { EditProfilePage } from '../pages/edit-profile/edit-profile';
 import { TabsPage } from '../pages/tabs/tabs';
+import { CguPage } from '../pages/cgu/cgu';
 
 // --- Add Providers --- //
 import { RegexProvider } from '../providers/regex/regex';
@@ -62,7 +63,8 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     ProfilePage,
     PopoverProfilePage,
     EditProfilePage,
-    TabsPage
+    TabsPage,
+    CguPage
   ],
   imports: [
     BrowserModule,
@@ -92,7 +94,8 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     ProfilePage,
     PopoverProfilePage,
     EditProfilePage,
-    TabsPage
+    TabsPage,
+    CguPage
   ],
   providers: [
     StatusBar,

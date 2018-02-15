@@ -72,6 +72,7 @@ export class RegisterphotoPage {
   }
 
   register() {
+    console.log('Register');
     this.firebase.emailRegister(this.user)
     .then(res => {
       if(this.imgPath != './assets/imgs/persona.jpg') {

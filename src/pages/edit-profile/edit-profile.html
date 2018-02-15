@@ -13,11 +13,13 @@
   <ion-grid>
     <ion-row>
       <ion-col col-6 id="profileIMG" (click)='selectImage()'>
-        <img [src]="pictureURL">
+        <img class='img' [src]="pictureURL">
+        <img class="icon" src="./assets/icons/add_circle.svg">        
       </ion-col>
 
       <ion-col col-6 id="profileName">
-        <p>{{ user.firstname }} {{ user.lastname }}</p>
+        <h2>{{ user.firstname }}</h2>
+        <h2>{{ user.lastname }}</h2>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -27,22 +29,25 @@
 
     <form>
       <ion-item>
-        <ion-textarea rows="6" cols="50" maxlength='120' placeholder='Es-tu capable de te présenter en 120 caractères ?' (keydown)='countCharBio()' [(ngModel)]='biography' name='biography'>
+        <ion-textarea class='autoExpand' rows="2" cols="50" maxlength='120' data-min-rows='2' placeholder='Es-tu capable de te présenter en 120 caractères ?' (focus)='autoExpand($event)' (keydown)='countCharBio($event)' [(ngModel)]='biography' name='biography'>
         </ion-textarea>
       </ion-item>
     </form>
     <p>{{ biographyCount }}/120</p>
   </div>
   
-  <form id='statut'>
-    <ion-item no-lines>
-      <ion-label>Mon statut :</ion-label>
-      <ion-input maxlength='20' placeholder='Etudiant' [(ngModel)]='statut' name='statut'></ion-input>
-    </ion-item>
-  </form>
+  <div id='statut'>
+    <h2>Mon statut :</h2>
+
+    <form>
+      <ion-item no-lines>
+        <ion-input maxlength='20' placeholder='Etudiant' [(ngModel)]='statut' name='statut'></ion-input>
+      </ion-item>
+    </form>
+  </div>
 
   <ion-item no-lines id='birthday'>
-    <h2><span>Date de naissance :</span> {{ user.birthday }}</h2>
+    <h2><span>Date de naissance : </span> {{ user.birthday }}</h2>
   </ion-item>
 
   <button ion-button round (click)='updateProfileDatas()'>

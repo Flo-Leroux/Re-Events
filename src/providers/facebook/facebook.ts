@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 
-import { Platform } from 'ionic-angular';
+import { Platform, AlertController } from 'ionic-angular';
 import { Http } from '@angular/http';
 
 // --- Plugins --- //
@@ -26,7 +26,8 @@ export class FacebookProvider {
   constructor(private fb: Facebook,
               private firebase: FirebaseProvider,
               private platform: Platform,
-              private http: Http) {
+              private http: Http,
+              public alertCtrl: AlertController) {
   }
 
   /**
@@ -53,17 +54,50 @@ export class FacebookProvider {
           return this.firebase.EmailExist(this.user.email);
         })
         .then(() => {
-          return this.firebase.FacebookRegister(this.facebook_token);
+          let alert = this.alertCtrl.create({
+            message: `
+              <div style='text-align: center !important;'>En utilisant l'application Re-Events,
+              j'accepte les <a href="https://re-events-officiel.firebaseio.com">conditions
+              générales d'utilisation</a>.</div>`,
+            buttons: [
+              {
+                text: 'Accepter',
+                handler: () => {
+                  this.firebase.FacebookRegister(this.facebook_token)
+                  .then(res => {
+                    if(res) {
+                      return this.firebase.write_User_Infos(res.uid, this.user);
+                    }
+                  })
+                  .then(() => {
+                    console.log("Logged");
+                    resolve();
+                  });
+                }
+              },
+              {
+                text: 'Refuser',
+                handler: () => {
+                  reject();
+                }
+              }
+            ]
+          });
+          alert.present();
         })
-        .then(res => {
-          if(res) {
-            this.firebase.write_User_Infos(res.uid, this.user);
-          }
+        .catch(() => {
+          this.firebase.FacebookRegister(this.facebook_token)
+          .then(res => {
+            if(res) {
+              return this.firebase.write_User_Infos(res.uid, this.user);
+            }
+          })
+          .then(() => {
+            console.log("Logged");
+            resolve();
+          });
         })
-        .then(() => {
-          console.log("Logged");
-          resolve();
-        });
+        
       }
     });
   }

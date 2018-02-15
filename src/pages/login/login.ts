@@ -96,6 +96,8 @@ export class LoginPage {
         userInfos.email = this.user.email;
         userInfos.password = this.user.password;
         
+        console.log('userInfos');
+        console.log(userInfos);
         this.nativeStorage.setItem('USER', userInfos);
 
         let options: NativeTransitionOptions = {
@@ -124,7 +126,10 @@ export class LoginPage {
       return this.firebase.getUserInfo();
     })
     .then(userInfos => {
-      this.user.facebook = true;
+      this.user.facebook = userInfos.facebook = true;
+
+      console.log('userInfos');
+      console.log(userInfos);
 
       this.nativeStorage.setItem('USER', userInfos);
 
@@ -134,7 +139,7 @@ export class LoginPage {
       }
       this.nativePageTransitions.fade(options);
       this.navCtrl.setRoot(TabsPage);
-    })
+    });
   }
 
   register() {
