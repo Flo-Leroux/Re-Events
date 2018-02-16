@@ -5,8 +5,6 @@ import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/na
 // --- Add Plugins --- //
 /* Ionic's Plugins */
 import { NativeStorage } from '@ionic-native/native-storage';
-import { StatusBar } from '@ionic-native/status-bar';
-
 
 // --- Add Pages --- //
 import { TabsPage } from '../tabs/tabs';
@@ -31,10 +29,9 @@ export class CguPage {
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
-              private statusBar: StatusBar,
-              private nativeStorage: NativeStorage,              
-              private nativePageTransitions: NativePageTransitions,
-              public firebase: FirebaseProvider) {
+              private nativeStorage: NativeStorage,           
+              private firebase: FirebaseProvider,   
+              private nativePageTransitions: NativePageTransitions) {
   }
 
   ionViewDidLoad() {

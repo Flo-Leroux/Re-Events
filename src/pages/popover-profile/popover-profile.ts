@@ -3,7 +3,6 @@ import { NavController, NavParams, AlertController } from 'ionic-angular';
 
 // --- Add Plugins --- //
 /* Ionic's Plugins */
-import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { NativeStorage } from '@ionic-native/native-storage';
 
@@ -30,7 +29,6 @@ export class PopoverProfilePage {
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public alertCtrl: AlertController,
-              private statusBar: StatusBar,
               private nativeStorage: NativeStorage,
               private nativePageTransitions: NativePageTransitions,
               private facebook: FacebookProvider,

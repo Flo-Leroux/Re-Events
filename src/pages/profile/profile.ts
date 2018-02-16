@@ -1,10 +1,8 @@
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content, PopoverController, Events } from 'ionic-angular';
-import { Http } from '@angular/http';
+import { NavController, Content, PopoverController, Events } from 'ionic-angular';
 
 // --- Add Plugins --- //
 /* Ionic's Plugins */
-import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { NativeStorage } from '@ionic-native/native-storage';
 
@@ -14,7 +12,6 @@ import { DescriptionPage } from '../description/description';
 
 // --- Add Providers --- //
 import { FirebaseProvider } from '../../providers/firebase/firebase';
-import { FacebookProvider } from '../../providers/facebook/facebook';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
@@ -40,13 +37,9 @@ export class ProfilePage {
   likedID: any;
 
   constructor(public navCtrl: NavController,
-              private statusBar: StatusBar,
-              private navParams: NavParams,
               private eventsCtrl: Events,
               private nativePageTransitions: NativePageTransitions,
-              private http: Http,
               private firebase: FirebaseProvider,
-              private facebook: FacebookProvider,
               private nativeStorage: NativeStorage,
               public ref: ChangeDetectorRef,
               public popoverCtrl: PopoverController) {
@@ -168,16 +161,6 @@ export class ProfilePage {
   }
 
   // --- Others --- //
-
-  private loadJson(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(this.jsonPATH)
-      .subscribe(res => {
-        resolve(res);
-      })
-    });
-  }
-
   private collectionHas(a, b) { //helper function (see below)
     for(var i = 0, len = a.length; i < len; i ++) {
         if(a[i] == b) return true;

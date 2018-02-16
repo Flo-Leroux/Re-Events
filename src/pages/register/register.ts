@@ -5,9 +5,7 @@ import { NavController, NavParams, ToastController } from 'ionic-angular';
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { NativeStorage } from '@ionic-native/native-storage';
-import * as firebase from 'firebase';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
@@ -51,13 +49,8 @@ export class RegisterPage {
               private reg: RegexProvider,
               private firebase: FirebaseProvider,
               private facebook: FacebookProvider,
-              private aFauth : AngularFireAuth,
               private navParams: NavParams) {
-    if(navParams.get('userEmail')) {
-      this.user.email = navParams.get('userEmail');
-      this.user.password = navParams.get('userPassword');
-      this.email = true;
-    }
+
   
     // let status bar overlay webview
     this.statusBar.overlaysWebView(true);
@@ -67,6 +60,13 @@ export class RegisterPage {
     // this.statusBar.backgroundColorByHexString('#000000DD');
   }
 
+  ionViewDidLoad() {
+    if(this.navParams.get('userEmail')) {
+      this.user.email = this.navParams.get('userEmail');
+      this.user.password = this.navParams.get('userPassword');
+      this.email = true;
+    }
+  }
   /**
    * Test si l'email est valide :
    *    - True  =>  Affiche les champs "Mot de passe" & "Confirmation"

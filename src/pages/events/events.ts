@@ -1,7 +1,6 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController, Content, Platform, Events, Slides, LoadingController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, Content, Events, Slides, LoadingController } from 'ionic-angular';
 import { Http } from '@angular/http';
-import { NavParams } from 'ionic-angular/navigation/nav-params';
 
 // --- Add Plugins --- //
 /* Ionic's Plugins */
@@ -15,7 +14,6 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import { DescriptionPage } from '../description/description';
 
 // --- Add Providers --- //
-import { AnimationProvider } from '../../providers/animation/animation';
 import { FacebookProvider } from '../../providers/facebook/facebook';
 import { GeolocationProvider } from '../../providers/geolocation/geolocation';
 import { FirebaseProvider } from '../../providers/firebase/firebase';

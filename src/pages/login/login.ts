@@ -29,6 +29,8 @@ export class LoginPage {
   user = {} as User;
   email: boolean = false;
   password: boolean = false;
+  // splash = true;
+  // secondPage = SecondPagePage;
 
   constructor(public navCtrl: NavController,
               private statusBar: StatusBar,
@@ -51,7 +53,7 @@ export class LoginPage {
     // this.statusBar.backgroundColorByHexString('#000000DD');
   }
 
-    /**
+  /**
    * Test si l'email est valide :
    *    - True  =>  Affiche les champs "Mot de passe"
    * @param {User} user 

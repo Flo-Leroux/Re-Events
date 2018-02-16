@@ -1,0 +1,37 @@
+page-splashscreen {
+    ion-content {
+        background: linear-gradient(to left top, color($colors, colorHunt1), color($colors, colorHunt3), color($colors, colorHunt1));
+        // background-color: red;
+        background-size: 400% 400%;
+        animation: animGradient 5s infinite ease-in-out;
+
+        div#logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 55vw;
+
+            img {
+                margin-top: 1vh;
+                margin-bottom: 1vh;
+
+                &#reevents {
+                    transform: rotate(-8deg);
+                }
+            }
+        }
+
+        @keyframes animGradient {
+            0% {
+                background-position: 0% 50%
+            }
+            50% {
+                background-position: 100% 50%
+            }
+            100% {
+                background-position: 0% 50%
+            }
+        }
+    }
+}

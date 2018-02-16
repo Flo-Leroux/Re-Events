@@ -7,17 +7,12 @@ import { NavParams } from 'ionic-angular/navigation/nav-params';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
-import { NativeStorage } from '@ionic-native/native-storage';
 
 // --- Add Pages --- //
 import { CguPage } from '../cgu/cgu';
-import { TabsPage } from '../tabs/tabs';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
-
-// --- Add Providers --- //
-import { FirebaseProvider } from '../../providers/firebase/firebase';
 
 @Component({
   selector: 'page-registerphoto',
@@ -33,8 +28,6 @@ export class RegisterphotoPage {
               public navParams: NavParams,
               public navTrans:NativePageTransitions,
               private statusBar: StatusBar,
-              private firebase: FirebaseProvider,
-              private nativeStorage: NativeStorage,
               private camera: Camera) {
     this.user = navParams.get('userInfo');
 

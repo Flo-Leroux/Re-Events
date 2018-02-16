@@ -5,7 +5,6 @@ import { NavController, NavParams, Content, Events } from 'ionic-angular';
 // --- Add Plugins --- //
 /* Ionic's Plugins */
 import { StatusBar } from '@ionic-native/status-bar';
-import { NativePageTransitions } from '@ionic-native/native-page-transitions';
 import { Calendar } from '@ionic-native/calendar';
 import { NativeStorage } from '@ionic-native/native-storage';
 

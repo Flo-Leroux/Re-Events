@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams, Events, ToastController, LoadingController } from 'ionic-angular';
 
 // --- Add Plugins --- //
@@ -11,8 +11,6 @@ import { User } from '../../models/User';
 
 // --- Add Providers --- //
 import { FirebaseProvider } from '../../providers/firebase/firebase';
-import { ProfilePage } from '../profile/profile';
-import { EventEmitter } from '@angular/core/src/event_emitter';
 
 @Component({
   selector: 'page-edit-profile',

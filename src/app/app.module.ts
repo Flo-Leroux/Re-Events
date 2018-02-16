@@ -15,7 +15,6 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { DatePicker } from '@ionic-native/date-picker';
 import { Calendar } from '@ionic-native/calendar';
 import { NativeStorage } from '@ionic-native/native-storage';
-import * as firebase from 'firebase';
 
 /* Npm's Plugins */
 import { AngularFireModule } from 'angularfire2';
@@ -34,6 +33,7 @@ import { PopoverProfilePage } from '../pages/popover-profile/popover-profile';
 import { EditProfilePage } from '../pages/edit-profile/edit-profile';
 import { TabsPage } from '../pages/tabs/tabs';
 import { CguPage } from '../pages/cgu/cgu';
+import { SplashscreenPage } from '../pages/splashscreen/splashscreen';
 
 // --- Add Providers --- //
 import { RegexProvider } from '../providers/regex/regex';
@@ -64,7 +64,8 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     PopoverProfilePage,
     EditProfilePage,
     TabsPage,
-    CguPage
+    CguPage,
+    SplashscreenPage
   ],
   imports: [
     BrowserModule,
@@ -95,7 +96,8 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     PopoverProfilePage,
     EditProfilePage,
     TabsPage,
-    CguPage
+    CguPage,
+    SplashscreenPage
   ],
   providers: [
     StatusBar,
