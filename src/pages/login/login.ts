@@ -103,6 +103,14 @@ export class LoginPage {
         console.log(userInfos);
         this.nativeStorage.setItem('USER', userInfos);
 
+        let con = {
+          facebook : false,
+          email : this.user.email,
+          password : this.user.password
+        };
+
+        this.nativeStorage.setItem('USERCon', con);
+
         let options: NativeTransitionOptions = {
           duration: 500,
           slowdownfactor: -1
@@ -133,7 +141,15 @@ export class LoginPage {
         this.user.facebook = userInfos.facebook = true;
   
         this.nativeStorage.setItem('USER', userInfos);
-  
+
+        let con = {
+          facebook : true,
+          email : '',
+          password : ''
+        };
+
+        this.nativeStorage.setItem('USERCon', con);
+
         let options: NativeTransitionOptions = {
           duration: 500,
           slowdownfactor: -1

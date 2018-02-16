@@ -93,6 +93,14 @@ export class CguPage {
   
         this.nativeStorage.setItem('USER', userInfos);
   
+        let con = {
+          facebook : true,
+          email : '',
+          password : ''
+        };
+
+        this.nativeStorage.setItem('USERCon', con);
+
         let options: NativeTransitionOptions = {
           duration: 500,
           slowdownfactor: -1
@@ -141,6 +149,14 @@ export class CguPage {
         this.user.facebook = false;      
         this.nativeStorage.setItem('USER', this.user);
   
+        let con = {
+          facebook : false,
+          email : this.user.email,
+          password : this.user.password
+        };
+
+        this.nativeStorage.setItem('USERCon', con);
+
         let options: NativeTransitionOptions = {
           duration: 800,
           slowdownfactor: -1
