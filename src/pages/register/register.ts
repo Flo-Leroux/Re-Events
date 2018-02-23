@@ -71,6 +71,7 @@ export class RegisterPage {
       this.user.email = this.navParams.get('userEmail');
       this.user.password = this.navParams.get('userPassword');
       this.email = true;
+      
     }
   }
   /**
