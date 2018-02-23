@@ -6,6 +6,8 @@ import { NavController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
 
 // --- Add Pages --- //
 import { RegisterPage } from '../register/register';
@@ -31,8 +33,11 @@ export class LoginPage {
   password: boolean = false;
   // splash = true;
   // secondPage = SecondPagePage;
+  private fileTransfer: FileTransferObject;
 
   constructor(public navCtrl: NavController,
+              private transfer: FileTransfer,
+              private file: File,
               private statusBar: StatusBar,
               private nativePageTransitions: NativePageTransitions,
               private nativeStorage: NativeStorage,
@@ -51,6 +56,7 @@ export class LoginPage {
     // set status bar to white
     this.statusBar.styleLightContent();
     // this.statusBar.backgroundColorByHexString('#000000DD');
+    this.fileTransfer = this.transfer.create();    
   }
 
   /**
@@ -111,12 +117,26 @@ export class LoginPage {
 
         this.nativeStorage.setItem('USERCon', con);
 
-        let options: NativeTransitionOptions = {
-          duration: 500,
-          slowdownfactor: -1
-        }
-        this.nativePageTransitions.fade(options);
-        this.navCtrl.setRoot(TabsPage);
+        this.firebase.getProfileURL()
+        .then(url => {
+          console.log(url);
+          this.user.pictureURL = url;
+          return this.fileTransfer.download(url, this.file.dataDirectory + 'profile.png');
+        })
+        .catch(err => {
+          console.log(err);
+          this.user.pictureURL = './assets/imgs/persona.jpg';
+        })
+        .then(res => {
+          this.nativeStorage.setItem('userPicture', this.file.dataDirectory + 'profile.png');      
+          console.log(this.user.pictureURL);
+          let options: NativeTransitionOptions = {
+            duration: 500,
+            slowdownfactor: -1
+          }
+          this.nativePageTransitions.fade(options);
+          this.navCtrl.setRoot(TabsPage);
+        })
       })
       .catch(() => {
         let options2: NativeTransitionOptions = {
@@ -150,24 +170,61 @@ export class LoginPage {
 
         this.nativeStorage.setItem('USERCon', con);
 
-        let options: NativeTransitionOptions = {
-          duration: 500,
-          slowdownfactor: -1
-        }
-        this.nativePageTransitions.fade(options);
-        this.navCtrl.setRoot(TabsPage);
+        console.log('FACEBOOK');
+        console.log(userInfos);
+
+        this.fileTransfer.download(userInfos.pictureURL, this.file.dataDirectory + 'profile.png')
+        .then(res => {
+          this.nativeStorage.setItem('userPicture', this.file.dataDirectory + 'profile.png');      
+        })
+        .then(res => {
+          let options: NativeTransitionOptions = {
+            duration: 500,
+            slowdownfactor: -1
+          }
+          this.nativePageTransitions.fade(options);
+          this.navCtrl.setRoot(TabsPage);
+        });
       });
     })
     .catch((res) => {
-      console.log('Facebook TOKEN');
-      console.log(res);
-      let options: NativeTransitionOptions = {
-        direction: 'left',
-        duration: 500,
-        slowdownfactor: -1
-      }
-      this.nativePageTransitions.slide(options);
-      this.navCtrl.push(CguPage, {'origin': 'facebook', 'token': res[0], 'user': res[1]});
+      this.user = res[1];
+      this.firebase.FacebookRegister(res[0])
+      .then(() => {
+        return this.firebase.getStatus();
+      })
+      .then(user => {
+        return this.firebase.write_User_Infos(user.uid, this.user);
+      })
+      .then(() => {
+        return this.firebase.getUserInfo()
+      })
+      .then(userInfos => {
+        this.user.facebook = userInfos.facebook = true;
+  
+        this.nativeStorage.setItem('USER', userInfos);
+  
+        let con = {
+          facebook : true,
+          email : '',
+          password : ''
+        };
+
+        this.nativeStorage.setItem('USERCon', con);
+
+        this.fileTransfer.download(userInfos.pictureURL, this.file.dataDirectory + 'profile.png')
+        .then(res => {
+          this.nativeStorage.setItem('userPicture', this.file.dataDirectory + 'profile.png');      
+        })
+        .then(res => {
+          let options: NativeTransitionOptions = {
+            duration: 500,
+            slowdownfactor: -1
+          }
+          this.nativePageTransitions.fade(options);
+          this.navCtrl.setRoot(TabsPage);
+        });
+      });
     });
   }
 
@@ -180,4 +237,13 @@ export class LoginPage {
     this.navCtrl.push(RegisterPage);
   }
 
+  getCGU() {
+    let options: NativeTransitionOptions = {
+      direction: 'left',
+      duration: 500,
+      slowdownfactor: -1
+    }
+    this.nativePageTransitions.slide(options);
+    this.navCtrl.push(CguPage);
+  }
 }

@@ -5,6 +5,8 @@ import { NavController, NavParams, Events, ToastController, LoadingController } 
 /* Ionic's Plugins */
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
@@ -27,9 +29,13 @@ export class EditProfilePage {
   biography: string;
   statut: string;
 
+  private fileTransfer: FileTransferObject;
+
   constructor(public navCtrl: NavController,
               public loaderCtrl: LoadingController,
               public toastCtrl: ToastController,
+              private transfer: FileTransfer,
+              private file: File,
               private firebase: FirebaseProvider,
               private eventsCtrl: Events,
               private nativeStorage: NativeStorage,
@@ -44,14 +50,17 @@ export class EditProfilePage {
       this.statut = this.user.statut;
       this.biography = this.user.biography;
       this.countCharBio();      
+    });
 
-      if(this.user.pictureURL) {
-        this.pictureURL = this.user.pictureURL;
-      }
-      else {
-        this.pictureURL = './assets/imgs/persona.jpg';
-      }
-    })
+    this.nativeStorage.getItem('userPicture')
+    .then(res => {
+      this.pictureURL = res;
+    })    
+    .catch(err => {
+      this.pictureURL = './assets/imgs/persona.jpg';
+    });
+
+    this.fileTransfer = this.transfer.create();        
   }
 
   countCharBio(e?) {
@@ -79,7 +88,7 @@ export class EditProfilePage {
     });
     loading.present();
 
-    if(this.pictureURL!=='./assets/imgs/persona.jpg' && this.pictureURL!==this.user.pictureURL) {
+    if(this.pictureURL!=='./assets/imgs/persona.jpg') {
       console.log('UPDATE Picture');
 
       if(this.statut!="" && this.statut!==this.user.statut) {
@@ -106,18 +115,22 @@ export class EditProfilePage {
       })
       .then((url) => {
         this.user.pictureURL = url;
-        return this.nativeStorage.setItem('USER', this.user)
+        return this.fileTransfer.download(url, this.file.dataDirectory + 'profile.png');
       })
-      .then(() => {
+      .then(res => {
+        this.nativeStorage.setItem('userPicture', this.file.dataDirectory + 'profile.png');      
+        this.nativeStorage.setItem('USER', this.user)
+
         let toast = this.toastCtrl.create({
-          message: 'Tes modifications ont été prise en compte !',
+          message: 'Tes modifications ont été prise en compte ! L\'image sera active lors de ta prochaine utilisation !',
           duration: 3000,
           position: 'top'
         });
+        console.log('event publish');
         this.eventsCtrl.publish('userUpdate');
         toast.present();
+        loading.dismiss();      
       });
-      loading.dismiss();      
     }
     else {
       if(this.statut!="" && this.statut!=this.user.statut) {
@@ -170,14 +183,26 @@ export class EditProfilePage {
     this.camera.getPicture(cameraOptions)
     .then(data =>{
       if(data.length==0) {
-        this.pictureURL = 'assets/imgs/persona.jpg';
+        this.nativeStorage.getItem('userPicture')
+        .then(res => {
+          this.pictureURL = res;
+        })    
+        .catch(err => {
+          this.pictureURL = './assets/imgs/persona.jpg';
+        });
       }
       else {
         this.pictureURL 	= "data:image/png;base64," + data;
       }
     })
     .catch(err => {
-      this.pictureURL = 'assets/imgs/persona.jpg';
+      this.nativeStorage.getItem('userPicture')
+      .then(res => {
+        this.pictureURL = res;
+      })    
+      .catch(err => {
+        this.pictureURL = './assets/imgs/persona.jpg';
+      });
     })       
   }
 }

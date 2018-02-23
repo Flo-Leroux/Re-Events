@@ -15,6 +15,8 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { DatePicker } from '@ionic-native/date-picker';
 import { Calendar } from '@ionic-native/calendar';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
 
 /* Npm's Plugins */
 import { AngularFireModule } from 'angularfire2';
@@ -110,6 +112,9 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
     DatePicker,
     Calendar,
     NativeStorage,
+    File,
+    FileTransfer,
+    FileTransferObject,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     RegexProvider,
     PermissionsProvider,

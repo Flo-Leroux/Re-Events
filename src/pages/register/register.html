@@ -42,6 +42,8 @@
   
     <button *ngIf="!(email)" ion-button (click)="facebookRegister()" round id="facebook-connect" color="facebook">S'inscrire avec Facebook</button>
   
+    <p id="cgu" (click)="getCGU()">En m'inscrivant, j'accepte les <span>conditions générales d'utilisation</span></p>
+
     <button ion-button id="login" (click)="login()">Déjà des nôtres ?</button>
   </ion-list>
 

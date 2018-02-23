@@ -43,28 +43,5 @@ page-cgu {
         a {
             color: color($colors, colorHunt1);
         }
-
-        div#button {
-            margin-top: 7vh;
-            margin-bottom: 7vh;
-
-            ion-grid {
-                ion-row {
-                    ion-col {
-                        text-align: center;
-
-                        button {
-                            &#refuser {
-                                background-color: rgba(112, 9, 97, 0.7);
-                            }
-
-                            &#accepter {
-                                background-color: #700961;
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }

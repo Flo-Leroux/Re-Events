@@ -99,7 +99,6 @@ export class FirebaseProvider {
         firebase.database().ref(`users/${userId}/pictureURL`).on('value', (snap) => {
           let url = snap.val();
           console.log('URL IMAGE');
-          console.log(userId);
           console.log(url);
           resolve(url);
         });
@@ -242,7 +241,7 @@ export class FirebaseProvider {
       const uid= firebase.auth().currentUser.uid;
 
       firebase.database().ref(`users/${uid}`).once('value', snap => {
-        resolve(snap);
+        resolve(snap.val());
       })
     });
   }

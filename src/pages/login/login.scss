@@ -1,8 +1,4 @@
 
-
-
-
-
 page-login {
 
     ion-content {
@@ -54,26 +50,42 @@ page-login {
                 margin-left: auto;
                 margin-right: auto;
  
-                 &#connexion, &#facebook-connect {
-                     margin-top: 4vh;
-                     padding-top: 1vh;
-                     padding-bottom: 1vh;
-                 }
- 
-                 &#connexion {
-                    background: linear-gradient(to left, color($colors, colorHunt5), color($colors, colorHunt6)) !important;
-                 }
- 
-                 &#inscription {
-                     background: none;
-                     box-shadow: none;
-                     position: absolute;
-                     bottom: 2vh;
-                     width: 100vw;
-                     left: 0;
-                     text-transform: none !important;
-                 }
-             }
+                &#connexion, &#facebook-connect {
+                    margin-top: 4vh;
+                    padding-top: 1vh;
+                    padding-bottom: 1vh;
+                }
+
+                &#connexion {
+                background: linear-gradient(to left, color($colors, colorHunt5), color($colors, colorHunt6)) !important;
+                }
+
+                &#inscription {
+                    background: none;
+                    box-shadow: none;
+                    position: absolute;
+                    bottom: 2vh;
+                    width: 100vw;
+                    left: 0;
+                    text-transform: none !important;
+                }
+
+            }
+            
+            p#cgu {
+                width: 75vw;
+                margin-left: auto;
+                margin-right: auto;
+                background: none;
+                box-shadow: none;
+                text-transform: none !important;
+                text-decoration: none;
+                color: white;
+                
+                span {
+                    text-decoration: underline;
+                }
+            }
         }
     }
 }

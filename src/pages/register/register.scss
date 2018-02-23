@@ -110,7 +110,22 @@ page-register {
                 &.connexionOK {
                     filter: alpha(1) !important;
                 }
-             }
+            }
+
+            p#cgu {
+                width: 75vw;
+                margin-left: auto;
+                margin-right: auto;
+                background: none;
+                box-shadow: none;
+                text-transform: none !important;
+                text-decoration: none;
+                color: white;
+                
+                span {
+                    text-decoration: underline;
+                }
+            }
         }
     }
 

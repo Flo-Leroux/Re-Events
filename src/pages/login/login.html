@@ -20,7 +20,9 @@
     <button ion-button round id="connexion" (click)="login()">Se connecter</button>
   
     <button *ngIf="!(email)" ion-button round id="facebook-connect" color="facebook" (click)='facebookConnect()'>Facebook Connect</button>
-  
+
+    <p id="cgu" (click)="getCGU()">En me connectant, j'accepte les <span>conditions générales d'utilisation</span></p>
+
     <button ion-button (click)="register()" id="inscription">Pas encore des nôtres ?</button>
   </ion-list>
 

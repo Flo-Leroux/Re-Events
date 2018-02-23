@@ -7,12 +7,19 @@ import { NavParams } from 'ionic-angular/navigation/nav-params';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+import { NativeStorage } from '@ionic-native/native-storage';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
 
 // --- Add Pages --- //
 import { CguPage } from '../cgu/cgu';
 
 // --- Add Models --- //
 import { User } from '../../models/User';
+
+// --- Add Providers --- //
+import { FirebaseProvider } from '../../providers/firebase/firebase';
+import { TabsPage } from '../tabs/tabs';
 
 @Component({
   selector: 'page-registerphoto',
@@ -23,10 +30,15 @@ export class RegisterphotoPage {
   user: User;
   imgPath: string = './assets/imgs/persona.jpg';
   public cameraImage : String
-  
+  private fileTransfer: FileTransferObject
+
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
+              public firebase: FirebaseProvider,
               public navTrans:NativePageTransitions,
+              private transfer: FileTransfer,
+              private file: File,
+              private nativeStorage: NativeStorage, 
               private statusBar: StatusBar,
               private camera: Camera) {
     this.user = navParams.get('userInfo');
@@ -37,6 +49,7 @@ export class RegisterphotoPage {
     // set status bar to white
     this.statusBar.styleLightContent();
     // this.statusBar.backgroundColorByHexString('#000000DD');
+    this.fileTransfer = this.transfer.create();
   }
 
   selectImage(){
@@ -52,12 +65,7 @@ export class RegisterphotoPage {
 
     this.camera.getPicture(cameraOptions)
     .then(data =>{
-      if(data.length==0) {
-        this.imgPath = './assets/imgs/persona.jpg';
-      }
-      else {
         this.imgPath 	= "data:image/png;base64," + data;
-      }
     })
     .catch(err => {
       this.imgPath = './assets/imgs/persona.jpg';
@@ -65,13 +73,49 @@ export class RegisterphotoPage {
   }
 
   register() {
-    let options: NativeTransitionOptions = {
-      duration: 800,
-      slowdownfactor: -1,
-      iosdelay: 50,
-      androiddelay: 100,
-    }; 
-    this.navTrans.fade(options);
-    this.navCtrl.setRoot(CguPage, {'origin': 'email', 'user': this.user, 'img': this.imgPath});
+    console.log('REGISTER');
+    this.firebase.emailRegister(this.user)
+    .then(res => {
+      console.log(res);
+      console.log('IMAGE PATH');
+      return this.firebase.upload_Profil_Picture(res.uid, this.imgPath);
+    })
+    .then(url => {
+      this.user.pictureURL = url;
+      return this.firebase.getStatus();
+    })
+    .then(user => {
+      console.log('USER');
+      console.log(user.uid);
+      return this.firebase.write_User_Infos(user.uid, this.user);
+    })
+    .then(() => {
+      return this.firebase.getProfileURL();
+    })
+    .then(url => {
+      this.user.pictureURL = url;
+      return this.fileTransfer.download(url, this.file.dataDirectory + 'profile.png');
+    })
+    .then(() => {
+      //return this.firebase.sendEmailVerification();
+      this.user.facebook = false;      
+      this.nativeStorage.setItem('USER', this.user);
+      this.nativeStorage.setItem('userPicture', this.file.dataDirectory + 'profile.png');
+      
+      let con = {
+        facebook : false,
+        email : this.user.email,
+        password : this.user.password
+      };
+
+      this.nativeStorage.setItem('USERCon', con);
+
+      let options: NativeTransitionOptions = {
+        duration: 800,
+        slowdownfactor: -1
+      }; 
+      this.navTrans.fade(options);
+      this.navCtrl.setRoot(TabsPage);
+    });
   }
 }

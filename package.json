@@ -26,8 +26,9 @@
     "@ionic-native/core": "4.4.0",
     "@ionic-native/date-picker": "^4.5.2",
     "@ionic-native/facebook": "^4.4.2",
+    "@ionic-native/file": "^4.5.3",
     "@ionic-native/file-path": "^4.4.2",
-    "@ionic-native/file-transfer": "^4.4.2",
+    "@ionic-native/file-transfer": "^4.5.3",
     "@ionic-native/geolocation": "^4.5.2",
     "@ionic-native/keyboard": "^4.4.2",
     "@ionic-native/native-page-transitions": "^4.4.2",
@@ -46,7 +47,10 @@
     "cordova-plugin-datepicker": "^0.9.3",
     "cordova-plugin-device": "^1.1.4",
     "cordova-plugin-facebook4": "^1.9.1",
+    "cordova-plugin-file": "^6.0.1",
+    "cordova-plugin-file-transfer": "^1.7.1",
     "cordova-plugin-geolocation": "^4.0.1",
+    "cordova-plugin-ionic": "^3.1.1",
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-nativestorage": "^2.2.2",
     "cordova-plugin-splashscreen": "^4.0.3",
@@ -86,7 +90,9 @@
       "cordova-plugin-facebook4": {
         "APP_ID": "1306889219440575",
         "APP_NAME": "Re-Events"
-      }
+      },
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-file": {}
     },
     "platforms": [
       "android",

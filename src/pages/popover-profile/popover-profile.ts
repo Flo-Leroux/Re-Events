@@ -5,6 +5,7 @@ import { NavController, NavParams, AlertController } from 'ionic-angular';
 /* Ionic's Plugins */
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { File } from '@ionic-native/file';
 
 // --- Add PAges --- //
 import { LoginPage } from '../login/login';
@@ -29,6 +30,7 @@ export class PopoverProfilePage {
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public alertCtrl: AlertController,
+              private file: File,
               private nativeStorage: NativeStorage,
               private nativePageTransitions: NativePageTransitions,
               private facebook: FacebookProvider,

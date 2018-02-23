@@ -31,8 +31,6 @@ export class ProfilePage {
 
   pictureURL: string;
 
-  jsonPATH: string = 'assets/json/eventsOrganised.json';
-
   likedDATA: any;
   likedID: any;
 
@@ -47,16 +45,21 @@ export class ProfilePage {
     console.log('Profile Enter Construct');
     
     this.eventsCtrl.subscribe('userUpdate', res => {
+      console.log('event received');
+      
       this.nativeStorage.getItem('USER')
       .then(res => {
         this.user = res;
-  
-        if(this.user.pictureURL) {
-          this.pictureURL = this.user.pictureURL;
-        }
-        else {
-          this.pictureURL = './assets/imgs/persona.jpg';
-        }
+      });
+
+      this.nativeStorage.getItem('userPicture')
+      .then(res => {
+        this.pictureURL = './assets/imgs/persona.jpg';
+        console.log(res);
+        this.pictureURL = res;
+      })    
+      .catch(err => {
+        this.pictureURL = './assets/imgs/persona.jpg';
       });
     });
   }
@@ -65,14 +68,15 @@ export class ProfilePage {
     this.nativeStorage.getItem('USER')
     .then(res => {
       this.user = res;
+    });
 
-      if(this.user.pictureURL) {
-        this.pictureURL = this.user.pictureURL;
-      }
-      else {
-        this.pictureURL = './assets/imgs/persona.jpg';
-      }
-    })
+    this.nativeStorage.getItem('userPicture')
+    .then(res => {
+      this.pictureURL = res;
+    })    
+    .catch(err => {
+      this.pictureURL = './assets/imgs/persona.jpg';
+    });
   }
 
   ionViewWillEnter() {
@@ -88,6 +92,14 @@ export class ProfilePage {
 
     this.nativeStorage.getItem('USER')
     .then(res => {this.user = res;});
+
+    this.nativeStorage.getItem('userPicture')
+    .then(res => {
+      this.pictureURL = res;
+    })    
+    .catch(err => {
+      this.pictureURL = './assets/imgs/persona.jpg';
+    });
 
     this.imgHeight =  document.getElementById('duotone').offsetHeight;
 

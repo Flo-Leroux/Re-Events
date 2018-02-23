@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="app.ReEvents.DreamTeam" version="1.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="app.ReEvents.Flo_Leroux" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Re-Events</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <description>An awesome Ionic/Cordova App to find Events around you.</description>
+    <author email="lerouxflorian1@gmail.com" href="http://flo-leroux.fr/">Florian Leroux</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -96,5 +96,6 @@
         <variable name="APP_ID" value="1306889219440575" />
         <variable name="APP_NAME" value="Re-Events" />
     </plugin>
-    <preference name="SplashShowOnlyFirstTime" value="false" />
+    <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
 </widget>
