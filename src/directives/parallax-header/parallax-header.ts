@@ -15,8 +15,7 @@ export class ParallaxHeaderDirective {
   scaleAmt: any;
 
   constructor(public element: ElementRef,
-              public renderer: Renderer) {
-  }
+              public renderer: Renderer) {}
 
   ngOnInit() {
     let content = this.element.nativeElement.getElementsByClassName('scroll-content')[0];

@@ -108,7 +108,7 @@ export class FacebookProvider {
    * It the method to find all Facebook Events around a GPS Center 
    */
   public findEventsByPlaces(query?: string, center?: Array<number>, distance?: number, since?: Date, weeksReload?: number): Promise<any> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
 
       let current_DateTime = new Date();
 
@@ -116,8 +116,7 @@ export class FacebookProvider {
         query = "*";
       }
       if(center == null) {
-        // reject();
-        center = [48.692054, 6.184416999999939];
+        reject();
       }
       if(distance == null || distance == undefined) {
         distance = 500;
@@ -126,7 +125,6 @@ export class FacebookProvider {
         since = current_DateTime;
       }
 
-      // Add Comments here to...
       this.prepareRequestPlaces(query, center, distance)
       .then(stmt => {
         return this.api(stmt);
@@ -140,16 +138,6 @@ export class FacebookProvider {
       .then(events => {
         return this.deletePlacesWithoutEvents(events);      
       })
-      // ... Here for testing with local datas
-
-      // Remove Comments to...
-      /* this.loadJson('assets/json/eventsBrut.json')
-      .then(res => {
-        let datas = res.json();
-        return this.deletePlacesWithoutEvents(datas);
-      }) */
-      // ... Here for testing with local datas
-
       .then(res => {
         return this.mergeEvents(res);
       })
@@ -157,8 +145,6 @@ export class FacebookProvider {
         return this.organizeEvents(res);
       })
       .then(res => {
-        console.log('RESULT');
-        console.log(res);
         resolve(res);
       })
     })

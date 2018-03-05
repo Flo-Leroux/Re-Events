@@ -19,9 +19,9 @@ import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-nati
 import { File } from '@ionic-native/file';
 
 /* Npm's Plugins */
-import { AngularFireModule } from 'angularfire2';
+/* import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireAuthModule } from 'angularfire2/auth'; */
 
 // --- Add Pages --- //
 import { ReEvents } from './app.component';
@@ -81,10 +81,10 @@ import { FIREBASE_CONFIG } from './app.firebase.config';
       tabsHideOnSubPages: true,
       tabsPlacement: 'bottom',
       backButtonText: ''
-    }),
+    })/* ,
     AngularFireModule.initializeApp(FIREBASE_CONFIG),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule */
   ],
   bootstrap: [IonicApp],
   entryComponents: [
